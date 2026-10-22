@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maria's Learning Route</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F5FA; --panel:#FFFFFF; --ink:#181C35; --soft:#5D6482; --line:#E1E5EF;
+  --violet:#5B4BDB; --watch:#C2413B; --read:#2D6FC2; --warn:#B7790B;
+  --radius-lg:18px; --radius-sm:8px;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#10132A;--panel:#181C38;--ink:#ECEEFA;--soft:#9EA4C4;--line:#2A2F52;--violet:#8E82FF;--watch:#F07068;--read:#6FA8F0;--warn:#E3AA3A}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--violet);outline-offset:2px;border-radius:4px}
+
+header{max-width:1180px;margin:0 auto;padding:40px 20px 8px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,5.5vw,56px);line-height:1.02;letter-spacing:-.02em;margin:0 0 14px}
+.lede{color:var(--soft);max-width:66ch;margin:0}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.rules span{font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+
+.route{max-width:1180px;margin:26px auto 0;padding:0 20px}
+.route-track{position:relative;height:64px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
+.seg{position:absolute;top:10px;bottom:10px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 12px/1 var(--body);color:#fff;text-decoration:none;white-space:nowrap;overflow:hidden;padding:0 4px}
+.seg.exam{background:repeating-linear-gradient(135deg,var(--line) 0 8px,transparent 8px 16px);color:var(--soft);border:1px dashed var(--soft)}
+.months{position:relative;height:22px;margin-top:6px;font-size:12px;color:var(--soft)}
+.months span{position:absolute;transform:translateX(-50%)}
+.today{position:absolute;top:0;bottom:0;width:2px;background:var(--ink)}
+
+.layout{max-width:1180px;margin:28px auto 80px;padding:0 20px;display:grid;grid-template-columns:270px 1fr;gap:28px;align-items:start}
+aside{position:sticky;top:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;max-height:calc(100vh - 32px);overflow:auto}
+.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px}
+.filters button{font:500 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.toc{list-style:none;margin:0;padding:0;font-size:14px}
+.toc a{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:6px 8px;border-radius:var(--radius-sm);text-decoration:none}
+.toc a:hover{background:var(--bg)}
+.toc .grp{font-size:12px;color:var(--soft);padding:10px 8px 2px}
+.dot{width:12px;height:12px;border-radius:50%}
+.pct{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums}
+.total{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;font-size:13px;color:var(--soft)}
+.total b{color:var(--ink)}
+
+.part-title{font-family:var(--display);font-weight:700;font-size:26px;margin:8px 0 14px;letter-spacing:-.01em}
+.part-title small{display:block;font:400 15px var(--body);color:var(--soft);margin-top:2px}
+.part-title:not(:first-child){margin-top:40px}
+
+.cat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);margin-bottom:22px;overflow:hidden;scroll-margin-top:16px}
+.cat-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:20px 22px;border-bottom:1px solid var(--line)}
+.num{font-family:var(--display);font-weight:800;font-size:40px;line-height:1;width:52px;text-align:center}
+.num.word{font-size:15px}
+.cat h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0;letter-spacing:-.01em}
+.when{color:var(--soft);font-size:14px;margin-top:2px}
+.why{font-size:14px;margin-top:6px;max-width:70ch}
+.bar{width:120px;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;transition:width .3s}
+.cat-body{display:grid;grid-template-columns:1.7fr 1fr}
+.learn{padding:18px 22px;border-right:1px solid var(--line)}
+.side{padding:18px 22px;display:flex;flex-direction:column;gap:18px}
+h3{font-family:var(--display);font-weight:700;font-size:15px;margin:0 0 10px}
+.week{font-size:13px;font-weight:600;color:var(--soft);margin:16px 0 4px}
+.week:first-of-type{margin-top:0}
+ol.res{list-style:none;margin:0;padding:0}
+ol.res li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+ol.res li:first-child{border-top:0}
+ol.res input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--violet);cursor:pointer}
+.kind{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:1px 7px;margin-right:6px;vertical-align:1px}
+.kind.watch{color:var(--watch);background:color-mix(in srgb,var(--watch) 12%,transparent)}
+.kind.read{color:var(--read);background:color-mix(in srgb,var(--read) 12%,transparent)}
+.res-title{font-weight:600;text-decoration:none}
+.res-title:hover{text-decoration:underline}
+.hrs{font-size:13px;color:var(--soft);margin-left:6px;font-variant-numeric:tabular-nums}
+li.done .res-title{text-decoration:line-through;color:var(--soft)}
+.res-part{font-size:14.5px;margin-top:3px}
+.res-note{font-size:13px;color:var(--warn);margin-top:3px}
+.project{font-size:15px;margin:0}
+.need{font-size:14px;color:var(--soft);margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
+.cat.exam .cat-body{display:block;padding:18px 22px}
+.hidden{display:none!important}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  aside{position:static;max-height:none}
+  .cat-body{grid-template-columns:1fr}
+  .learn{border-right:0;border-bottom:1px solid var(--line)}
+  .seg{font-size:0}
+  .bar{width:70px}
+  .num{font-size:30px;width:38px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>From zero: the full learning route</h1>
+  <p class="lede">You start with fundamentals. Each phase lists the exact videos and the exact book chapters, in order, with hours. Everything is free. No certificates. Watch the lecture first, then read the chapters, then build the project. Tick each step when you finish it.</p>
+  <div class="rules">
+    <span>20 hours per week</span>
+    <span>Nov 2, 2026 to Jun 6, 2027</span>
+    <span>560 hours in total</span>
+    <span>1 LeetCode problem a day from Nov 30</span>
+  </div>
+</header>
+
+<div class="route" aria-label="Timeline of all phases">
+  <div class="route-track" id="track"></div>
+  <div class="months" id="months"></div>
+</div>
+
+<div class="layout">
+  <aside>
+    <input class="search" id="q" type="search" placeholder="Search a topic, book, or lecture" aria-label="Search">
+    <div class="filters" role="group" aria-label="Filter steps">
+      <button data-f="all" aria-pressed="true">All</button>
+      <button data-f="watch" aria-pressed="false">Watch</button>
+      <button data-f="read" aria-pressed="false">Read</button>
+      <button data-f="todo" aria-pressed="false">Not done</button>
+    </div>
+    <ul class="toc" id="toc"></ul>
+    <div class="total" id="total"></div>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<script>
+/* Step format: [kind, resource, url, exact part, hours, week label, note]  kind: W = watch, R = read */
+const W="watch",R="read";
+const L={
+ missing:"https://missing.csail.mit.edu/2020/",
+ progit:"https://git-scm.com/book/en/v2",
+ cs50:"https://www.freecodecamp.org/news/harvard-cs50-2026-free-computer-science-university-course/",
+ thinkpy:"https://allendowney.github.io/ThinkPython/",
+ mit6042:"https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/video_galleries/video-lectures/",
+ mcs:"https://dokk.org/library/mathematics_computer_science_2017",
+ eola:"https://www.3blue1brown.com/topics/linear-algebra",
+ axler:"https://linear.axler.net/",
+ watrousV:"https://www.ibm.com/quantum/blog/understanding-quantum-information-and-computation",
+ watrousB:"https://arxiv.org/abs/2507.11536",
+ qiskit:"https://quantum.cloud.ibm.com/learning/en/courses/use-a-qc-today",
+ mit6006:"https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/video_galleries/lecture-videos/",
+ ods:"https://opendatastructures.org/ods-python/",
+ neet:"https://neetcode.io",
+ n2t:"https://www.nand2tetris.org/course",
+ n2tV:"https://www.youtube.com/results?search_query=nand2tetris+%5BPart+1%5D+Unit+1.1",
+ mutlu:"https://www.youtube.com/OnurMutluLectures",
+ ostep:"https://pages.cs.wisc.edu/~remzi/OSTEP/",
+ kurose:"https://gaia.cs.umass.edu/kurose_ross/lectures.php",
+ pd:"https://book.systemsapproach.org/",
+ wire:"https://gaia.cs.umass.edu/kurose_ross/wireshark.php",
+ cmu445:"https://15445.courses.cs.cmu.edu/fall2024/schedule.html",
+ pg:"https://www.postgresql.org/docs/current/tutorial.html",
+ pda:"https://wesmckinney.com/book/",
+ nn3b:"https://www.3blue1brown.com/topics/neural-networks",
+ karpathy:"https://karpathy.ai/zero-to-hero.html",
+ nielsen:"http://neuralnetworksanddeeplearning.com/",
+ mit6858:"https://ocw.mit.edu/courses/6-858-computer-systems-security-fall-2014/",
+ anderson:"https://www.cl.cam.ac.uk/archive/rja14/book.html",
+ dock:"https://www.freecodecamp.org/news/course-on-docker-and-kubernetes/",
+ sre:"https://sre.google/sre-book/table-of-contents/",
+ sweg:"https://abseil.io/resources/swe-book/html/toc.html",
+ messer1:"https://www.professormesser.com/free-a-plus-training/220-1201/220-1201-video/220-1201-training-course/",
+ tw1:"https://developers.google.com/tech-writing/one",
+ tw2:"https://developers.google.com/tech-writing/two",
+ figma:"https://www.youtube.com/@Figma",
+ scrum:"https://scrumguides.org"
+};
+
+const data=[
+{group:"Every day"},
+{id:"daily",n:"Daily",t:"LeetCode and your OS course",color:"#2B3A67",hours:"1 hour a day, on top of the 20 hours",
+ why:"Interview skill for Google STEP. Start on Nov 30, after you finish the programming phase.",
+ steps:[
+ [W,"NeetCode free video solutions",L.neet,"Follow the NeetCode 150 list in order. Watch the video only after you try the problem for 25 minutes.",null,"From Nov 30"],
+ [R,"Operating Systems: Three Easy Pieces (OSTEP)",L.ostep,"Use it with your university OS course this semester. Ch 4 to 10 (processes, scheduling), ch 13 to 23 (memory), ch 26 to 32 (concurrency), ch 36 to 42 (persistence).",null,"Oct to Jan"]],
+ project:"One LeetCode problem every day. Push your solution to a GitHub repo called leetcode.",need:"Nothing. This runs next to every phase."},
+
+{group:"Part 1: Foundations",sub:"Learn these first. Every later phase needs them."},
+{id:"tools",n:"1",t:"Computer tools: shell and Git",color:"#4B5563",start:"2026-11-02",end:"2026-11-08",hours:"20 hours",
+ why:"You use the terminal and Git in every phase after this.",
+ steps:[
+ [W,"MIT Missing Semester (2020)",L.missing,"Lecture 1: Course Overview + The Shell. Lecture 2: Shell Tools and Scripting.",3,"Week 1"],
+ [W,"MIT Missing Semester (2020)",L.missing,"Lecture 5: Command-line Environment. Lecture 6: Version Control (Git). Lecture 7: Debugging and Profiling.",4,"Week 1"],
+ [R,"Pro Git, 2nd edition",L.progit,"Chapter 1: Getting Started. Chapter 2: Git Basics. Chapter 3: Git Branching. Chapter 6: GitHub.",8,"Week 1"]],
+ project:"Make a GitHub repo with one shell script that backs up a folder. Use 3 branches and merge them.",need:"Nothing."},
+
+{id:"prog",n:"2",t:"Programming: C and Python",color:"#D9822B",start:"2026-11-09",end:"2026-11-29",hours:"60 hours",
+ why:"You learn how to think in code. CS50 teaches C and memory. Think Python teaches Python well.",
+ steps:[
+ [W,"Harvard CS50 (full course on freeCodeCamp YouTube)",L.cs50,"Lecture 0: Scratch. Lecture 1: C. Lecture 2: Arrays.",6,"Week 2"],
+ [R,"Think Python, 3rd edition",L.thinkpy,"Ch 1: Programming as a way of thinking. Ch 2: Variables and Statements. Ch 3: Functions. Ch 4: Functions and Interfaces. Ch 5: Conditionals and Recursion.",12,"Week 2"],
+ [W,"Harvard CS50",L.cs50,"Lecture 3: Algorithms. Lecture 4: Memory. Lecture 5: Data Structures.",6,"Week 3"],
+ [R,"Think Python, 3rd edition",L.thinkpy,"Ch 6: Return Values. Ch 7: Iteration and Search. Ch 8: Strings and Regular Expressions. Ch 9: Lists. Ch 10: Dictionaries. Ch 11: Tuples.",14,"Week 3"],
+ [W,"Harvard CS50",L.cs50,"Lecture 6: Python. Lecture 7: SQL.",4,"Week 4"],
+ [R,"Think Python, 3rd edition",L.thinkpy,"Ch 13: Files and Databases. Ch 14: Classes and Functions. Ch 15: Classes and Methods. Ch 16: Classes and Objects. Ch 17: Inheritance.",10,"Week 4"]],
+ project:"A Python command-line study tracker. It saves sessions to a file and uses at least 2 classes.",need:"Phase 1."},
+
+{id:"math",n:"3",t:"Discrete math for CS",color:"#C93C8A",start:"2026-11-30",end:"2026-12-20",hours:"60 hours",
+ why:"Proofs, graphs, counting, and probability. Algorithms and quantum both need this.",
+ steps:[
+ [W,"MIT 6.042J, Fall 2010 (Tom Leighton)",L.mit6042,"Lecture 1: Introduction and Proofs. Lecture 2: Induction. Lecture 3: Strong Induction. Lecture 4: Number Theory I. Lecture 5: Number Theory II.",6,"Week 5"],
+ [R,"Mathematics for Computer Science (2017 edition)",L.mcs,"Ch 1: What is a Proof? Ch 2: The Well Ordering Principle. Ch 3: Logical Formulas. Ch 5: Induction. Ch 9: Number Theory.",14,"Week 5"],
+ [W,"MIT 6.042J, Fall 2010",L.mit6042,"Lecture 6: Graph Theory and Coloring. Lecture 10: Graph Theory III. Lecture 12: Sums. Lecture 13: Sums and Asymptotics. Lecture 14: Divide and Conquer Recurrences.",6,"Week 6"],
+ [R,"Mathematics for Computer Science (2017)",L.mcs,"Ch 12: Simple Graphs. Ch 14: Sums and Asymptotics. Ch 22: Recurrences.",14,"Week 6"],
+ [W,"MIT 6.042J, Fall 2010",L.mit6042,"Lecture 16: Counting Rules I. Lecture 17: Counting Rules II. Lecture 18: Probability Introduction. Lecture 19: Conditional Probability. Lecture 21: Random Variables. Lecture 22: Expectation I.",7,"Week 7"],
+ [R,"Mathematics for Computer Science (2017)",L.mcs,"Ch 15: Cardinality Rules. Ch 17: Events and Probability Spaces. Ch 18: Conditional Probability. Ch 19: Random Variables.",13,"Week 7"]],
+ project:"Write a toy RSA encryption in Python. Explain in the README why it works, with the number theory from Ch 9.",need:"Phase 2."},
+
+{id:"linalg",n:"4",t:"Linear algebra",color:"#2D7DD2",start:"2026-12-21",end:"2027-01-03",hours:"40 hours",
+ why:"Quantum computing is linear algebra over complex numbers. AI also needs it.",
+ steps:[
+ [W,"3Blue1Brown: Essence of Linear Algebra",L.eola,"All 16 chapters, from Vectors to Abstract vector spaces. Watch them in order.",4,"Week 8"],
+ [R,"Linear Algebra Done Right, 4th edition (Axler)",L.axler,"Ch 1: Vector Spaces (1A to 1C). Ch 2: Finite-Dimensional Vector Spaces (2A to 2C). Ch 3: Linear Maps, sections 3A to 3D only.",16,"Week 8"],
+ [R,"Linear Algebra Done Right, 4th edition",L.axler,"Ch 5: Eigenvalues and Eigenvectors, sections 5A to 5D. Ch 6: Inner Product Spaces, sections 6A and 6B. Ch 7: Operators on Inner Product Spaces, sections 7A, 7B, and 7D (unitary operators).",20,"Week 9"]],
+ project:"A Python notebook that does Gram-Schmidt and checks eigenvalues by hand against numpy.",need:"Phase 3. Your Applied Mathematics course helps here."},
+
+{id:"quantum",n:"5",t:"Quantum computing",color:"#5B4BDB",start:"2027-01-04",end:"2027-01-17",hours:"40 hours",
+ why:"Your focus area. The videos and the book are by the same author and match lesson for lesson.",
+ steps:[
+ [W,"Watrous: Understanding Quantum Information and Computation (Qiskit YouTube)",L.watrousV,"Lesson 1: Single Systems. Lesson 2: Multiple Systems. Lesson 3: Quantum Circuits. Lesson 4: Entanglement in Action.",5,"Week 10"],
+ [R,"Watrous, Understanding Quantum Information and Computation (free on arXiv)",L.watrousB,"Unit I, Lessons 1 to 4 (pages 1 to 124). Do the exercises on paper.",13,"Week 10"],
+ [W,"Watrous lectures (Qiskit YouTube)",L.watrousV,"Lesson 5: Quantum Query Algorithms. Lesson 6: Quantum Algorithmic Foundations. Lesson 7: Phase Estimation and Factoring. Lesson 8: Grover's Algorithm.",5,"Week 11"],
+ [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Unit II, Lessons 5 to 8 (pages 125 to 252).",12,"Week 11"]],
+ project:"In Qiskit: a Bell state, teleportation, Deutsch-Jozsa, and Grover on 3 qubits. Run one circuit on real IBM hardware. IBM's free 'Use a quantum computer today' course shows the setup.",need:"Phase 4. You need complex numbers, inner products, and unitary matrices."},
+
+{id:"dsa",n:"6",t:"Data structures and algorithms",color:"#C2413B",start:"2027-01-18",end:"2027-02-28",hours:"60 hours",split:[["2027-01-18","2027-01-24"],["2027-02-15","2027-02-28"]],
+ why:"The core of every Google interview. Week 12 comes before your exams. Weeks 13 and 14 come after.",
+ steps:[
+ [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 1: Algorithms and Computation. Lecture 2: Data Structures and Dynamic Arrays. Lecture 3: Sets and Sorting. Lecture 4: Hashing. Lecture 5: Linear Sorting.",6,"Week 12"],
+ [R,"Open Data Structures (pseudocode edition)",L.ods,"Ch 1: Introduction. Ch 2: Array-Based Lists. Ch 3: Linked Lists. Ch 5: Hash Tables. Ch 11: Sorting Algorithms.",14,"Week 12"],
+ [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 6: Binary Trees, Part 1. Lecture 7: Binary Trees, Part 2: AVL. Lecture 8: Binary Heaps. Lecture 9: Breadth-First Search. Lecture 10: Depth-First Search.",6,"Week 13 (after exams)"],
+ [R,"Open Data Structures",L.ods,"Ch 6: Binary Trees. Ch 10: Heaps. Ch 12: Graphs.",14,"Week 13 (after exams)"],
+ [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 11: Weighted Shortest Paths. Lecture 13: Dijkstra. Lectures 15 to 18: Dynamic Programming, Parts 1 to 4. Lecture 19: Complexity.",9,"Week 14 (after exams)"],
+ [R,"MIT 6.006 lecture notes",L.mit6006,"The notes for lectures 15 to 18 (dynamic programming). Solve Problem Set 6 and 7 questions on DP.",11,"Week 14 (after exams)"]],
+ project:"Write each data structure from scratch in Python with tests: dynamic array, hash table, binary heap, AVL tree, graph with BFS and DFS.",need:"Phases 2 and 3."},
+
+{id:"exams",n:"",t:"February exams",exam:true,start:"2027-01-25",end:"2027-02-14",hours:"No plan work",
+ why:"Grade 10 in all 9 courses. Keep 1 LeetCode problem a day. Move these dates when you know your exam schedule.",steps:[]},
+
+{id:"hw",n:"7",t:"Hardware and computer architecture",color:"#B23A8F",start:"2027-03-01",end:"2027-03-21",hours:"60 hours",
+ why:"How a computer works from logic gates up. This matters most for AMD.",
+ steps:[
+ [W,"Nand2Tetris Part 1 unit videos (YouTube)",L.n2tV,"Units 0 to 3: Introduction, Boolean Logic, Boolean Arithmetic and the ALU, Memory.",6,"Week 15",
+  "Link opens a YouTube search. Pick the videos named '[Part 1] Unit ...'."],
+ [R,"The Elements of Computing Systems (Nand2Tetris book)",L.n2t,"Chapters 1 to 3: Boolean Logic, Boolean Arithmetic, Memory. Each chapter is linked from its project page.",14,"Week 15",
+  "The free chapters on the site are from the 1st edition. The 2nd edition book is paid. You do not need it."],
+ [W,"Nand2Tetris Part 1 unit videos",L.n2tV,"Units 4 to 6: Machine Language, Computer Architecture, Assembler.",6,"Week 16"],
+ [R,"The Elements of Computing Systems",L.n2t,"Chapters 4 to 6: Machine Language, Computer Architecture, Assembler.",14,"Week 16"],
+ [W,"Onur Mutlu: Digital Design and Computer Architecture, ETH Zurich",L.mutlu,"The first 10 lectures of the Spring 2026 playlist. They go from transistors and logic gates to the ISA and the microarchitecture.",15,"Week 17",
+  "I could not open the ETH course page to check each lecture title. Use the Spring 2026 playlist on his channel."],
+ [R,"Nand2Tetris project specs",L.n2t,"Finish Projects 1 to 6. Build the CPU, then write the assembler in Python.",5,"Week 17"]],
+ project:"A working Hack computer in the simulator plus your own assembler. Explain in the README how one instruction runs.",need:"Phases 2 and 3."},
+
+{group:"Part 2: The IT categories",sub:"Each phase builds on Part 1."},
+{id:"net",n:"8",t:"Networking",color:"#0E8F7E",start:"2027-03-22",end:"2027-04-04",hours:"40 hours",
+ why:"How data moves between computers. Every cloud, security, and backend job needs it.",
+ steps:[
+ [W,"Kurose and Ross: online lectures (authors' site)",L.kurose,"Chapter 1: Computer Networks and the Internet. Chapter 2: The Application Layer.",6,"Week 18",
+  "The authors say some sections of chapters 5 and 6 are still missing."],
+ [R,"Computer Networks: A Systems Approach (Peterson and Davie, free)",L.pd,"Ch 1: Foundation. Ch 2: Direct Links. Ch 3: Internetworking.",14,"Week 18"],
+ [W,"Kurose and Ross: online lectures",L.kurose,"Chapter 3: The Transport Layer. Chapter 4: The Network Layer: the Data Plane.",6,"Week 19"],
+ [R,"Computer Networks: A Systems Approach",L.pd,"Ch 5: End-to-End Protocols. Ch 6: Congestion Control.",10,"Week 19"],
+ [R,"Kurose and Ross Wireshark labs",L.wire,"Labs: Getting Started, HTTP, DNS, TCP. Follow the PDF and use the trace files.",4,"Week 19"]],
+ project:"A TCP chat server and client in Python sockets, plus a Wireshark capture that shows the TCP handshake.",need:"Phases 1 and 2."},
+
+{id:"data",n:"9",t:"Databases and data",color:"#7A5C3E",start:"2027-04-05",end:"2027-04-18",hours:"40 hours",
+ why:"SQL and data analysis. Every backend and data job uses them.",
+ steps:[
+ [W,"CMU 15-445 Database Systems, Fall 2024 (YouTube)",L.cmu445,"#01 Relational Model and Algebra. #02 Modern SQL. #03 Database Storage I. #07 Hash Tables. #08 Indexes and Filters I. #16 Concurrency Control Theory.",8,"Week 20"],
+ [R,"PostgreSQL documentation, Part I: Tutorial",L.pg,"Ch 1: Getting Started. Ch 2: The SQL Language (2.1 to 2.9). Ch 3: Advanced Features (3.2 Views to 3.5 Window Functions).",12,"Week 20"],
+ [R,"Python for Data Analysis, 3rd edition (McKinney, free)",L.pda,"Ch 4: NumPy Basics. Ch 5: Getting Started with pandas. Ch 7: Data Cleaning and Preparation. Ch 8: Data Wrangling. Ch 9: Plotting and Visualization. Ch 10: Data Aggregation and Group Operations.",20,"Week 21"]],
+ project:"Load a public dataset into PostgreSQL. Answer 5 questions with SQL. Then analyze it with pandas and charts.",need:"Phase 2."},
+
+{id:"ai",n:"10",t:"AI and machine learning",color:"#2B7A78",start:"2027-04-19",end:"2027-05-02",hours:"40 hours",
+ why:"How neural networks learn, from scratch.",
+ steps:[
+ [W,"3Blue1Brown: Neural Networks",L.nn3b,"Chapter 1: What is a neural network. Chapter 2: Gradient descent. Chapter 3: Backpropagation. Chapter 4: Backpropagation calculus.",2,"Week 22"],
+ [R,"Neural Networks and Deep Learning (Nielsen, free)",L.nielsen,"Ch 1: Using neural nets to recognize handwritten digits. Ch 2: How the backpropagation algorithm works. Ch 3: Improving the way neural networks learn.",16,"Week 22"],
+ [W,"Karpathy: Neural Networks, Zero to Hero",L.karpathy,"Video 1: building micrograd (2h25). Video 2: building makemore (1h57). Video 3: makemore Part 2, MLP (1h15).",6,"Week 23"],
+ [R,"Code along",L.karpathy,"Rebuild micrograd and makemore yourself while you watch. Pause often.",16,"Week 23"]],
+ project:"micrograd from scratch, and a digit classifier from Nielsen Ch 1 written by you.",need:"Phases 2 and 4. Your Calculus 1 course covers the derivatives."},
+
+{id:"sec",n:"11",t:"Cybersecurity",color:"#8A3FC2",start:"2027-05-03",end:"2027-05-16",hours:"40 hours",
+ why:"How systems break and how to defend them.",
+ steps:[
+ [W,"MIT 6.858 Computer Systems Security, Fall 2014",L.mit6858,"Lecture 1: Introduction, Threat Models. Lecture 2: Control Hijacking Attacks. Lecture 3: Buffer Overflow Exploits and Defenses. Lecture 4: Privilege Separation.",6,"Week 24"],
+ [R,"Security Engineering, 2nd edition (Anderson, free)",L.anderson,"Ch 1: What is Security Engineering? Ch 2: Usability and Psychology. Ch 3: Protocols. Ch 4: Access Control.",14,"Week 24"],
+ [W,"MIT 6.858, Fall 2014",L.mit6858,"Lecture 8: Web Security Model. Lecture 9: Securing Web Applications. Lecture 12: Network Security. Lecture 14: SSL and HTTPS. Lecture 17: User Authentication.",7,"Week 25"],
+ [R,"Security Engineering, 2nd edition",L.anderson,"Ch 5: Cryptography. Ch 21: Network Attack and Defence.",13,"Week 25"]],
+ project:"In your own VM: show a buffer overflow in a small C program, then fix it. Write a threat model for your study tracker app.",need:"Phases 2, 7, and 8."},
+
+{id:"cloud",n:"12",t:"Cloud and DevOps",color:"#5E8C31",start:"2027-05-17",end:"2027-05-23",hours:"20 hours",
+ why:"How real systems run in production.",
+ steps:[
+ [W,"freeCodeCamp: Docker and Kubernetes course",L.dock,"The full 4-hour course.",4,"Week 26"],
+ [R,"Site Reliability Engineering (Google, free)",L.sre,"Ch 1: Introduction. Ch 3: Embracing Risk. Ch 4: Service Level Objectives. Ch 6: Monitoring Distributed Systems. Ch 15: Postmortem Culture.",10,"Week 26"],
+ [R,"Software Engineering at Google (free)",L.sweg,"Ch 23: Continuous Integration. Ch 24: Continuous Delivery.",6,"Week 26"]],
+ project:"Put your study tracker in Docker. Add a GitHub Actions pipeline that runs tests on every push.",need:"Phases 1, 2, and 8."},
+
+{id:"qa",n:"13",t:"Quality and IT support",color:"#B8A10C",start:"2027-05-24",end:"2027-05-30",hours:"20 hours",
+ why:"Testing your code and fixing machines.",
+ steps:[
+ [W,"MIT Missing Semester (2020)",L.missing,"Lecture 8: Metaprogramming (build systems, testing, CI).",1,"Week 27"],
+ [R,"Software Engineering at Google",L.sweg,"Ch 11: Testing Overview. Ch 12: Unit Testing. Ch 13: Test Doubles. Ch 14: Larger Testing.",10,"Week 27"],
+ [W,"Professor Messer: CompTIA A+ Core 1 videos (free)",L.messer1,"Pick the sections on hardware, networking basics, and troubleshooting. Skip exam tips.",9,"Week 27",
+  "Videos are free. His notes and practice exams are paid. Skip them."]],
+ project:"A pytest suite for your study tracker that runs in your pipeline. A Linux guide for 5 common fixes.",need:"Phases 2 and 12."},
+
+{id:"design",n:"14",t:"Design and management",color:"#E0457B",start:"2027-05-31",end:"2027-06-06",hours:"20 hours",
+ why:"Explaining your work and working in a team.",
+ steps:[
+ [R,"Google: Technical Writing One",L.tw1,"All units. Self-paced.",3,"Week 28"],
+ [R,"Google: Technical Writing Two",L.tw2,"All units. Self-paced.",3,"Week 28"],
+ [W,"Figma official YouTube channel",L.figma,"The beginner series for Figma Design.",4,"Week 28",
+  "I did not check this playlist. Use the newest beginner series on Figma's own channel."],
+ [R,"The Scrum Guide (2020)",L.scrum,"The full guide. It is short.",1,"Week 28"],
+ [R,"Software Engineering at Google",L.sweg,"Ch 2: How to Work Well on Teams. Ch 9: Code Review. Ch 10: Documentation.",9,"Week 28"]],
+ project:"A Figma mockup of your study tracker, a one-page design doc, and a two-week sprint plan.",need:"Phase 2."},
+
+{id:"later",n:"+",t:"Later, after Jun 6",color:"#4B5563",hours:"Optional",
+ why:"More depth when the core plan is done.",
+ steps:[
+ [W,"Watrous lectures, Units III and IV",L.watrousV,"Lessons 9 to 16: density matrices, channels, measurements, error correction.",null,"Later"],
+ [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Units III and IV (pages 253 to 495).",null,"Later"],
+ [R,"Dive into Deep Learning (free)",
+ "https://d2l.ai/","Ch 2: Preliminaries to Ch 7: Convolutional Neural Networks.",null,"Later"],
+ [R,"Nand2Tetris Part 2",L.n2t,"Projects 7 to 12: VM, compiler, operating system.",null,"Later"]],
+ project:"Enterprise systems (SAP, Salesforce, ServiceNow) have no verified free video and book path. Learn them only if a job asks for them.",need:"Parts 1 and 2."}
+];
+
+const KEY="route-done-v2";
+let done={};try{done=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+const fmt=d=>new Date(d+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const cats=data.filter(c=>c.id);
+
+/* Route bar */
+const t0=new Date("2026-11-02"),t1=new Date("2027-06-07"),span=t1-t0;
+const track=document.getElementById("track"),months=document.getElementById("months");
+cats.filter(c=>c.start).forEach(c=>{
+  (c.split||[[c.start,c.end]]).forEach(([s,e])=>{
+    const a=document.createElement("a");a.href="#"+c.id;a.className="seg"+(c.exam?" exam":"");
+    const l=(new Date(s)-t0)/span*100,w=(new Date(e)-new Date(s)+864e5)/span*100;
+    a.style.left=l+"%";a.style.width="calc("+w+"% - 3px)";if(!c.exam)a.style.background=c.color;
+    a.textContent=c.exam?"Exams":c.n;a.title=c.t+": "+fmt(s)+" to "+fmt(e);track.appendChild(a);
+  });
+});
+["2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01"].forEach(m=>{
+  const s=document.createElement("span");s.style.left=((new Date(m)-t0)/span*100)+"%";
+  s.textContent=new Date(m).toLocaleDateString("en-GB",{month:"short"});months.appendChild(s);
+});
+const now=new Date();if(now>t0&&now<t1){const d=document.createElement("div");d.className="today";d.title="Today";d.style.left=((now-t0)/span*100)+"%";track.appendChild(d)}
+
+/* Sections */
+const main=document.getElementById("main"),toc=document.getElementById("toc");
+data.forEach(c=>{
+  if(c.group){
+    main.insertAdjacentHTML("beforeend",`<h2 class="part-title" data-group>${c.group}${c.sub?`<small>${c.sub}</small>`:""}</h2>`);
+    toc.insertAdjacentHTML("beforeend",`<li class="grp">${c.group}</li>`);return;
+  }
+  toc.insertAdjacentHTML("beforeend",`<li><a href="#${c.id}"><span class="dot" style="background:${c.color||"transparent"};${c.exam?"border:1px dashed var(--soft)":""}"></span><span>${/^\d+$/.test(c.n||"")?c.n+". ":""}${c.t}</span><span class="pct" id="p-${c.id}"></span></a></li>`);
+  const dates=c.start?`${fmt(c.start)} to ${fmt(c.end)}, ${c.hours}`:c.hours;
+  let lastWeek=null;
+  const steps=c.steps.map((s,i)=>{
+    const [kind,title,url,part,hrs,week,note]=s,k=c.id+"-"+i;
+    let wk="";if(week&&week!==lastWeek){wk=`</ol><div class="week">${week}</div><ol class="res">`;lastWeek=week;}
+    return `${wk}<li data-kind="${kind}" data-k="${k}" class="${done[k]?"done":""}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs}h</span>`:""}<div class="res-part">${esc(part)}</div>${note?`<div class="res-note">${esc(note)}</div>`:""}</div></li>`;
+  }).join("");
+  main.insertAdjacentHTML("beforeend",`<section class="cat${c.exam?" exam":""}" id="${c.id}">
+    <div class="cat-head"><div class="num${c.n&&c.n.length>2?" word":""}" style="color:${c.color||"var(--soft)"}">${c.n}</div><div><h2>${c.t}</h2><div class="when">${dates}</div>${c.exam?"":`<div class="why">${c.why}</div>`}</div>${c.steps.length?`<div class="bar" title="Progress"><i id="b-${c.id}" style="background:${c.color}"></i></div>`:""}</div>
+    <div class="cat-body">${c.exam?`<p class="project">${c.why}</p>`:`
+      <div class="learn"><h3>Watch and read, in this order</h3><ol class="res">${steps}</ol></div>
+      <div class="side"><div><h3>Then build</h3><p class="project">${c.project}</p></div><div><h3>You need first</h3><p class="need">${c.need}</p></div></div>`}
+    </div></section>`);
+});
+document.querySelectorAll("ol.res").forEach(o=>{if(!o.children.length)o.remove()});
+
+function progress(){
+  let all=0,fin=0;
+  cats.forEach(c=>{if(!c.steps.length)return;const n=c.steps.length,d=c.steps.filter((_,i)=>done[c.id+"-"+i]).length;all+=n;fin+=d;
+    document.getElementById("p-"+c.id).textContent=d+"/"+n;document.getElementById("b-"+c.id).style.width=(d/n*100)+"%";});
+  document.getElementById("total").innerHTML=`<b>${fin} of ${all}</b> steps done`;
+}
+main.addEventListener("change",e=>{
+  const li=e.target.closest("li[data-k]");if(!li)return;
+  done[li.dataset.k]=e.target.checked;li.classList.toggle("done",e.target.checked);save();progress();apply();
+});
+
+let filter="all";
+function apply(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  document.querySelectorAll(".cat").forEach(s=>{
+    let any=false;const head=s.querySelector(".cat-head").textContent.toLowerCase();
+    s.querySelectorAll("li[data-k]").forEach(li=>{
+      const okF=filter==="all"||(filter==="todo"?!li.classList.contains("done"):li.dataset.kind===filter);
+      const okQ=!q||li.textContent.toLowerCase().includes(q)||head.includes(q);
+      li.classList.toggle("hidden",!(okF&&okQ));if(okF&&okQ)any=true;
+    });
+    s.querySelectorAll(".week").forEach(w=>{const ol=w.nextElementSibling;w.classList.toggle("hidden",!ol||!ol.querySelector("li:not(.hidden)"))});
+    s.classList.toggle("hidden",s.classList.contains("exam")?(!!q||filter!=="all"):!any);
+  });
+  document.querySelectorAll("[data-group]").forEach(g=>g.classList.toggle("hidden",!!q||filter!=="all"));
+}
+document.getElementById("q").addEventListener("input",apply);
+document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>{
+  filter=b.dataset.f;document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b));apply();
+}));
+progress();
+</script>
+</body>
+</html>
