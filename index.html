@@ -166,6 +166,58 @@ li.done .res-title{text-decoration:line-through;color:var(--soft)}
   .stats{margin-left:0}
   .brand{font-size:30px}
 }
+
+/* ===== Aesthetic pass ===== */
+:root{--glass:rgba(255,255,255,.72);--glass-b:rgba(255,255,255,.9);--sh:0 10px 30px -12px rgba(60,50,120,.22),0 2px 6px rgba(60,50,120,.05);--r:26px}
+body{background:#F4F1FB;background-image:radial-gradient(900px 600px at 8% -5%,#E3DAFF 0%,transparent 60%),radial-gradient(800px 600px at 100% 0%,#FFE1D6 0%,transparent 55%),radial-gradient(900px 700px at 50% 110%,#D6F2EA 0%,transparent 60%);background-attachment:fixed}
+.wrap{max-width:1120px}
+.top{padding:34px 0 6px}
+.brand{font-size:44px;font-weight:800;letter-spacing:-.045em;background:linear-gradient(100deg,#5E5CE6,#BF5AF2 55%,#FF6B8B);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat{background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-b);box-shadow:var(--sh);padding:7px 14px}
+#syncst{font-size:12.5px;color:#8E8AA6}
+.tabs{background:rgba(255,255,255,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-b);border-radius:999px;padding:4px;box-shadow:var(--sh);margin:18px 0 24px}
+.tabs button{border-radius:999px;padding:8px 22px;color:#6B6885}
+.tabs button[aria-selected="true"]{background:#fff;color:#1C1C1E;box-shadow:0 2px 8px rgba(80,60,160,.18)}
+.card,.day,.cat,aside,.rules-list{background:var(--glass);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--glass-b);box-shadow:var(--sh);border-radius:var(--r)}
+.calwrap{gap:26px}
+.calhead h2{font-size:22px}
+.calhead button{background:rgba(120,110,200,.1);border-radius:999px;padding:5px 14px}
+.dow,.grid{gap:6px}
+.cell{border-radius:16px;aspect-ratio:1/1.05;transition:transform .12s,box-shadow .12s}
+.cell:hover:not(.empty){transform:translateY(-1px)}
+.cell.plan{background:color-mix(in srgb,var(--c) 17%,#fff);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 14%,transparent)}
+.cell.optional{background:color-mix(in srgb,var(--c) 9%,#fff)}
+.cell.sel{background:linear-gradient(145deg,color-mix(in srgb,var(--c) 78%,#fff),var(--c));box-shadow:0 8px 18px -6px var(--c)}
+.cell.today .n{background:#FF3B30;box-shadow:0 4px 10px -2px rgba(255,59,48,.5)}
+.legend{gap:8px 10px;margin:16px 4px 2px}
+.legend span{background:rgba(255,255,255,.7);border-radius:999px;padding:3px 10px 3px 8px;font-size:11.5px}
+.day{padding:0;overflow:hidden}
+.day>*{margin-left:28px;margin-right:28px}
+.dayhero{margin:0!important;padding:30px 28px 24px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 26%,#fff) 0%,color-mix(in srgb,var(--c) 6%,#fff) 70%)}
+.dayhero h2{font-size:34px;letter-spacing:-.035em;margin-top:4px}
+.dayhero .sub{color:#55536B}
+.catchip{background:rgba(255,255,255,.75);color:color-mix(in srgb,var(--c) 85%,#000);border:1px solid rgba(255,255,255,.9)}
+.sec{margin-top:26px}
+.sec:last-of-type{margin-bottom:28px}
+.sec h3{letter-spacing:.08em;font-size:11.5px;color:#8E8AA6}
+.group{background:transparent;padding:0}
+#tasks .task,#late .task{background:#fff;border:0;border-radius:18px;padding:14px 16px;margin-bottom:10px;box-shadow:0 4px 14px -8px rgba(60,50,120,.25);position:relative;overflow:hidden}
+#tasks .task::before,#late .task::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
+.task:first-child{border-top:0}
+.task input{margin-left:4px}
+.tdot{display:none}
+.group:has(.lcrow){background:#fff;border-radius:18px;box-shadow:0 4px 14px -8px rgba(60,50,120,.25)}
+textarea#rep{background:#fff;border-radius:18px;box-shadow:0 4px 14px -8px rgba(60,50,120,.25);padding:16px}
+.btn{background:linear-gradient(135deg,#5E5CE6,#8E5CF0);color:#fff;box-shadow:0 8px 18px -8px #5E5CE6}
+details.more{background:#fff;border-radius:18px;box-shadow:0 4px 14px -8px rgba(60,50,120,.25)}
+.drop{background:rgba(255,255,255,.6);border-radius:18px}
+.cat{box-shadow:var(--sh)}
+.cat-head{border-bottom:1px solid rgba(120,110,200,.12)}
+.num{font-size:30px}
+.layout{gap:28px}
+.search,.filters button{background:rgba(120,110,200,.1)}
+.rl{border-color:rgba(120,110,200,.12)}
+@media (max-width:860px){.brand{font-size:36px}.day>*{margin-left:20px;margin-right:20px}.dayhero{padding:24px 20px 20px}.dayhero h2{font-size:28px}}
 </style>
 </head>
 <body>
@@ -196,7 +248,7 @@ li.done .res-title{text-decoration:line-through;color:var(--soft)}
       <div class="legend" id="legend"></div>
     </div>
     <div class="day" id="day">
-      <div class="catchip" id="dcat"></div><h2 id="dh"></h2><p class="sub" id="ds"></p>
+      <div class="dayhero" id="dayhero"><div class="catchip" id="dcat"></div><h2 id="dh"></h2><p class="sub" id="ds"></p></div>
       <div class="sec"><h3>Learning today</h3><div class="group" id="tasks"></div></div>
       <div class="sec hidden" id="latesec"><h3>Late from earlier days</h3><div id="late" class="late-list group"></div></div>
       <div class="sec"><h3>Daily rules</h3>
@@ -857,7 +909,7 @@ function renderDay(force){
   else if(ph&&ph.exam)sub="Exam block. No plan work. Do your LeetCode problem and your report.";
   else if(ph){const n=Math.round((sel-ph.s)/864e5)+1,t=Math.round((ph.e-ph.s)/864e5)+1;sub=`Phase ${ph.cat.n} of 45: ${ph.cat.t}. Day ${n} of ${t}.`}
   else sub="No phase today. Catch up on late steps or rest.";
-  document.getElementById("ds").textContent=sub;const dc=document.getElementById("dcat");if(ph){dc.hidden=false;dc.style.setProperty("--c",ph.cat.color);dc.textContent=CATS[ph.cat.cat].n}else dc.hidden=true;
+  document.getElementById("ds").textContent=sub;document.getElementById("dayhero").style.setProperty("--c",ph?ph.cat.color:"#8E8E93");const dc=document.getElementById("dcat");if(ph){dc.hidden=false;dc.style.setProperty("--c",ph.cat.color);dc.textContent=CATS[ph.cat.cat].n}else dc.hidden=true;
   const todayTasks=tasks.filter(t=>sel>=t.s&&sel<=t.e);
   document.getElementById("tasks").innerHTML=todayTasks.length?todayTasks.map(t=>taskRow(t,false)).join(""):'<p class="empty-note">Nothing planned for this day.</p>';
   const ls=document.getElementById("latesec"),late=lateTasks().filter(t=>dkey(sel)===dkey(TODAY));
