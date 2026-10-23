@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A free, from-zero IT learning route with a calendar, tick boxes and daily reports.">
 <title>LOCK IN</title>
 <style>
 :root{
@@ -218,18 +219,53 @@ details.more{background:#fff;border-radius:18px;box-shadow:0 4px 14px -8px rgba(
 .search,.filters button{background:rgba(120,110,200,.1)}
 .rl{border-color:rgba(120,110,200,.12)}
 @media (max-width:860px){.brand{font-size:36px}.day>*{margin-left:20px;margin-right:20px}.dayhero{padding:24px 20px 20px}.dayhero h2{font-size:28px}}
+
+/* ===== Pass 3: bento header, rounded type, phase colors ===== */
+:root{--display:ui-rounded,"SF Pro Rounded","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+.top{display:block;padding:40px 0 4px}
+.eyebrow{font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#8E8AA6;margin-bottom:6px}
+.brand{font-family:var(--display);font-size:64px;line-height:1;letter-spacing:-.05em;font-weight:800;display:block}
+#syncst{margin:10px 0 22px;font-size:13px}
+.bento{display:grid;grid-template-columns:1.7fr 1fr 1fr 1.25fr;gap:14px}
+.tile{background:var(--glass);backdrop-filter:blur(22px) saturate(1.4);-webkit-backdrop-filter:blur(22px) saturate(1.4);border:1px solid var(--glass-b);box-shadow:var(--sh);border-radius:24px;padding:18px 20px;display:flex;flex-direction:column;justify-content:space-between;min-height:132px}
+.tl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8E8AA6}
+.big{font-family:var(--display);font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1.05;display:flex;align-items:baseline;gap:6px}
+.big small{font-size:14px;font-weight:600;color:#8E8AA6;letter-spacing:0}
+.ts{font-size:13.5px;color:#6B6885}
+.tile.hero{background:linear-gradient(135deg,#5E5CE6 0%,#A855F7 55%,#FF6B8B 115%);color:#fff;border:0;box-shadow:0 18px 36px -16px rgba(94,92,230,.7)}
+.tile.hero .tl,.tile.hero .ts{color:rgba(255,255,255,.85)}
+.pbar{height:6px;border-radius:99px;background:rgba(255,255,255,.28);overflow:hidden;margin-top:8px}
+.pbar i{display:block;height:100%;width:0;background:#fff;border-radius:99px;transition:width .4s}
+.ringtile{flex-direction:row;align-items:center;justify-content:flex-start;gap:16px}
+.ring{--p:0;width:78px;height:78px;border-radius:50%;background:conic-gradient(#34C759 calc(var(--p)*1%),rgba(120,110,200,.16) 0);display:grid;place-items:center;flex:none;position:relative}
+.ring::before{content:"";position:absolute;inset:9px;background:#fff;border-radius:50%}
+.ring span{position:relative;font-family:var(--display);font-weight:800;font-size:20px}
+.btn.ghost{background:#fff;color:#5E5CE6;box-shadow:0 4px 14px -8px rgba(60,50,120,.3)}
+h2,.cat h2,.calhead h2,.dayhero h2,.part-title,.num{font-family:var(--display)}
+.cat{border-top:0}
+.cat-head{background:linear-gradient(120deg,color-mix(in srgb,var(--c) 20%,#fff),rgba(255,255,255,0) 75%)}
+.cat .num{width:56px;height:56px;line-height:56px;border-radius:18px;background:var(--c);color:#fff!important;font-size:26px;display:grid;place-items:center;box-shadow:0 10px 20px -10px var(--c)}
+.cat .num.word{font-size:12px}
+.bar i{background:var(--c)!important}
+.bar{height:8px}
+.toc .dot{box-shadow:0 0 0 3px color-mix(in srgb,currentColor 0%,transparent)}
+input[type=checkbox]:checked{animation:pop .22s ease}
+@keyframes pop{50%{transform:scale(1.22)}}
+@media (max-width:860px){.bento{grid-template-columns:1fr 1fr}.tile.hero{grid-column:1/-1}.ringtile{grid-column:1/-1}.brand{font-size:50px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top">
+  <div class="eyebrow">Google STEP &middot; CERN openlab &middot; AMD &middot; Summer 2027</div>
   <div class="brand">LOCK IN</div>
-  <div class="stats">
-    <span class="stat">LeetCode streak <b id="streakn">0</b></span>
-    <span class="stat">Report streak <b id="repn">0</b></span>
-    <span class="stat"><b id="totalmini">0</b> steps done</span>
+  <p id="syncst">Saved on this device.</p>
+  <div class="bento">
+    <div class="tile hero"><div class="tl">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub"></div><div class="pbar"><i id="pfill"></i></div></div>
+    <div class="tile"><div class="tl">LeetCode streak</div><div class="big"><b id="streakn">0</b><small>days</small></div></div>
+    <div class="tile"><div class="tl">Report streak</div><div class="big"><b id="repn">0</b><small>days</small></div></div>
+    <div class="tile ringtile"><div class="ring" id="ring"><span><b id="totalmini">0</b></span></div><div><div class="tl">Steps done</div><div class="ts" id="totalof"></div></div></div>
   </div>
-  <p id="syncst">Saved in this browser only.</p>
 </header>
 <nav class="tabs" role="tablist" aria-label="Views">
   <button role="tab" id="t-cal" aria-selected="true" data-v="cal">Calendar</button>
@@ -257,10 +293,7 @@ details.more{background:#fff;border-radius:18px;box-shadow:0 4px 14px -8px rgba(
         <div style="height:10px"></div>
         <textarea id="rep" rows="4" placeholder="Today I did: ...&#10;I finished: ...&#10;Tomorrow I do: ..." aria-label="Report for this day"></textarea>
         <div class="rn" id="repwarn"></div>
-        <div class="sec" id="filesec" hidden><h3>Files for this day</h3>
-          <label class="drop" id="drop"><input type="file" id="fin" multiple accept=".pdf,.txt,.md,.csv,.json,image/*" hidden><span>Drop a PDF, text file or image here, or tap to choose</span></label>
-          <div class="rn" id="fmsg"></div><div id="flist"></div></div>
-        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="repdl" type="button">Download all reports</button></div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="repdl" type="button">Download all reports</button><button class="btn ghost" id="bkp" type="button">Backup progress</button><label class="btn ghost" style="cursor:pointer">Restore backup<input type="file" id="rst" accept=".json,application/json" hidden></label></div>
         <div class="rn" id="dlmsg"></div>
       </div>
       <details class="more" id="projbox"><summary>Project and what you need first</summary><div id="proj"></div></details>
@@ -841,7 +874,7 @@ data.forEach(c=>{
     let wk="";if(week&&week!==lastWeek){wk=`</ol><div class="week">${week}</div><ol class="res">`;lastWeek=week;}
     return `${wk}<li data-kind="${kind}" data-k="${k}" class="${done[k]?"done":""}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs}h</span>`:""}<div class="res-part">${esc(part)}</div>${note?`<div class="res-note">${esc(note)}</div>`:""}</div></li>`;
   }).join("");
-  main.insertAdjacentHTML("beforeend",`<section class="cat${c.exam?" exam":""}" id="${c.id}">
+  main.insertAdjacentHTML("beforeend",`<section class="cat${c.exam?" exam":""}" id="${c.id}" style="--c:${c.color||"#8E8E93"}">
     <div class="cat-head"><div class="num${c.n&&c.n.length>2?" word":""}" style="color:${c.color||"var(--soft)"}">${c.n}</div><div><h2>${c.t}</h2><div class="when">${dates}</div>${c.exam?"":`<div class="why">${c.why}</div>`}</div>${c.steps.length?`<div class="bar" title="Progress"><i id="b-${c.id}" style="background:${c.color}"></i></div>`:""}</div>
     <div class="cat-body">${c.exam?`<p class="project">${c.why}</p>`:`
       <div class="learn"><h3>Watch and read, in this order</h3><ol class="res">${steps}</ol></div>
@@ -957,10 +990,24 @@ document.getElementById("repdl").addEventListener("click",async()=>{
   const m=document.getElementById("dlmsg");m.textContent="";
   const txt=Object.keys(reps).filter(k=>reps[k].trim()).sort().map(k=>k+"\n"+reps[k].trim()+"\n").join("\n");
   let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){}
-  if(!dl){m.textContent="Downloads do not work in this view. Open the page from your claude.ai Artifacts and try again.";return}
-  try{await dl.save({filename:"lock-in-reports.txt",data:txt||"No reports yet."});m.textContent="Saved."}
+  try{await saveFile("lock-in-reports.txt",txt||"No reports yet.","text/plain",dl);m.textContent="Saved."}
   catch(e){m.textContent=e&&e.code==="declined"?"You said no. Tap again to save.":"Could not save: "+((e&&(e.code||e.message))||"unknown error")}});
 
+async function saveFile(name,data,mime,dl){
+  if(dl){await dl.save({filename:name,data});return}
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+document.getElementById("bkp").addEventListener("click",async()=>{
+  const m=document.getElementById("dlmsg");m.textContent="";
+  let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){}
+  try{await saveFile("lock-in-backup.json",JSON.stringify({v:1,done,days,reps}),"application/json",dl);m.textContent="Backup saved. Keep this file safe."}
+  catch(e){m.textContent="Could not save: "+((e&&(e.code||e.message))||"unknown error")}});
+document.getElementById("rst").addEventListener("change",async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;const m=document.getElementById("dlmsg");
+  try{const j=JSON.parse(await f.text());
+    Object.keys(j.done||{}).forEach(k=>{if(j.done[k])done[k]=true});Object.keys(j.days||{}).forEach(k=>{if(j.days[k])days[k]=true});
+    Object.keys(j.reps||{}).forEach(k=>{if(j.reps[k]&&!(reps[k]||"").trim())reps[k]=j.reps[k]});
+    save();saveDays();saveReps();refreshAll();m.textContent="Progress restored."}
+  catch(err){m.textContent="That file is not a LOCK IN backup."}});
 function fmtSize(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB"}
 function renderFiles(){
   const box=document.getElementById("filesec");if(!box)return;
@@ -970,6 +1017,7 @@ function renderFiles(){
 }
 (function(){
   const drop=document.getElementById("drop"),fin=document.getElementById("fin"),msg=document.getElementById("fmsg");
+  if(!drop||!fin||!msg)return;
   const TYPES={pdf:"application/pdf",txt:"text/plain",md:"text/markdown",csv:"text/csv",json:"application/json"};
   async function add(list){
     if(!filesHook)return;msg.textContent="";const day=dkey(sel);
@@ -999,6 +1047,12 @@ function progress(){
     const p=document.getElementById("p-"+c.id),b=document.getElementById("b-"+c.id);if(p)p.textContent=d+"/"+n;if(b)b.style.width=(d/n*100)+"%";});
   document.getElementById("total").innerHTML=`<b>${fin} of ${all}</b> steps done`;
   document.getElementById("totalmini").textContent=fin;
+  document.getElementById("ring").style.setProperty("--p",all?(fin/all*100):0);document.getElementById("totalof").textContent="of "+all+" steps";
+  (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill");
+    const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1;
+    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"});pf.style.width="0%"}
+    else if(TODAY>PLAN_END){pb.textContent="Plan done";ps.textContent="Keep going with the optional phases.";pf.style.width="100%"}
+    else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY);pb.textContent="Week "+Math.ceil(d/7);ps.textContent=ph?(ph.exam?"Exam block":"Phase "+ph.cat.n+": "+ph.cat.t):"Catch-up day";pf.style.width=Math.min(100,d/total*100)+"%"}})();
 }
 let filter="all";
 function apply(){
