@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maria's Learning Route</title>
+<title>LOCK IN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -91,6 +91,34 @@ li.done .res-title{text-decoration:line-through;color:var(--soft)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font-size:13px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
 .cat.exam .cat-body{display:block;padding:18px 22px}
+.cat.exam ul{margin:10px 0 0;padding-left:20px}
+
+h1{font-size:clamp(52px,11vw,120px)!important;line-height:.95!important;letter-spacing:-.035em!important;margin:0 0 22px!important}
+.lockin{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.rule{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px 20px;font:800 clamp(20px,2.4vw,28px)/1.05 var(--display);letter-spacing:-.01em;text-transform:uppercase}
+.rule-n{font:600 12px/1 var(--body);letter-spacing:.08em;color:var(--soft);margin-bottom:10px;text-transform:uppercase}
+.rule.last{background:var(--ink);color:var(--panel)}
+.rule.last .rule-n{color:var(--panel);opacity:.7}
+.rule.leet{grid-column:1/-1;display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
+.rule-t{margin-bottom:14px}
+.daily{display:flex;align-items:center;gap:12px;font:600 18px var(--body);text-transform:none;letter-spacing:0;cursor:pointer}
+.daily input{width:30px;height:30px;accent-color:var(--violet);cursor:pointer;margin:0}
+.daily input:checked + span{text-decoration:line-through;text-decoration-thickness:2px;color:var(--soft)}
+.hint{font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--soft);margin-top:8px}
+.hint a{color:var(--read)}
+.warn.ok{color:var(--read)}
+.warn{font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--watch);margin-top:10px;min-height:20px}
+.streak{display:flex;align-items:baseline;gap:10px}
+.flame{font-size:40px;line-height:1}
+.streak b{font:800 64px/1 var(--display);letter-spacing:-.03em}
+.streak-l{font:600 16px var(--body);text-transform:none;letter-spacing:0;color:var(--soft)}
+.best{font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--soft);margin-top:4px}
+.days{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.days i{width:16px;height:16px;border-radius:50%;background:var(--line);display:block}
+.days i.on{background:var(--violet)}
+.days i.now{outline:2px solid var(--ink);outline-offset:2px}
+@media (max-width:860px){.lockin{grid-template-columns:1fr 1fr}.rule.leet{grid-template-columns:1fr}}
+@media (max-width:520px){.lockin{grid-template-columns:1fr}}
 .hidden{display:none!important}
 
 @media (max-width:860px){
@@ -106,13 +134,26 @@ li.done .res-title{text-decoration:line-through;color:var(--soft)}
 </head>
 <body>
 <header>
-  <h1>From zero: the full learning route</h1>
-  <p class="lede">You start with fundamentals. Each phase lists the exact videos and the exact book chapters, in order, with hours. Everything is free. No certificates. Watch the lecture first, then read the chapters, then build the project. Tick each step when you finish it.</p>
-  <div class="rules">
-    <span>20 hours per week</span>
-    <span>Nov 2, 2026 to Jun 6, 2027</span>
-    <span>560 hours in total</span>
-    <span>1 LeetCode problem a day from Nov 30</span>
+  <h1>LOCK IN <span aria-hidden="true">🔒</span></h1>
+  <div class="lockin">
+    <section class="rule leet" aria-label="Daily LeetCode streak">
+      <div>
+        <div class="rule-n">Rule 1</div>
+        <div class="rule-t">1 LeetCode problem per day</div>
+        <label class="daily"><input type="checkbox" id="today"><span>Done today</span></label>
+        <div class="warn" id="warn"></div>
+        <div class="hint">Use the <a href="https://neetcode.io" target="_blank" rel="noopener">NeetCode 150 list</a>. Try each problem for 25 minutes. Then watch the video.</div>
+      </div>
+      <div class="streakbox">
+        <div class="streak"><span class="flame" aria-hidden="true">🔥</span><b id="streakn">0</b><span class="streak-l">day streak</span></div>
+        <div class="best" id="best"></div>
+        <div class="days" id="dots" aria-label="Last 14 days"></div>
+      </div>
+    </section>
+    <div class="rule"><div class="rule-n">Rule 2</div>No AI.</div>
+    <div class="rule"><div class="rule-n">Rule 3</div>Learn now, not later.</div>
+    <div class="rule"><div class="rule-n">Rule 4</div>Do not waste time.</div>
+    <div class="rule last"><div class="rule-n">Rule 5</div>DO NOT GIVE UP.</div>
   </div>
 </header>
 
@@ -176,18 +217,24 @@ const L={
  tw1:"https://developers.google.com/tech-writing/one",
  tw2:"https://developers.google.com/tech-writing/two",
  figma:"https://www.youtube.com/@Figma",
- scrum:"https://scrumguides.org"
+ scrum:"https://scrumguides.org",
+ tlcl:"https://linuxcommand.org/tlcl.php",
+ ccqs:"https://code.claude.com/docs/en/quickstart",
+ ccterm:"https://code.claude.com/docs/en/terminal-guide",
+ ccbest:"https://code.claude.com/docs/en/best-practices",
+ cc101:"https://academy.claude.com/courses/claude-code-101",
+ ccact:"https://academy.claude.com/courses/claude-code-in-action",
+ istqb:"https://istqb.org/certifications/certified-tester-foundation-level-ctfl-v4-0/",
+ pytest:"https://docs.pytest.org/en/stable/getting-started.html",
+ pw:"https://playwright.dev/python/docs/writing-tests",
+ eater:"https://eater.net/8bit",
+ mcw:"https://classcentral.com/course/youtube-new-arduino-tutorials-53893",
+ ardstart:"https://docs.arduino.cc/learn/starting-guide/getting-started-arduino/",
+ ardex:"https://docs.arduino.cc/built-in-examples/",
+ lic:"https://www.allaboutcircuits.com/textbook/direct-current/"
 };
 
 const data=[
-{group:"Every day"},
-{id:"daily",n:"Daily",t:"LeetCode and your OS course",color:"#2B3A67",hours:"1 hour a day, on top of the 20 hours",
- why:"Interview skill for Google STEP. Start on Nov 30, after you finish the programming phase.",
- steps:[
- [W,"NeetCode free video solutions",L.neet,"Follow the NeetCode 150 list in order. Watch the video only after you try the problem for 25 minutes.",null,"From Nov 30"],
- [R,"Operating Systems: Three Easy Pieces (OSTEP)",L.ostep,"Use it with your university OS course this semester. Ch 4 to 10 (processes, scheduling), ch 13 to 23 (memory), ch 26 to 32 (concurrency), ch 36 to 42 (persistence).",null,"Oct to Jan"]],
- project:"One LeetCode problem every day. Push your solution to a GitHub repo called leetcode.",need:"Nothing. This runs next to every phase."},
-
 {group:"Part 1: Foundations",sub:"Learn these first. Every later phase needs them."},
 {id:"tools",n:"1",t:"Computer tools: shell and Git",color:"#4B5563",start:"2026-11-02",end:"2026-11-08",hours:"20 hours",
  why:"You use the terminal and Git in every phase after this.",
@@ -197,148 +244,192 @@ const data=[
  [R,"Pro Git, 2nd edition",L.progit,"Chapter 1: Getting Started. Chapter 2: Git Basics. Chapter 3: Git Branching. Chapter 6: GitHub.",8,"Week 1"]],
  project:"Make a GitHub repo with one shell script that backs up a folder. Use 3 branches and merge them.",need:"Nothing."},
 
-{id:"prog",n:"2",t:"Programming: C and Python",color:"#D9822B",start:"2026-11-09",end:"2026-11-29",hours:"60 hours",
+{id:"term",n:"2",t:"Terminal, Bash, and Claude Code",color:"#2F4858",start:"2026-11-09",end:"2026-11-15",hours:"20 hours",
+ why:"Learn the terminal and Bash well, then add Claude Code. Use Claude Code to explain errors and to review your code. Do not let it write your homework. You learn nothing then.",
+ steps:[
+ [W,"MIT Missing Semester (2020)",L.missing,"Lecture 3: Editors (Vim). Lecture 4: Data Wrangling.",2,"Week 2"],
+ [R,"The Linux Command Line (William Shotts, free PDF)",L.tlcl,"Part 1, Learning the Shell: ch 1 What Is the Shell, ch 2 Navigation, ch 3 Exploring the System, ch 4 Manipulating Files and Directories, ch 5 Working with Commands, ch 6 Redirection, ch 7 Seeing the World as the Shell Sees It, ch 8 Advanced Keyboard Tricks, ch 9 Permissions, ch 10 Processes.",4,"Week 2","Chapter numbers come from the 2nd edition. I could not open the table of contents of the newest PDF. If the numbers differ, follow the titles."],
+ [R,"The Linux Command Line",L.tlcl,"Part 3, Common Tasks: Searching for Files, Regular Expressions, Text Processing.",2,"Week 2"],
+ [R,"The Linux Command Line",L.tlcl,"Part 4, Writing Shell Scripts: Writing Your First Script up to Looping with while and until, then Positional Parameters and Looping with for.",3,"Week 2"],
+ [R,"Claude Code docs: terminal guide and quickstart",L.ccqs,"Read the terminal guide first, then the quickstart. Install Claude Code and use it to review your backup script from week 1.",1,"Week 2","Claude Code needs a Claude subscription or an Anthropic Console account. This is the one part that is not free."],
+ [W,"Claude Academy: Claude Code 101 (free)",L.cc101,"The full course.",1.5,"Week 2","I did not check the course length. Skip any certificate."],
+ [W,"Claude Academy: Claude Code in Action (free)",L.ccact,"The full course.",1.5,"Week 2","I did not check the course length. Skip any certificate."],
+ [R,"Claude Code docs: best practices",L.ccbest,"Read the full page. Then write a CLAUDE.md file for your backup script repo.",1,"Week 2"]],
+ project:"A Bash script that sorts a messy folder by file type and prints a report. Use a loop, grep, and one function. Ask Claude Code to review it and explain every fix. Add a CLAUDE.md to the repo.",need:"Phase 1."},
+
+{id:"prog",n:"3",t:"Programming: C and Python",color:"#D9822B",start:"2026-11-16",end:"2026-12-06",hours:"60 hours",
  why:"You learn how to think in code. CS50 teaches C and memory. Think Python teaches Python well.",
  steps:[
- [W,"Harvard CS50 (full course on freeCodeCamp YouTube)",L.cs50,"Lecture 0: Scratch. Lecture 1: C. Lecture 2: Arrays.",6,"Week 2"],
- [R,"Think Python, 3rd edition",L.thinkpy,"Ch 1: Programming as a way of thinking. Ch 2: Variables and Statements. Ch 3: Functions. Ch 4: Functions and Interfaces. Ch 5: Conditionals and Recursion.",12,"Week 2"],
- [W,"Harvard CS50",L.cs50,"Lecture 3: Algorithms. Lecture 4: Memory. Lecture 5: Data Structures.",6,"Week 3"],
- [R,"Think Python, 3rd edition",L.thinkpy,"Ch 6: Return Values. Ch 7: Iteration and Search. Ch 8: Strings and Regular Expressions. Ch 9: Lists. Ch 10: Dictionaries. Ch 11: Tuples.",14,"Week 3"],
- [W,"Harvard CS50",L.cs50,"Lecture 6: Python. Lecture 7: SQL.",4,"Week 4"],
- [R,"Think Python, 3rd edition",L.thinkpy,"Ch 13: Files and Databases. Ch 14: Classes and Functions. Ch 15: Classes and Methods. Ch 16: Classes and Objects. Ch 17: Inheritance.",10,"Week 4"]],
+ [W,"Harvard CS50 (full course on freeCodeCamp YouTube)",L.cs50,"Lecture 0: Scratch. Lecture 1: C. Lecture 2: Arrays.",6,"Week 3"],
+ [R,"Think Python, 3rd edition",L.thinkpy,"Ch 1: Programming as a way of thinking. Ch 2: Variables and Statements. Ch 3: Functions. Ch 4: Functions and Interfaces. Ch 5: Conditionals and Recursion.",12,"Week 3"],
+ [W,"Harvard CS50",L.cs50,"Lecture 3: Algorithms. Lecture 4: Memory. Lecture 5: Data Structures.",6,"Week 4"],
+ [R,"Think Python, 3rd edition",L.thinkpy,"Ch 6: Return Values. Ch 7: Iteration and Search. Ch 8: Strings and Regular Expressions. Ch 9: Lists. Ch 10: Dictionaries. Ch 11: Tuples.",14,"Week 4"],
+ [W,"Harvard CS50",L.cs50,"Lecture 6: Python. Lecture 7: SQL.",4,"Week 5"],
+ [R,"Think Python, 3rd edition",L.thinkpy,"Ch 13: Files and Databases. Ch 14: Classes and Functions. Ch 15: Classes and Methods. Ch 16: Classes and Objects. Ch 17: Inheritance.",10,"Week 5"]],
  project:"A Python command-line study tracker. It saves sessions to a file and uses at least 2 classes.",need:"Phase 1."},
 
-{id:"math",n:"3",t:"Discrete math for CS",color:"#C93C8A",start:"2026-11-30",end:"2026-12-20",hours:"60 hours",
+{id:"math",n:"4",t:"Discrete math for CS",color:"#C93C8A",start:"2026-12-07",end:"2026-12-27",hours:"60 hours",
  why:"Proofs, graphs, counting, and probability. Algorithms and quantum both need this.",
  steps:[
- [W,"MIT 6.042J, Fall 2010 (Tom Leighton)",L.mit6042,"Lecture 1: Introduction and Proofs. Lecture 2: Induction. Lecture 3: Strong Induction. Lecture 4: Number Theory I. Lecture 5: Number Theory II.",6,"Week 5"],
- [R,"Mathematics for Computer Science (2017 edition)",L.mcs,"Ch 1: What is a Proof? Ch 2: The Well Ordering Principle. Ch 3: Logical Formulas. Ch 5: Induction. Ch 9: Number Theory.",14,"Week 5"],
- [W,"MIT 6.042J, Fall 2010",L.mit6042,"Lecture 6: Graph Theory and Coloring. Lecture 10: Graph Theory III. Lecture 12: Sums. Lecture 13: Sums and Asymptotics. Lecture 14: Divide and Conquer Recurrences.",6,"Week 6"],
- [R,"Mathematics for Computer Science (2017)",L.mcs,"Ch 12: Simple Graphs. Ch 14: Sums and Asymptotics. Ch 22: Recurrences.",14,"Week 6"],
- [W,"MIT 6.042J, Fall 2010",L.mit6042,"Lecture 16: Counting Rules I. Lecture 17: Counting Rules II. Lecture 18: Probability Introduction. Lecture 19: Conditional Probability. Lecture 21: Random Variables. Lecture 22: Expectation I.",7,"Week 7"],
- [R,"Mathematics for Computer Science (2017)",L.mcs,"Ch 15: Cardinality Rules. Ch 17: Events and Probability Spaces. Ch 18: Conditional Probability. Ch 19: Random Variables.",13,"Week 7"]],
- project:"Write a toy RSA encryption in Python. Explain in the README why it works, with the number theory from Ch 9.",need:"Phase 2."},
+ [W,"MIT 6.042J, Fall 2010 (Tom Leighton)",L.mit6042,"Lecture 1: Introduction and Proofs. Lecture 2: Induction. Lecture 3: Strong Induction. Lecture 4: Number Theory I. Lecture 5: Number Theory II.",6,"Week 6"],
+ [R,"Mathematics for Computer Science (2017 edition)",L.mcs,"Ch 1: What is a Proof? Ch 2: The Well Ordering Principle. Ch 3: Logical Formulas. Ch 5: Induction. Ch 9: Number Theory.",14,"Week 6"],
+ [W,"MIT 6.042J, Fall 2010",L.mit6042,"Lecture 6: Graph Theory and Coloring. Lecture 10: Graph Theory III. Lecture 12: Sums. Lecture 13: Sums and Asymptotics. Lecture 14: Divide and Conquer Recurrences.",6,"Week 7"],
+ [R,"Mathematics for Computer Science (2017)",L.mcs,"Ch 12: Simple Graphs. Ch 14: Sums and Asymptotics. Ch 22: Recurrences.",14,"Week 7"],
+ [W,"MIT 6.042J, Fall 2010",L.mit6042,"Lecture 16: Counting Rules I. Lecture 17: Counting Rules II. Lecture 18: Probability Introduction. Lecture 19: Conditional Probability. Lecture 21: Random Variables. Lecture 22: Expectation I.",7,"Week 8"],
+ [R,"Mathematics for Computer Science (2017)",L.mcs,"Ch 15: Cardinality Rules. Ch 17: Events and Probability Spaces. Ch 18: Conditional Probability. Ch 19: Random Variables.",13,"Week 8"]],
+ project:"Write a toy RSA encryption in Python. Explain in the README why it works, with the number theory from Ch 9.",need:"Phase 3."},
 
-{id:"linalg",n:"4",t:"Linear algebra",color:"#2D7DD2",start:"2026-12-21",end:"2027-01-03",hours:"40 hours",
+{id:"linalg",n:"5",t:"Linear algebra",color:"#2D7DD2",start:"2026-12-28",end:"2027-01-10",hours:"40 hours",
  why:"Quantum computing is linear algebra over complex numbers. AI also needs it.",
  steps:[
- [W,"3Blue1Brown: Essence of Linear Algebra",L.eola,"All 16 chapters, from Vectors to Abstract vector spaces. Watch them in order.",4,"Week 8"],
- [R,"Linear Algebra Done Right, 4th edition (Axler)",L.axler,"Ch 1: Vector Spaces (1A to 1C). Ch 2: Finite-Dimensional Vector Spaces (2A to 2C). Ch 3: Linear Maps, sections 3A to 3D only.",16,"Week 8"],
- [R,"Linear Algebra Done Right, 4th edition",L.axler,"Ch 5: Eigenvalues and Eigenvectors, sections 5A to 5D. Ch 6: Inner Product Spaces, sections 6A and 6B. Ch 7: Operators on Inner Product Spaces, sections 7A, 7B, and 7D (unitary operators).",20,"Week 9"]],
- project:"A Python notebook that does Gram-Schmidt and checks eigenvalues by hand against numpy.",need:"Phase 3. Your Applied Mathematics course helps here."},
+ [W,"3Blue1Brown: Essence of Linear Algebra",L.eola,"All 16 chapters, from Vectors to Abstract vector spaces. Watch them in order.",4,"Week 9"],
+ [R,"Linear Algebra Done Right, 4th edition (Axler)",L.axler,"Ch 1: Vector Spaces (1A to 1C). Ch 2: Finite-Dimensional Vector Spaces (2A to 2C). Ch 3: Linear Maps, sections 3A to 3D only.",16,"Week 9"],
+ [R,"Linear Algebra Done Right, 4th edition",L.axler,"Ch 5: Eigenvalues and Eigenvectors, sections 5A to 5D. Ch 6: Inner Product Spaces, sections 6A and 6B. Ch 7: Operators on Inner Product Spaces, sections 7A, 7B, and 7D (unitary operators).",20,"Week 10"]],
+ project:"A Python notebook that does Gram-Schmidt and checks eigenvalues by hand against numpy.",need:"Phase 4. Your Applied Mathematics course helps here."},
 
-{id:"quantum",n:"5",t:"Quantum computing",color:"#5B4BDB",start:"2027-01-04",end:"2027-01-17",hours:"40 hours",
+{id:"quantum",n:"6",t:"Quantum computing",color:"#5B4BDB",start:"2027-01-11",end:"2027-01-24",hours:"40 hours",
  why:"Your focus area. The videos and the book are by the same author and match lesson for lesson.",
  steps:[
- [W,"Watrous: Understanding Quantum Information and Computation (Qiskit YouTube)",L.watrousV,"Lesson 1: Single Systems. Lesson 2: Multiple Systems. Lesson 3: Quantum Circuits. Lesson 4: Entanglement in Action.",5,"Week 10"],
- [R,"Watrous, Understanding Quantum Information and Computation (free on arXiv)",L.watrousB,"Unit I, Lessons 1 to 4 (pages 1 to 124). Do the exercises on paper.",13,"Week 10"],
- [W,"Watrous lectures (Qiskit YouTube)",L.watrousV,"Lesson 5: Quantum Query Algorithms. Lesson 6: Quantum Algorithmic Foundations. Lesson 7: Phase Estimation and Factoring. Lesson 8: Grover's Algorithm.",5,"Week 11"],
- [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Unit II, Lessons 5 to 8 (pages 125 to 252).",12,"Week 11"]],
- project:"In Qiskit: a Bell state, teleportation, Deutsch-Jozsa, and Grover on 3 qubits. Run one circuit on real IBM hardware. IBM's free 'Use a quantum computer today' course shows the setup.",need:"Phase 4. You need complex numbers, inner products, and unitary matrices."},
-
-{id:"dsa",n:"6",t:"Data structures and algorithms",color:"#C2413B",start:"2027-01-18",end:"2027-02-28",hours:"60 hours",split:[["2027-01-18","2027-01-24"],["2027-02-15","2027-02-28"]],
- why:"The core of every Google interview. Week 12 comes before your exams. Weeks 13 and 14 come after.",
- steps:[
- [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 1: Algorithms and Computation. Lecture 2: Data Structures and Dynamic Arrays. Lecture 3: Sets and Sorting. Lecture 4: Hashing. Lecture 5: Linear Sorting.",6,"Week 12"],
- [R,"Open Data Structures (pseudocode edition)",L.ods,"Ch 1: Introduction. Ch 2: Array-Based Lists. Ch 3: Linked Lists. Ch 5: Hash Tables. Ch 11: Sorting Algorithms.",14,"Week 12"],
- [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 6: Binary Trees, Part 1. Lecture 7: Binary Trees, Part 2: AVL. Lecture 8: Binary Heaps. Lecture 9: Breadth-First Search. Lecture 10: Depth-First Search.",6,"Week 13 (after exams)"],
- [R,"Open Data Structures",L.ods,"Ch 6: Binary Trees. Ch 10: Heaps. Ch 12: Graphs.",14,"Week 13 (after exams)"],
- [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 11: Weighted Shortest Paths. Lecture 13: Dijkstra. Lectures 15 to 18: Dynamic Programming, Parts 1 to 4. Lecture 19: Complexity.",9,"Week 14 (after exams)"],
- [R,"MIT 6.006 lecture notes",L.mit6006,"The notes for lectures 15 to 18 (dynamic programming). Solve Problem Set 6 and 7 questions on DP.",11,"Week 14 (after exams)"]],
- project:"Write each data structure from scratch in Python with tests: dynamic array, hash table, binary heap, AVL tree, graph with BFS and DFS.",need:"Phases 2 and 3."},
+ [W,"Watrous: Understanding Quantum Information and Computation (Qiskit YouTube)",L.watrousV,"Lesson 1: Single Systems. Lesson 2: Multiple Systems. Lesson 3: Quantum Circuits. Lesson 4: Entanglement in Action.",5,"Week 11"],
+ [R,"Watrous, Understanding Quantum Information and Computation (free on arXiv)",L.watrousB,"Unit I, Lessons 1 to 4 (pages 1 to 124). Do the exercises on paper.",13,"Week 11"],
+ [W,"Watrous lectures (Qiskit YouTube)",L.watrousV,"Lesson 5: Quantum Query Algorithms. Lesson 6: Quantum Algorithmic Foundations. Lesson 7: Phase Estimation and Factoring. Lesson 8: Grover's Algorithm.",5,"Week 12"],
+ [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Unit II, Lessons 5 to 8 (pages 125 to 252).",12,"Week 12"]],
+ project:"In Qiskit: a Bell state, teleportation, Deutsch-Jozsa, and Grover on 3 qubits. Run one circuit on real IBM hardware. IBM's free 'Use a quantum computer today' course shows the setup.",need:"Phase 5. You need complex numbers, inner products, and unitary matrices."},
 
 {id:"exams",n:"",t:"February exams",exam:true,start:"2027-01-25",end:"2027-02-14",hours:"No plan work",
  why:"Grade 10 in all 9 courses. Keep 1 LeetCode problem a day. Move these dates when you know your exam schedule.",steps:[]},
 
-{id:"hw",n:"7",t:"Hardware and computer architecture",color:"#B23A8F",start:"2027-03-01",end:"2027-03-21",hours:"60 hours",
+{id:"dsa",n:"7",t:"Data structures and algorithms",color:"#C2413B",start:"2027-02-15",end:"2027-03-07",hours:"60 hours",
+ why:"The core of every Google interview. You do this after your February exams, so it does not touch your exam time.",
+ steps:[
+ [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 1: Algorithms and Computation. Lecture 2: Data Structures and Dynamic Arrays. Lecture 3: Sets and Sorting. Lecture 4: Hashing. Lecture 5: Linear Sorting.",6,"Week 13"],
+ [R,"Open Data Structures (pseudocode edition)",L.ods,"Ch 1: Introduction. Ch 2: Array-Based Lists. Ch 3: Linked Lists. Ch 5: Hash Tables. Ch 11: Sorting Algorithms.",14,"Week 13"],
+ [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 6: Binary Trees, Part 1. Lecture 7: Binary Trees, Part 2: AVL. Lecture 8: Binary Heaps. Lecture 9: Breadth-First Search. Lecture 10: Depth-First Search.",6,"Week 14"],
+ [R,"Open Data Structures",L.ods,"Ch 6: Binary Trees. Ch 10: Heaps. Ch 12: Graphs.",14,"Week 14"],
+ [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 11: Weighted Shortest Paths. Lecture 13: Dijkstra. Lectures 15 to 18: Dynamic Programming, Parts 1 to 4. Lecture 19: Complexity.",9,"Week 15"],
+ [R,"MIT 6.006 lecture notes",L.mit6006,"The notes for lectures 15 to 18 (dynamic programming). Solve Problem Set 6 and 7 questions on DP.",11,"Week 15"]],
+ project:"Write each data structure from scratch in Python with tests: dynamic array, hash table, binary heap, AVL tree, graph with BFS and DFS.",need:"Phases 3 and 4."},
+
+{id:"hw",n:"8",t:"Hardware and computer architecture",color:"#B23A8F",start:"2027-03-08",end:"2027-03-28",hours:"60 hours",
  why:"How a computer works from logic gates up. This matters most for AMD.",
  steps:[
- [W,"Nand2Tetris Part 1 unit videos (YouTube)",L.n2tV,"Units 0 to 3: Introduction, Boolean Logic, Boolean Arithmetic and the ALU, Memory.",6,"Week 15",
+ [W,"Nand2Tetris Part 1 unit videos (YouTube)",L.n2tV,"Units 0 to 3: Introduction, Boolean Logic, Boolean Arithmetic and the ALU, Memory.",6,"Week 16",
   "Link opens a YouTube search. Pick the videos named '[Part 1] Unit ...'."],
- [R,"The Elements of Computing Systems (Nand2Tetris book)",L.n2t,"Chapters 1 to 3: Boolean Logic, Boolean Arithmetic, Memory. Each chapter is linked from its project page.",14,"Week 15",
+ [R,"The Elements of Computing Systems (Nand2Tetris book)",L.n2t,"Chapters 1 to 3: Boolean Logic, Boolean Arithmetic, Memory. Each chapter is linked from its project page.",14,"Week 16",
   "The free chapters on the site are from the 1st edition. The 2nd edition book is paid. You do not need it."],
- [W,"Nand2Tetris Part 1 unit videos",L.n2tV,"Units 4 to 6: Machine Language, Computer Architecture, Assembler.",6,"Week 16"],
- [R,"The Elements of Computing Systems",L.n2t,"Chapters 4 to 6: Machine Language, Computer Architecture, Assembler.",14,"Week 16"],
- [W,"Onur Mutlu: Digital Design and Computer Architecture, ETH Zurich",L.mutlu,"The first 10 lectures of the Spring 2026 playlist. They go from transistors and logic gates to the ISA and the microarchitecture.",15,"Week 17",
+ [W,"Nand2Tetris Part 1 unit videos",L.n2tV,"Units 4 to 6: Machine Language, Computer Architecture, Assembler.",6,"Week 17"],
+ [R,"The Elements of Computing Systems",L.n2t,"Chapters 4 to 6: Machine Language, Computer Architecture, Assembler.",14,"Week 17"],
+ [W,"Onur Mutlu: Digital Design and Computer Architecture, ETH Zurich",L.mutlu,"The first 10 lectures of the Spring 2026 playlist. They go from transistors and logic gates to the ISA and the microarchitecture.",15,"Week 18",
   "I could not open the ETH course page to check each lecture title. Use the Spring 2026 playlist on his channel."],
- [R,"Nand2Tetris project specs",L.n2t,"Finish Projects 1 to 6. Build the CPU, then write the assembler in Python.",5,"Week 17"]],
- project:"A working Hack computer in the simulator plus your own assembler. Explain in the README how one instruction runs.",need:"Phases 2 and 3."},
+ [R,"Nand2Tetris project specs",L.n2t,"Finish Projects 1 to 6. Build the CPU, then write the assembler in Python.",5,"Week 18"]],
+ project:"A working Hack computer in the simulator plus your own assembler. Explain in the README how one instruction runs.",need:"Phases 3 and 4."},
+
+{id:"elec",n:"9",t:"Electronics and Arduino",color:"#D1495B",start:"2027-03-29",end:"2027-04-04",hours:"20 hours",
+ why:"Circuits from zero: voltage, current, resistors, transistors, and a microcontroller you program yourself. This is where code meets hardware. It helps for AMD and for IoT.",
+ steps:[
+ [W,"Paul McWhorter: Arduino lessons (YouTube)",L.mcw,"Lessons 1 to 20: Setting Up and Programming the Arduino, How LEDs Work, How Breadboards Work, Variables, Binary Numbers, LED Binary Counter, analogWrite and PWM, Ohm's Law and Simple Circuit Design, analogRead, the Serial Port, Potentiometers, if Statements, Dimmable LED Project, for and while Loops, RGB LEDs.",8,"Week 19","The series has 68 lessons. Do lessons 1 to 20 now. I did not check the lesson lengths. You need an Arduino starter kit (about 30 euros). Or use a free simulator, Wokwi or Tinkercad Circuits. I did not check the simulators today."],
+ [W,"Ben Eater: 8-bit computer, Background on electronics",L.eater,"How semiconductors work. How a transistor works. Making logic gates from transistors. SR latch. D latch. D flip-flop. About 80 minutes in total.",2,"Week 19"],
+ [R,"Arduino docs: Getting Started",L.ardstart,"The full Getting Started guide.",1,"Week 19"],
+ [R,"Arduino docs: Built-in Examples",L.ardex,"Basics: Blink, Analog Read Serial, Digital Read Serial, Fading, Read Analog Voltage. Digital: Button, Debounce, Blink Without Delay. Analog: Smoothing Readings From an Analog Input.",3,"Week 19"],
+ [R,"Lessons in Electric Circuits, Volume I: DC (free online book)",L.lic,"Ch 1: Basic Concepts of Electricity. Ch 2: Ohm's Law. Ch 5: Series and Parallel Circuits. Ch 6: Divider Circuits and Kirchhoff's Laws. Ch 13: Capacitors.",4,"Week 19","I could not open the chapter pages. The chapter titles come from my own knowledge. Check them on the site."]],
+ project:"An Arduino sensor logger: read one sensor, print the values to the serial monitor, and light an LED when a value passes a limit. Draw the circuit on paper. Show the Ohm's law numbers for each resistor.",need:"Phases 1 and 8."},
 
 {group:"Part 2: The IT categories",sub:"Each phase builds on Part 1."},
-{id:"net",n:"8",t:"Networking",color:"#0E8F7E",start:"2027-03-22",end:"2027-04-04",hours:"40 hours",
+{id:"net",n:"10",t:"Networking",color:"#0E8F7E",start:"2027-04-05",end:"2027-04-18",hours:"40 hours",
  why:"How data moves between computers. Every cloud, security, and backend job needs it.",
  steps:[
- [W,"Kurose and Ross: online lectures (authors' site)",L.kurose,"Chapter 1: Computer Networks and the Internet. Chapter 2: The Application Layer.",6,"Week 18",
+ [W,"Kurose and Ross: online lectures (authors' site)",L.kurose,"Chapter 1: Computer Networks and the Internet. Chapter 2: The Application Layer.",6,"Week 20",
   "The authors say some sections of chapters 5 and 6 are still missing."],
- [R,"Computer Networks: A Systems Approach (Peterson and Davie, free)",L.pd,"Ch 1: Foundation. Ch 2: Direct Links. Ch 3: Internetworking.",14,"Week 18"],
- [W,"Kurose and Ross: online lectures",L.kurose,"Chapter 3: The Transport Layer. Chapter 4: The Network Layer: the Data Plane.",6,"Week 19"],
- [R,"Computer Networks: A Systems Approach",L.pd,"Ch 5: End-to-End Protocols. Ch 6: Congestion Control.",10,"Week 19"],
- [R,"Kurose and Ross Wireshark labs",L.wire,"Labs: Getting Started, HTTP, DNS, TCP. Follow the PDF and use the trace files.",4,"Week 19"]],
- project:"A TCP chat server and client in Python sockets, plus a Wireshark capture that shows the TCP handshake.",need:"Phases 1 and 2."},
+ [R,"Computer Networks: A Systems Approach (Peterson and Davie, free)",L.pd,"Ch 1: Foundation. Ch 2: Direct Links. Ch 3: Internetworking.",14,"Week 20"],
+ [W,"Kurose and Ross: online lectures",L.kurose,"Chapter 3: The Transport Layer. Chapter 4: The Network Layer: the Data Plane.",6,"Week 21"],
+ [R,"Computer Networks: A Systems Approach",L.pd,"Ch 5: End-to-End Protocols. Ch 6: Congestion Control.",10,"Week 21"],
+ [R,"Kurose and Ross Wireshark labs",L.wire,"Labs: Getting Started, HTTP, DNS, TCP. Follow the PDF and use the trace files.",4,"Week 21"]],
+ project:"A TCP chat server and client in Python sockets, plus a Wireshark capture that shows the TCP handshake.",need:"Phases 1 and 3."},
 
-{id:"data",n:"9",t:"Databases and data",color:"#7A5C3E",start:"2027-04-05",end:"2027-04-18",hours:"40 hours",
+{id:"data",n:"11",t:"Databases and data",color:"#7A5C3E",start:"2027-04-19",end:"2027-05-02",hours:"40 hours",
  why:"SQL and data analysis. Every backend and data job uses them.",
  steps:[
- [W,"CMU 15-445 Database Systems, Fall 2024 (YouTube)",L.cmu445,"#01 Relational Model and Algebra. #02 Modern SQL. #03 Database Storage I. #07 Hash Tables. #08 Indexes and Filters I. #16 Concurrency Control Theory.",8,"Week 20"],
- [R,"PostgreSQL documentation, Part I: Tutorial",L.pg,"Ch 1: Getting Started. Ch 2: The SQL Language (2.1 to 2.9). Ch 3: Advanced Features (3.2 Views to 3.5 Window Functions).",12,"Week 20"],
- [R,"Python for Data Analysis, 3rd edition (McKinney, free)",L.pda,"Ch 4: NumPy Basics. Ch 5: Getting Started with pandas. Ch 7: Data Cleaning and Preparation. Ch 8: Data Wrangling. Ch 9: Plotting and Visualization. Ch 10: Data Aggregation and Group Operations.",20,"Week 21"]],
- project:"Load a public dataset into PostgreSQL. Answer 5 questions with SQL. Then analyze it with pandas and charts.",need:"Phase 2."},
+ [W,"CMU 15-445 Database Systems, Fall 2024 (YouTube)",L.cmu445,"#01 Relational Model and Algebra. #02 Modern SQL. #03 Database Storage I. #07 Hash Tables. #08 Indexes and Filters I. #16 Concurrency Control Theory.",8,"Week 22"],
+ [R,"PostgreSQL documentation, Part I: Tutorial",L.pg,"Ch 1: Getting Started. Ch 2: The SQL Language (2.1 to 2.9). Ch 3: Advanced Features (3.2 Views to 3.5 Window Functions).",12,"Week 22"],
+ [R,"Python for Data Analysis, 3rd edition (McKinney, free)",L.pda,"Ch 4: NumPy Basics. Ch 5: Getting Started with pandas. Ch 7: Data Cleaning and Preparation. Ch 8: Data Wrangling. Ch 9: Plotting and Visualization. Ch 10: Data Aggregation and Group Operations.",20,"Week 23"]],
+ project:"Load a public dataset into PostgreSQL. Answer 5 questions with SQL. Then analyze it with pandas and charts.",need:"Phase 3."},
 
-{id:"ai",n:"10",t:"AI and machine learning",color:"#2B7A78",start:"2027-04-19",end:"2027-05-02",hours:"40 hours",
+{id:"ai",n:"12",t:"AI and machine learning",color:"#2B7A78",start:"2027-05-03",end:"2027-05-16",hours:"40 hours",
  why:"How neural networks learn, from scratch.",
  steps:[
- [W,"3Blue1Brown: Neural Networks",L.nn3b,"Chapter 1: What is a neural network. Chapter 2: Gradient descent. Chapter 3: Backpropagation. Chapter 4: Backpropagation calculus.",2,"Week 22"],
- [R,"Neural Networks and Deep Learning (Nielsen, free)",L.nielsen,"Ch 1: Using neural nets to recognize handwritten digits. Ch 2: How the backpropagation algorithm works. Ch 3: Improving the way neural networks learn.",16,"Week 22"],
- [W,"Karpathy: Neural Networks, Zero to Hero",L.karpathy,"Video 1: building micrograd (2h25). Video 2: building makemore (1h57). Video 3: makemore Part 2, MLP (1h15).",6,"Week 23"],
- [R,"Code along",L.karpathy,"Rebuild micrograd and makemore yourself while you watch. Pause often.",16,"Week 23"]],
- project:"micrograd from scratch, and a digit classifier from Nielsen Ch 1 written by you.",need:"Phases 2 and 4. Your Calculus 1 course covers the derivatives."},
+ [W,"3Blue1Brown: Neural Networks",L.nn3b,"Chapter 1: What is a neural network. Chapter 2: Gradient descent. Chapter 3: Backpropagation. Chapter 4: Backpropagation calculus.",2,"Week 24"],
+ [R,"Neural Networks and Deep Learning (Nielsen, free)",L.nielsen,"Ch 1: Using neural nets to recognize handwritten digits. Ch 2: How the backpropagation algorithm works. Ch 3: Improving the way neural networks learn.",16,"Week 24"],
+ [W,"Karpathy: Neural Networks, Zero to Hero",L.karpathy,"Video 1: building micrograd (2h25). Video 2: building makemore (1h57). Video 3: makemore Part 2, MLP (1h15).",6,"Week 25"],
+ [R,"Code along",L.karpathy,"Rebuild micrograd and makemore yourself while you watch. Pause often.",16,"Week 25"]],
+ project:"micrograd from scratch, and a digit classifier from Nielsen Ch 1 written by you.",need:"Phases 3 and 5. Your Calculus 1 course covers the derivatives."},
 
-{id:"sec",n:"11",t:"Cybersecurity",color:"#8A3FC2",start:"2027-05-03",end:"2027-05-16",hours:"40 hours",
+{id:"sec",n:"13",t:"Cybersecurity",color:"#8A3FC2",start:"2027-05-17",end:"2027-05-30",hours:"40 hours",
  why:"How systems break and how to defend them.",
  steps:[
- [W,"MIT 6.858 Computer Systems Security, Fall 2014",L.mit6858,"Lecture 1: Introduction, Threat Models. Lecture 2: Control Hijacking Attacks. Lecture 3: Buffer Overflow Exploits and Defenses. Lecture 4: Privilege Separation.",6,"Week 24"],
- [R,"Security Engineering, 2nd edition (Anderson, free)",L.anderson,"Ch 1: What is Security Engineering? Ch 2: Usability and Psychology. Ch 3: Protocols. Ch 4: Access Control.",14,"Week 24"],
- [W,"MIT 6.858, Fall 2014",L.mit6858,"Lecture 8: Web Security Model. Lecture 9: Securing Web Applications. Lecture 12: Network Security. Lecture 14: SSL and HTTPS. Lecture 17: User Authentication.",7,"Week 25"],
- [R,"Security Engineering, 2nd edition",L.anderson,"Ch 5: Cryptography. Ch 21: Network Attack and Defence.",13,"Week 25"]],
- project:"In your own VM: show a buffer overflow in a small C program, then fix it. Write a threat model for your study tracker app.",need:"Phases 2, 7, and 8."},
+ [W,"MIT 6.858 Computer Systems Security, Fall 2014",L.mit6858,"Lecture 1: Introduction, Threat Models. Lecture 2: Control Hijacking Attacks. Lecture 3: Buffer Overflow Exploits and Defenses. Lecture 4: Privilege Separation.",6,"Week 26"],
+ [R,"Security Engineering, 2nd edition (Anderson, free)",L.anderson,"Ch 1: What is Security Engineering? Ch 2: Usability and Psychology. Ch 3: Protocols. Ch 4: Access Control.",14,"Week 26"],
+ [W,"MIT 6.858, Fall 2014",L.mit6858,"Lecture 8: Web Security Model. Lecture 9: Securing Web Applications. Lecture 12: Network Security. Lecture 14: SSL and HTTPS. Lecture 17: User Authentication.",7,"Week 27"],
+ [R,"Security Engineering, 2nd edition",L.anderson,"Ch 5: Cryptography. Ch 21: Network Attack and Defence.",13,"Week 27"]],
+ project:"In your own VM: show a buffer overflow in a small C program, then fix it. Write a threat model for your study tracker app.",need:"Phases 3, 8, and 10."},
 
-{id:"cloud",n:"12",t:"Cloud and DevOps",color:"#5E8C31",start:"2027-05-17",end:"2027-05-23",hours:"20 hours",
+{id:"cloud",n:"14",t:"Cloud and DevOps",color:"#5E8C31",start:"2027-05-31",end:"2027-06-06",hours:"20 hours",
  why:"How real systems run in production.",
  steps:[
- [W,"freeCodeCamp: Docker and Kubernetes course",L.dock,"The full 4-hour course.",4,"Week 26"],
- [R,"Site Reliability Engineering (Google, free)",L.sre,"Ch 1: Introduction. Ch 3: Embracing Risk. Ch 4: Service Level Objectives. Ch 6: Monitoring Distributed Systems. Ch 15: Postmortem Culture.",10,"Week 26"],
- [R,"Software Engineering at Google (free)",L.sweg,"Ch 23: Continuous Integration. Ch 24: Continuous Delivery.",6,"Week 26"]],
- project:"Put your study tracker in Docker. Add a GitHub Actions pipeline that runs tests on every push.",need:"Phases 1, 2, and 8."},
+ [W,"freeCodeCamp: Docker and Kubernetes course",L.dock,"The full 4-hour course.",4,"Week 28"],
+ [R,"Site Reliability Engineering (Google, free)",L.sre,"Ch 1: Introduction. Ch 3: Embracing Risk. Ch 4: Service Level Objectives. Ch 6: Monitoring Distributed Systems. Ch 15: Postmortem Culture.",10,"Week 28"],
+ [R,"Software Engineering at Google (free)",L.sweg,"Ch 23: Continuous Integration. Ch 24: Continuous Delivery.",6,"Week 28"]],
+ project:"Put your study tracker in Docker. Add a GitHub Actions pipeline that runs tests on every push.",need:"Phases 1, 3, and 10."},
 
-{id:"qa",n:"13",t:"Quality and IT support",color:"#B8A10C",start:"2027-05-24",end:"2027-05-30",hours:"20 hours",
- why:"Testing your code and fixing machines.",
+{id:"qa",n:"15",t:"Quality and IT support",color:"#B8A10C",start:"2027-06-07",end:"2027-06-20",hours:"40 hours",
+ why:"How to test code well, and how to fix machines. This phase has two weeks because testing is a core job skill.",
  steps:[
- [W,"MIT Missing Semester (2020)",L.missing,"Lecture 8: Metaprogramming (build systems, testing, CI).",1,"Week 27"],
- [R,"Software Engineering at Google",L.sweg,"Ch 11: Testing Overview. Ch 12: Unit Testing. Ch 13: Test Doubles. Ch 14: Larger Testing.",10,"Week 27"],
- [W,"Professor Messer: CompTIA A+ Core 1 videos (free)",L.messer1,"Pick the sections on hardware, networking basics, and troubleshooting. Skip exam tips.",9,"Week 27",
-  "Videos are free. His notes and practice exams are paid. Skip them."]],
- project:"A pytest suite for your study tracker that runs in your pipeline. A Linux guide for 5 common fixes.",need:"Phases 2 and 12."},
+ [W,"MIT Missing Semester (2020)",L.missing,"Lecture 8: Metaprogramming (build systems, testing, CI).",1,"Week 29"],
+ [R,"Software Engineering at Google (free)",L.sweg,"Ch 11: Testing Overview. Ch 12: Unit Testing. Ch 13: Test Doubles. Ch 14: Larger Testing.",10,"Week 29"],
+ [R,"ISTQB Foundation Level syllabus v4.0.1 (free PDF)",L.istqb,"Ch 1: Fundamentals of Testing. Ch 2: Testing Throughout the Software Development Lifecycle. Ch 3: Static Testing.",6,"Week 29","This is the syllabus of a certificate. Read it for the knowledge. Do not take the exam. Find it under Download Materials on the page."],
+ [R,"ISTQB Foundation Level syllabus v4.0.1",L.istqb,"Ch 4: Test Analysis and Design. Ch 5: Managing the Test Activities. Ch 6: Test Tools.",5,"Week 30"],
+ [R,"pytest official docs",L.pytest,"How-to guides: Invoking pytest, Writing and reporting assertions, Using fixtures, Marking test functions, Parametrizing, Using skip and xfail.",5,"Week 30"],
+ [R,"Playwright for Python official docs",L.pw,"Getting started and Writing tests. Write 3 end-to-end tests for a web page.",4,"Week 30"],
+ [W,"Professor Messer: CompTIA A+ Core 1 videos (free)",L.messer1,"Pick the sections on hardware, networking basics, and troubleshooting. Skip exam tips.",6,"Week 30","Videos are free. His notes and practice exams are paid. Skip them."]],
+ project:"A pytest suite for your study tracker that runs in your pipeline, with fixtures and parametrized tests. Three Playwright tests for a web page. A Linux guide for 5 common fixes.",need:"Phases 3 and 14."},
 
-{id:"design",n:"14",t:"Design and management",color:"#E0457B",start:"2027-05-31",end:"2027-06-06",hours:"20 hours",
+{id:"design",n:"16",t:"Design and management",color:"#E0457B",start:"2027-06-21",end:"2027-06-27",hours:"20 hours",
  why:"Explaining your work and working in a team.",
  steps:[
- [R,"Google: Technical Writing One",L.tw1,"All units. Self-paced.",3,"Week 28"],
- [R,"Google: Technical Writing Two",L.tw2,"All units. Self-paced.",3,"Week 28"],
- [W,"Figma official YouTube channel",L.figma,"The beginner series for Figma Design.",4,"Week 28",
+ [R,"Google: Technical Writing One",L.tw1,"All units. Self-paced.",3,"Week 31"],
+ [R,"Google: Technical Writing Two",L.tw2,"All units. Self-paced.",3,"Week 31"],
+ [W,"Figma official YouTube channel",L.figma,"The beginner series for Figma Design.",4,"Week 31",
   "I did not check this playlist. Use the newest beginner series on Figma's own channel."],
- [R,"The Scrum Guide (2020)",L.scrum,"The full guide. It is short.",1,"Week 28"],
- [R,"Software Engineering at Google",L.sweg,"Ch 2: How to Work Well on Teams. Ch 9: Code Review. Ch 10: Documentation.",9,"Week 28"]],
- project:"A Figma mockup of your study tracker, a one-page design doc, and a two-week sprint plan.",need:"Phase 2."},
+ [R,"The Scrum Guide (2020)",L.scrum,"The full guide. It is short.",1,"Week 31"],
+ [R,"Software Engineering at Google",L.sweg,"Ch 2: How to Work Well on Teams. Ch 9: Code Review. Ch 10: Documentation.",9,"Week 31"]],
+ project:"A Figma mockup of your study tracker, a one-page design doc, and a two-week sprint plan.",need:"Phase 3."},
 
-{id:"later",n:"+",t:"Later, after Jun 6",color:"#4B5563",hours:"Optional",
- why:"More depth when the core plan is done.",
+{group:"After the plan",sub:"Optional. Start only after Jun 27. Do the tracks in this order: A, then B, then C."},
+{id:"laterA",n:"A",t:"Quantum computing, deeper",color:"#5B4BDB",hours:"About 4 weeks (estimate)",
+ why:"Finish the Watrous course. Do this track first. Quantum is your focus.",
  steps:[
- [W,"Watrous lectures, Units III and IV",L.watrousV,"Lessons 9 to 16: density matrices, channels, measurements, error correction.",null,"Later"],
- [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Units III and IV (pages 253 to 495).",null,"Later"],
- [R,"Dive into Deep Learning (free)",
- "https://d2l.ai/","Ch 2: Preliminaries to Ch 7: Convolutional Neural Networks.",null,"Later"],
- [R,"Nand2Tetris Part 2",L.n2t,"Projects 7 to 12: VM, compiler, operating system.",null,"Later"]],
- project:"Enterprise systems (SAP, Salesforce, ServiceNow) have no verified free video and book path. Learn them only if a job asks for them.",need:"Parts 1 and 2."}
+ [W,"Watrous lectures (Qiskit YouTube)",L.watrousV,"Lessons 9 to 12.",null,"Weeks 1 and 2"],
+ [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Pages 253 to 374.",null,"Weeks 1 and 2"],
+ [W,"Watrous lectures (Qiskit YouTube)",L.watrousV,"Lessons 13 to 16.",null,"Weeks 3 and 4"],
+ [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Pages 375 to 495.",null,"Weeks 3 and 4","The page split is my estimate. Follow the lesson boundaries in the book."]],
+ project:"Write one algorithm from each unit in Qiskit. Run one of them on real IBM hardware.",need:"Phase 6."},
+
+{id:"laterB",n:"B",t:"Deep learning, deeper",color:"#2B7A78",hours:"About 3 weeks (estimate)",
+ why:"Move from your own micrograd to real deep learning with PyTorch.",
+ steps:[
+ [R,"Dive into Deep Learning (free)","https://d2l.ai/","Ch 2: Preliminaries. Ch 3: Linear Neural Networks for Regression. Ch 4: Linear Neural Networks for Classification.",null,"Weeks 1 and 2","The chapter titles come from my own knowledge. Check them on d2l.ai."],
+ [R,"Dive into Deep Learning","https://d2l.ai/","Ch 5: Multilayer Perceptrons. Ch 6: Builders' Guide. Ch 7: Convolutional Neural Networks.",null,"Week 3"]],
+ project:"Train a convolutional network on a public image dataset with PyTorch. Write a one-page report.",need:"Phases 5 and 12."},
+
+{id:"laterC",n:"C",t:"Computers, deeper",color:"#B23A8F",hours:"About 4 weeks (estimate)",
+ why:"Finish the Nand2Tetris path. You build the compiler and the operating system for your own computer.",
+ steps:[
+ [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 7: VM I, Stack Arithmetic. Project 8: VM II, Program Control.",null,"Weeks 1 and 2","The project titles come from my own knowledge. Check them on the course page."],
+ [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 9: High-Level Language. Project 10: Compiler I, Syntax Analysis.",null,"Week 3"],
+ [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 11: Compiler II, Code Generation. Project 12: Operating System.",null,"Week 4"]],
+ project:"The full chain on your Hack computer: a VM translator, a compiler, and a small operating system.",need:"Phase 8."},
+
+{id:"gaps",n:"!",t:"Not in this plan yet",exam:true,hours:"Tell me and I add them",
+ why:"These roles from your list have no phase. I cannot add them without more weeks.<ul><li>Web development: HTML, CSS, JavaScript, and a backend</li><li>Mobile apps: iOS and Android</li><li>Game development</li><li>Blockchain and smart contracts</li><li>AR and VR</li><li>Edge computing</li><li>Enterprise systems (SAP, Salesforce, ServiceNow): I found no verified free video and book path</li></ul>",steps:[]}
 ];
 
 const KEY="route-done-v2";
@@ -349,7 +440,7 @@ const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const cats=data.filter(c=>c.id);
 
 /* Route bar */
-const t0=new Date("2026-11-02"),t1=new Date("2027-06-07"),span=t1-t0;
+const t0=new Date("2026-11-02"),t1=new Date("2027-06-28"),span=t1-t0;
 const track=document.getElementById("track"),months=document.getElementById("months");
 cats.filter(c=>c.start).forEach(c=>{
   (c.split||[[c.start,c.end]]).forEach(([s,e])=>{
@@ -420,6 +511,26 @@ document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("clic
   filter=b.dataset.f;document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b));apply();
 }));
 progress();
+/* Lock In: daily LeetCode streak */
+const LK="lockin-days-v1";let days={};try{days=JSON.parse(localStorage.getItem(LK))||{}}catch(e){}
+const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function lockin(){
+  const now=new Date(),tk=dkey(now),done=!!days[tk];
+  let streak=0;const d=new Date(now);if(!days[dkey(d)])d.setDate(d.getDate()-1);
+  while(days[dkey(d)]){streak++;d.setDate(d.getDate()-1)}
+  let best=0,run=0,prev=null;
+  Object.keys(days).filter(k=>days[k]).sort().forEach(k=>{const t=new Date(k+"T12:00");run=(prev&&Math.round((t-prev)/864e5)===1)?run+1:1;prev=t;if(run>best)best=run});
+  document.getElementById("today").checked=done;
+  document.getElementById("streakn").textContent=streak;
+  document.getElementById("best").textContent=best?"Best: "+best+(best===1?" day":" days"):"";
+  document.getElementById("warn").classList.toggle("ok",done);document.getElementById("warn").textContent=done?"Locked in today. Come back tomorrow.":(streak>0?"Your "+streak+"-day streak dies at midnight. Solve one now.":"Zero days. Solve one now.");
+  const box=document.getElementById("dots");box.innerHTML="";
+  for(let n=13;n>=0;n--){const x=new Date(now);x.setDate(x.getDate()-n);const e=document.createElement("i");
+    if(days[dkey(x)])e.className="on";if(n===0)e.classList.add("now");e.title=dkey(x);box.appendChild(e)}
+}
+document.getElementById("today").addEventListener("change",e=>{days[dkey(new Date())]=e.target.checked;try{localStorage.setItem(LK,JSON.stringify(days))}catch(x){}lockin()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)lockin()});
+lockin();
 </script>
 </body>
 </html>
