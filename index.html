@@ -252,6 +252,24 @@ h2,.cat h2,.calhead h2,.dayhero h2,.part-title,.num{font-family:var(--display)}
 input[type=checkbox]:checked{animation:pop .22s ease}
 @keyframes pop{50%{transform:scale(1.22)}}
 @media (max-width:860px){.bento{grid-template-columns:1fr 1fr}.tile.hero{grid-column:1/-1}.ringtile{grid-column:1/-1}.brand{font-size:50px}}
+
+/* ===== Pass 4: icons, day progress, full-day marks, confetti ===== */
+.kind{display:inline-flex;align-items:center;gap:4px;padding:2px 8px 2px 7px;border-radius:999px;vertical-align:1px}
+.dprog{display:flex;align-items:center;gap:12px;margin-top:16px;font-size:13px;font-weight:600;color:#55536B}
+.dbar{flex:1;max-width:260px;height:8px;border-radius:99px;background:rgba(255,255,255,.7);overflow:hidden}
+.dbar i{display:block;height:100%;width:0;border-radius:99px;background:var(--c);transition:width .35s}
+.cell.full::after{content:"";position:absolute;top:4px;right:4px;width:12px;height:12px;border-radius:50%;background:#34C759 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6.2l2 2 4-4.2' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.task{transition:transform .15s,box-shadow .15s}
+#tasks .task:hover{transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(60,50,120,.35)}
+.task.done{opacity:.62}
+.tile,.cat,.card,.day{transition:transform .18s,box-shadow .18s}
+.tile:hover{transform:translateY(-2px)}
+#v-cal:not([hidden]),#v-phases:not([hidden]),#v-rules:not([hidden]){animation:rise .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti i{position:absolute;bottom:18%;width:9px;height:14px;border-radius:2px;opacity:0;animation:fly 1.5s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes fly{0%{opacity:1;transform:translate(0,0) rotate(0)}80%{opacity:1}100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) * -1 * -1)) rotate(var(--rot))}}
+@media (prefers-reduced-motion:reduce){#v-cal,#v-phases,#v-rules{animation:none!important}}
 </style>
 </head>
 <body>
@@ -284,7 +302,7 @@ input[type=checkbox]:checked{animation:pop .22s ease}
       <div class="legend" id="legend"></div>
     </div>
     <div class="day" id="day">
-      <div class="dayhero" id="dayhero"><div class="catchip" id="dcat"></div><h2 id="dh"></h2><p class="sub" id="ds"></p></div>
+      <div class="dayhero" id="dayhero"><div class="catchip" id="dcat"></div><h2 id="dh"></h2><p class="sub" id="ds"></p><div class="dprog" id="dprog" hidden><div class="dbar"><i></i></div><span></span></div></div>
       <div class="sec"><h3>Learning today</h3><div class="group" id="tasks"></div></div>
       <div class="sec hidden" id="latesec"><h3>Late from earlier days</h3><div id="late" class="late-list group"></div></div>
       <div class="sec"><h3>Daily rules</h3>
@@ -838,6 +856,7 @@ try{done=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 try{days=JSON.parse(localStorage.getItem(LK))||{}}catch(e){}
 try{reps=JSON.parse(localStorage.getItem(RK))||{}}catch(e){}
 const sync={done(){},days(){},rep(){}};
+const ICON={watch:'<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M4 2.5v11l9-5.5z" fill="currentColor"/></svg>',read:'<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path d="M2 3h5c.6 0 1 .4 1 1v9c0-.6-.4-1-1-1H2zM14 3H9c-.6 0-1 .4-1 1v9c0-.6.4-1 1-1h5z" fill="currentColor"/></svg>'};
 let filesMap={},filesHook=null;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}sync.done()};
 const saveDays=()=>{try{localStorage.setItem(LK,JSON.stringify(days))}catch(e){}sync.days()};
@@ -872,7 +891,7 @@ data.forEach(c=>{
   const steps=c.steps.map((s,i)=>{
     const [kind,title,url,part,hrs,week,note]=s,k=c.id+"-"+i;
     let wk="";if(week&&week!==lastWeek){wk=`</ol><div class="week">${week}</div><ol class="res">`;lastWeek=week;}
-    return `${wk}<li data-kind="${kind}" data-k="${k}" class="${done[k]?"done":""}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs}h</span>`:""}<div class="res-part">${esc(part)}</div>${note?`<div class="res-note">${esc(note)}</div>`:""}</div></li>`;
+    return `${wk}<li data-kind="${kind}" data-k="${k}" class="${done[k]?"done":""}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${ICON[kind]}${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs}h</span>`:""}<div class="res-part">${esc(part)}</div>${note?`<div class="res-note">${esc(note)}</div>`:""}</div></li>`;
   }).join("");
   main.insertAdjacentHTML("beforeend",`<section class="cat${c.exam?" exam":""}" id="${c.id}" style="--c:${c.color||"#8E8E93"}">
     <div class="cat-head"><div class="num${c.n&&c.n.length>2?" word":""}" style="color:${c.color||"var(--soft)"}">${c.n}</div><div><h2>${c.t}</h2><div class="when">${dates}</div>${c.exam?"":`<div class="why">${c.why}</div>`}</div>${c.steps.length?`<div class="bar" title="Progress"><i id="b-${c.id}" style="background:${c.color}"></i></div>`:""}</div>
@@ -902,9 +921,9 @@ const optionalFrom=(()=>{const p=phases.find(p=>p.cat.n==="35");return p?p.s:nul
 const phaseOn=d=>phases.find(p=>d>=p.s&&d<=p.e);
 const dayOnly=d=>{const x=new Date(d);x.setHours(12,0,0,0);return x};
 const TODAY=dayOnly(new Date());
-let sel=TODAY;
+let sel=TODAY<PLAN0||TODAY>PLAN_END?PLAN0:TODAY;
 let vm=new Date(sel.getFullYear(),sel.getMonth(),1);
-const MONTHS_MIN=new Date(Math.min(new Date(2026,10,1),new Date(TODAY.getFullYear(),TODAY.getMonth(),1))),MONTHS_MAX=new Date(PLAN_END.getFullYear(),PLAN_END.getMonth(),1);
+const MONTHS_MIN=new Date(2026,10,1),MONTHS_MAX=new Date(PLAN_END.getFullYear(),PLAN_END.getMonth(),1);
 
 /* Calendar */
 function lateTasks(){return tasks.filter(t=>t.e<TODAY&&!done[t.key])}
@@ -921,6 +940,7 @@ function renderCal(){
     const dt=new Date(y,m,d,12),k=dkey(dt),ph=phaseOn(dt);
     const b=document.createElement("button");b.type="button";b.className="cell";b.dataset.k=k;if(ph)b.style.setProperty("--c",ph.cat.color);
     if(ph){if(ph.exam)b.classList.add("exam");else if(optionalFrom&&dt>=optionalFrom)b.classList.add("optional");else b.classList.add("plan")}
+    const dts=tasks.filter(x=>dt>=x.s&&dt<=x.e);if(dts.length&&dts.every(x=>done[x.key]))b.classList.add("full");
     if(k===dkey(TODAY))b.classList.add("today");
     if(k===dkey(sel))b.classList.add("sel");
     b.setAttribute("aria-label",dt.toDateString());
@@ -931,7 +951,7 @@ function renderCal(){
 }
 function taskRow(t,showPhase){
   const [kind,title,url,part,hrs,,note]=t.step,k=t.key;
-  return `<div class="task${done[k]?" done":""}" data-tk="${k}" style="--c:${t.cat.color}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs} h</span>`:""}<div class="res-part">${esc(part)}</div>${showPhase?`<div class="res-note" style="color:var(--soft)">Phase ${t.cat.n}: ${esc(t.cat.t)}, ${esc(t.step[5])}</div>`:""}${note?`<div class="res-note">${esc(note)}</div>`:""}</div></div>`;
+  return `<div class="task${done[k]?" done":""}" data-tk="${k}" style="--c:${t.cat.color}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${ICON[kind]}${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs} h</span>`:""}<div class="res-part">${esc(part)}</div>${showPhase?`<div class="res-note" style="color:var(--soft)">Phase ${t.cat.n}: ${esc(t.cat.t)}, ${esc(t.step[5])}</div>`:""}${note?`<div class="res-note">${esc(note)}</div>`:""}</div></div>`;
 }
 let repLoadedFor=null;
 function renderDay(force){
@@ -944,6 +964,8 @@ function renderDay(force){
   else sub="No phase today. Catch up on late steps or rest.";
   document.getElementById("ds").textContent=sub;document.getElementById("dayhero").style.setProperty("--c",ph?ph.cat.color:"#8E8E93");const dc=document.getElementById("dcat");if(ph){dc.hidden=false;dc.style.setProperty("--c",ph.cat.color);dc.textContent=CATS[ph.cat.cat].n}else dc.hidden=true;
   const todayTasks=tasks.filter(t=>sel>=t.s&&sel<=t.e);
+  {const dp=document.getElementById("dprog"),nd=todayTasks.filter(x=>done[x.key]).length;dp.hidden=!todayTasks.length;
+   if(todayTasks.length){dp.querySelector("i").style.width=(nd/todayTasks.length*100)+"%";dp.querySelector("span").textContent=nd===todayTasks.length?"All done for this day":nd+" of "+todayTasks.length+" steps done"}}
   document.getElementById("tasks").innerHTML=todayTasks.length?todayTasks.map(t=>taskRow(t,false)).join(""):'<p class="empty-note">Nothing planned for this day.</p>';
   const ls=document.getElementById("latesec"),late=lateTasks().filter(t=>dkey(sel)===dkey(TODAY));
   ls.classList.toggle("hidden",!late.length);
@@ -967,7 +989,7 @@ function repNote(){
 }
 document.getElementById("mprev").addEventListener("click",()=>{vm=new Date(vm.getFullYear(),vm.getMonth()-1,1);renderCal()});
 document.getElementById("mnext").addEventListener("click",()=>{vm=new Date(vm.getFullYear(),vm.getMonth()+1,1);renderCal()});
-document.getElementById("mtoday").addEventListener("click",()=>{sel=TODAY;vm=new Date(sel.getFullYear(),sel.getMonth(),1);renderCal();renderDay(true)});
+document.getElementById("mtoday").addEventListener("click",()=>{sel=TODAY<PLAN0||TODAY>PLAN_END?PLAN0:TODAY;vm=new Date(sel.getFullYear(),sel.getMonth(),1);renderCal();renderDay(true)});
 document.getElementById("today").addEventListener("change",e=>{days[dkey(sel)]=e.target.checked;saveDays();refreshStreaks();renderCal();renderDay()});
 const repEl=document.getElementById("rep");
 repEl.addEventListener("input",()=>{reps[dkey(sel)]=repEl.value;saveReps();repNote();refreshStreaks();renderCal()});
@@ -1073,7 +1095,13 @@ document.getElementById("q").addEventListener("input",apply);
 document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>{
   filter=b.dataset.f;document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b));apply();
 }));
-function setDone(k,v){done[k]=v;save();refreshAll()}
+function burst(){
+  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const cols=["#5E5CE6","#BF5AF2","#FF6B8B","#34C759","#FF9F0A","#32ADE6"],box=document.createElement("div");box.className="confetti";
+  for(let i=0;i<46;i++){const p=document.createElement("i");p.style.cssText=`left:${40+Math.random()*20}%;background:${cols[i%6]};--dx:${(Math.random()-.5)*620}px;--dy:${-(160+Math.random()*320)}px;--rot:${Math.random()*720}deg;animation-delay:${Math.random()*.12}s`;box.appendChild(p)}
+  document.body.appendChild(box);setTimeout(()=>box.remove(),1800)}
+function setDone(k,v){done[k]=v;save();refreshAll();
+  if(v){const ts=tasks.filter(x=>sel>=x.s&&sel<=x.e);if(ts.length&&ts.some(x=>x.key===k)&&ts.every(x=>done[x.key]))burst()}}
 function refreshAll(){
   document.querySelectorAll("li[data-k]").forEach(li=>{const v=!!done[li.dataset.k];li.classList.toggle("done",v);const cb=li.querySelector('input[type=checkbox]');if(cb)cb.checked=v});
   progress();apply();renderCal();renderDay();refreshStreaks();
