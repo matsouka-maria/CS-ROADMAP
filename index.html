@@ -2,202 +2,248 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>LOCK IN</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F3F5FA; --panel:#FFFFFF; --ink:#181C35; --soft:#5D6482; --line:#E1E5EF;
-  --violet:#5B4BDB; --watch:#C2413B; --read:#2D6FC2; --warn:#B7790B;
-  --radius-lg:18px; --radius-sm:8px;
-  --display:"Bricolage Grotesque",system-ui,sans-serif;
-  --body:"Instrument Sans",system-ui,sans-serif;
-}
-@media (prefers-color-scheme:dark){
-  :root{--bg:#10132A;--panel:#181C38;--ink:#ECEEFA;--soft:#9EA4C4;--line:#2A2F52;--violet:#8E82FF;--watch:#F07068;--read:#6FA8F0;--warn:#E3AA3A}
+  --bg:#F2F2F7; --panel:#FFFFFF; --ink:#1C1C1E; --soft:#8A8A8E; --line:#E5E5EA; --fill:#EFEFF4;
+  --blue:#007AFF; --green:#34C759; --red:#FF3B30; --amber:#C77D00;
+  --r:16px; --r-s:10px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--body)}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--violet);outline-offset:2px;border-radius:4px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--font);letter-spacing:-.011em;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 45%,transparent);outline-offset:1px;border-radius:8px}
+button{font:inherit;color:inherit}
+.hidden,[hidden]{display:none!important}
+.wrap{max-width:1080px;margin:0 auto}
 
-header{max-width:1180px;margin:0 auto;padding:40px 20px 8px}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,5.5vw,56px);line-height:1.02;letter-spacing:-.02em;margin:0 0 14px}
-.lede{color:var(--soft);max-width:66ch;margin:0}
-.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.rules span{font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+.top{padding:22px 0 4px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px 16px}
+.brand{font-weight:800;font-size:34px;letter-spacing:-.03em;line-height:1.1}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.stat{font-size:13px;color:var(--soft);background:var(--panel);border-radius:999px;padding:5px 12px;font-weight:500}
+.stat b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+#syncst{flex-basis:100%;font-size:13px;color:var(--soft);margin:0}
+.tabs{display:inline-flex;gap:2px;margin:14px 0 18px;background:#E3E3E8;border-radius:10px;padding:2px}
+.tabs button{background:none;border:0;border-radius:8px;padding:6px 18px;color:var(--ink);cursor:pointer;font-weight:600;font-size:14px}
+.tabs button[aria-selected="true"]{background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.14)}
 
-.route{max-width:1180px;margin:26px auto 0;padding:0 20px}
-.route-track{position:relative;height:64px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
-.seg{position:absolute;top:10px;bottom:10px;border-radius:10px;display:flex;align-items:center;justify-content:center;font:600 12px/1 var(--body);color:#fff;text-decoration:none;white-space:nowrap;overflow:hidden;padding:0 4px}
-.seg.exam{background:repeating-linear-gradient(135deg,var(--line) 0 8px,transparent 8px 16px);color:var(--soft);border:1px dashed var(--soft)}
-.months{position:relative;height:22px;margin-top:6px;font-size:12px;color:var(--soft)}
-.months span{position:absolute;transform:translateX(-50%)}
-.today{position:absolute;top:0;bottom:0;width:2px;background:var(--ink)}
+input[type=checkbox]{-webkit-appearance:none;appearance:none;width:24px;height:24px;border-radius:50%;border:1.5px solid #C7C7CC;background:var(--panel);cursor:pointer;margin:0;display:inline-grid;place-content:center;flex:none;transition:background .15s,border-color .15s}
+input[type=checkbox]::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg) translate(-1px,-1px) scale(0);transition:transform .12s}
+input[type=checkbox]:checked{background:var(--green);border-color:var(--green)}
+input[type=checkbox]:checked::after{transform:rotate(45deg) translate(-1px,-1px) scale(1)}
+input[type=checkbox]:disabled{opacity:.4;cursor:default}
 
-.layout{max-width:1180px;margin:28px auto 80px;padding:0 20px;display:grid;grid-template-columns:270px 1fr;gap:28px;align-items:start}
-aside{position:sticky;top:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:14px;max-height:calc(100vh - 32px);overflow:auto}
-.search{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.calwrap{display:grid;grid-template-columns:minmax(0,390px) minmax(0,1fr);gap:20px;align-items:start;padding-bottom:70px}
+.card{background:var(--panel);border-radius:var(--r);padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.calhead{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.calhead h2{margin:0;font-size:20px;font-weight:700;flex:1;letter-spacing:-.02em}
+.calhead button{background:none;border:0;border-radius:8px;padding:4px 10px;cursor:pointer;color:var(--blue);font-weight:600}
+.calhead button:disabled{color:#C7C7CC;cursor:default}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.dow span{font-size:11px;color:var(--soft);text-align:center;padding:2px 0;font-weight:600}
+.cell{position:relative;aspect-ratio:1/1.1;border:0;border-radius:10px;background:transparent;cursor:pointer;padding:4px 2px 3px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font-variant-numeric:tabular-nums;--c:var(--soft)}
+.cell.empty{visibility:hidden}
+.cell .n{font-size:16px;font-weight:500}
+.cell .p{font-size:10px;font-weight:700;color:var(--c);min-height:12px;letter-spacing:.01em}
+.cell .dots{display:flex;gap:3px;min-height:6px}
+.cell .dots i{width:5px;height:5px;border-radius:50%;background:transparent;display:block}
+.cell .dots i.lc.on{background:var(--blue)}
+.cell .dots i.rp.on{background:var(--green)}
+.cell.plan{background:color-mix(in srgb,var(--c) 15%,#fff)}
+.cell.optional{background:color-mix(in srgb,var(--c) 8%,#fff)}
+.cell.exam{background:repeating-linear-gradient(135deg,#E5E5EA 0 5px,#F2F2F7 5px 10px);--c:#8E8E93}
+.cell.today .n{background:var(--red);color:#fff;border-radius:50%;width:24px;height:24px;line-height:24px;text-align:center;font-weight:700}
+.cell.sel{background:var(--c);color:#fff}
+.cell.sel .n{color:#fff}
+.cell.sel.today .n{background:#fff;color:var(--c)}
+.cell.sel .p{color:rgba(255,255,255,.9)}
+.cell.sel .dots i.lc.on,.cell.sel .dots i.rp.on{background:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--soft);margin:12px 4px 0}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+
+.day{background:var(--panel);border-radius:var(--r);padding:20px;min-width:0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.day h2{margin:0;font-size:26px;font-weight:700;letter-spacing:-.025em}
+.catchip{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:2px 10px;margin-bottom:8px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff)}
+.sub{color:var(--soft);font-size:15px;margin:4px 0 0}
+.sec{margin-top:22px}
+.sec h3{margin:0 0 6px;font-size:13px;font-weight:600;color:var(--soft);text-transform:uppercase;letter-spacing:.04em}
+.group{background:var(--bg);border-radius:12px;padding:0 14px}
+.task{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid #DCDCE0;--c:var(--soft)}
+.task:first-child{border-top:0}
+.task.done .res-title{text-decoration:line-through;color:var(--soft)}
+.task input{margin-top:1px}
+.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:6px}
+.empty-note{color:var(--soft);font-size:15px;margin:0;padding:14px 0}
+.lcrow{display:flex;align-items:center;gap:12px;font-weight:600;cursor:pointer;padding:12px 0}
+.lcrow input{width:28px;height:28px}
+.lcrow input:checked + span{color:var(--soft);text-decoration:line-through}
+textarea#rep{width:100%;min-height:110px;resize:vertical;border:0;border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;padding:12px 14px}
+textarea#rep:disabled{opacity:.5}
+.rn{font-size:13px;color:var(--soft);margin:2px 0}
+.rn.ok{color:var(--green);font-weight:600}
+.btn{background:color-mix(in srgb,var(--blue) 12%,#fff);border:0;border-radius:999px;padding:7px 16px;cursor:pointer;font-weight:600;font-size:14px;color:var(--blue)}
+details.more{margin-top:22px;background:var(--bg);border-radius:12px;padding:12px 14px}
+details.more summary{cursor:pointer;font-weight:600}
+details.more p{margin:8px 0 0;font-size:15px}
+.late-list .task{padding:9px 0}
+.drop{display:block;border:1.5px dashed #C7C7CC;border-radius:12px;padding:18px 14px;text-align:center;color:var(--soft);cursor:pointer;font-size:15px}
+.drop.over{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 8%,#fff);color:var(--blue)}
+.frow{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.frow a{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:600}
+.frow small{color:var(--soft);font-size:12px;white-space:nowrap}
+.frow button{background:none;border:0;color:var(--red);cursor:pointer;font-weight:600;font-size:14px;padding:4px 6px}
+
+.rules-list{max-width:640px;display:grid;gap:0;padding-bottom:60px;background:var(--panel);border-radius:var(--r);overflow:hidden}
+.rl{padding:14px 16px;display:grid;grid-template-columns:28px 1fr;gap:2px 8px;border-top:1px solid var(--line)}
+.rl:first-child{border-top:0}
+.rl b{color:var(--blue);font-variant-numeric:tabular-nums}
+.rl span{font-weight:600}
+.rl small{grid-column:2;color:var(--soft);font-size:14px}
+
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start;padding-bottom:70px}
+aside{position:sticky;top:12px;background:var(--panel);border-radius:var(--r);padding:12px;max-height:calc(100vh - 24px);overflow:auto}
+.search{width:100%;padding:9px 12px;border:0;border-radius:10px;background:#E9E9EE;color:var(--ink);font:inherit;font-size:15px}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px}
-.filters button{font:500 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 10px;cursor:pointer}
-.filters button[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.filters button{font-size:13px;font-weight:600;border:0;background:#E9E9EE;border-radius:999px;padding:4px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--blue);color:#fff}
 .toc{list-style:none;margin:0;padding:0;font-size:14px}
-.toc a{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:6px 8px;border-radius:var(--radius-sm);text-decoration:none}
-.toc a:hover{background:var(--bg)}
-.toc .grp{font-size:12px;color:var(--soft);padding:10px 8px 2px}
-.dot{width:12px;height:12px;border-radius:50%}
+.toc a{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;padding:5px 6px;border-radius:8px;color:var(--ink)}
+.toc a:hover{background:var(--bg);text-decoration:none}
+.toc .grp{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);padding:12px 6px 2px}
+.dot{width:8px;height:8px;border-radius:50%}
 .pct{font-size:12px;color:var(--soft);font-variant-numeric:tabular-nums}
 .total{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;font-size:13px;color:var(--soft)}
 .total b{color:var(--ink)}
-
-.part-title{font-family:var(--display);font-weight:700;font-size:26px;margin:8px 0 14px;letter-spacing:-.01em}
-.part-title small{display:block;font:400 15px var(--body);color:var(--soft);margin-top:2px}
-.part-title:not(:first-child){margin-top:40px}
-
-.cat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);margin-bottom:22px;overflow:hidden;scroll-margin-top:16px}
-.cat-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;padding:20px 22px;border-bottom:1px solid var(--line)}
-.num{font-family:var(--display);font-weight:800;font-size:40px;line-height:1;width:52px;text-align:center}
-.num.word{font-size:15px}
-.cat h2{font-family:var(--display);font-weight:700;font-size:22px;margin:0;letter-spacing:-.01em}
-.when{color:var(--soft);font-size:14px;margin-top:2px}
-.why{font-size:14px;margin-top:6px;max-width:70ch}
-.bar{width:120px;height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.part-title{font-weight:700;font-size:22px;letter-spacing:-.02em;margin:6px 0 12px}
+.part-title small{display:block;font-weight:400;font-size:14px;color:var(--soft);margin-top:2px;letter-spacing:0}
+.part-title:not(:first-child){margin-top:34px}
+.cat{background:var(--panel);border-radius:var(--r);margin-bottom:14px;overflow:hidden;scroll-margin-top:12px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.cat-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.num{font-weight:800;font-size:26px;line-height:1;width:44px;text-align:center}
+.num.word{font-size:14px}
+.cat h2{font-size:18px;font-weight:700;margin:0;letter-spacing:-.015em}
+.when{color:var(--soft);font-size:13px;margin-top:2px}
+.why{font-size:14px;margin-top:6px;max-width:70ch;color:var(--soft)}
+.bar{width:90px;height:6px;background:#E9E9EE;border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;transition:width .3s}
-.cat-body{display:grid;grid-template-columns:1.7fr 1fr}
-.learn{padding:18px 22px;border-right:1px solid var(--line)}
-.side{padding:18px 22px;display:flex;flex-direction:column;gap:18px}
-h3{font-family:var(--display);font-weight:700;font-size:15px;margin:0 0 10px}
-.week{font-size:13px;font-weight:600;color:var(--soft);margin:16px 0 4px}
+.cat-body{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr)}
+.learn{padding:16px 18px;border-right:1px solid var(--line)}
+.side{padding:16px 18px;display:flex;flex-direction:column;gap:16px}
+h3{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);margin:0 0 8px}
+.week{font-size:13px;font-weight:600;color:var(--soft);margin:14px 0 4px}
 .week:first-of-type{margin-top:0}
 ol.res{list-style:none;margin:0;padding:0}
-ol.res li{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+ol.res li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;padding:10px 0;border-top:1px solid var(--line)}
 ol.res li:first-child{border-top:0}
-ol.res input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--violet);cursor:pointer}
-.kind{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:1px 7px;margin-right:6px;vertical-align:1px}
-.kind.watch{color:var(--watch);background:color-mix(in srgb,var(--watch) 12%,transparent)}
-.kind.read{color:var(--read);background:color-mix(in srgb,var(--read) 12%,transparent)}
-.res-title{font-weight:600;text-decoration:none}
+ol.res input{margin-top:1px}
+.kind{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px;margin-right:6px;vertical-align:1px}
+.kind.watch{color:#D70015;background:#FFE5E8}
+.kind.read{color:#0058D0;background:#E1EEFF}
+.res-title{font-weight:600;color:var(--ink);overflow-wrap:anywhere}
 .res-title:hover{text-decoration:underline}
 .hrs{font-size:13px;color:var(--soft);margin-left:6px;font-variant-numeric:tabular-nums}
 li.done .res-title{text-decoration:line-through;color:var(--soft)}
 .res-part{font-size:14.5px;margin-top:3px}
-.res-note{font-size:13px;color:var(--warn);margin-top:3px}
-.project{font-size:15px;margin:0}
+.res-note{font-size:13px;color:var(--amber);margin-top:3px}
+.project{font-size:14.5px;margin:0}
 .need{font-size:14px;color:var(--soft);margin:0}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-size:13px;padding:3px 9px;border-radius:6px;background:var(--bg);border:1px solid var(--line)}
-.cat.exam .cat-body{display:block;padding:18px 22px}
+.cat.exam .cat-body{display:block;padding:16px 18px}
 .cat.exam ul{margin:10px 0 0;padding-left:20px}
 
-h1{font-size:clamp(52px,11vw,120px)!important;line-height:.95!important;letter-spacing:-.035em!important;margin:0 0 22px!important}
-.lockin{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.rule{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:18px 20px;font:800 clamp(20px,2.4vw,28px)/1.05 var(--display);letter-spacing:-.01em;text-transform:uppercase}
-.rule-n{font:600 12px/1 var(--body);letter-spacing:.08em;color:var(--soft);margin-bottom:10px;text-transform:uppercase}
-.rule.last{background:var(--ink);color:var(--panel)}
-.rule.last .rule-n{color:var(--panel);opacity:.7}
-.rule.leet,.rule.report{grid-column:1/-1;display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
-.rule-t{margin-bottom:14px}
-.daily{display:flex;align-items:center;gap:12px;font:600 18px var(--body);text-transform:none;letter-spacing:0;cursor:pointer}
-.daily input{width:30px;height:30px;accent-color:var(--violet);cursor:pointer;margin:0}
-.daily input:checked + span{text-decoration:line-through;text-decoration-thickness:2px;color:var(--soft)}
-.hint{font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--soft);margin-top:8px}
-.hint a{color:var(--read)}
-.warn.ok{color:var(--read)}
-.warn{font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--watch);margin-top:10px;min-height:20px}
-.streak{display:flex;align-items:baseline;gap:10px}
-.flame{font-size:40px;line-height:1}
-.streak b{font:800 64px/1 var(--display);letter-spacing:-.03em}
-.streak-l{font:600 16px var(--body);text-transform:none;letter-spacing:0;color:var(--soft)}
-.best{font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--soft);margin-top:4px}
-.days{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
-.days i{width:16px;height:16px;border-radius:50%;background:var(--line);display:block}
-.days i.on{background:var(--violet)}
-.days i.now{outline:2px solid var(--ink);outline-offset:2px}
-@media (max-width:860px){.lockin{grid-template-columns:1fr 1fr}.rule.leet,.rule.report{grid-template-columns:1fr}}
-@media (max-width:520px){.lockin{grid-template-columns:1fr}}
-.rule.report textarea{width:100%;min-height:96px;resize:vertical;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);font:500 16px/1.45 var(--body);text-transform:none;letter-spacing:0;padding:12px}
-.repbtns{margin-top:12px}
-.repbtns button{font:600 14px var(--body);text-transform:none;letter-spacing:0;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
-.repold{margin-top:10px;font:500 14px var(--body);text-transform:none;letter-spacing:0}
-.repold summary{cursor:pointer;color:var(--soft)}
-#replist{max-height:220px;overflow:auto;margin-top:8px}
-#replist div{padding:8px 0;border-top:1px solid var(--line);white-space:pre-wrap;font-weight:400}
-#replist b{display:block;font-size:12px;color:var(--soft);font-weight:600}
-.hidden{display:none!important}
-
 @media (max-width:860px){
-  .layout{grid-template-columns:1fr}
+  .calwrap,.layout{grid-template-columns:minmax(0,1fr)}
   aside{position:static;max-height:none}
-  .cat-body{grid-template-columns:1fr}
+  .cat-body{grid-template-columns:minmax(0,1fr)}
   .learn{border-right:0;border-bottom:1px solid var(--line)}
-  .seg{font-size:0}
-  .bar{width:70px}
-  .num{font-size:30px;width:38px}
+  .bar{width:56px}
+  .stats{margin-left:0}
+  .brand{font-size:30px}
 }
 </style>
 </head>
 <body>
-<header>
-  <h1>LOCK IN <span aria-hidden="true">🔒</span></h1>
-  <div class="lockin">
-    <section class="rule leet" aria-label="Daily LeetCode streak">
-      <div>
-        <div class="rule-n">Rule 1</div>
-        <div class="rule-t">1 LeetCode problem per day</div>
-        <label class="daily"><input type="checkbox" id="today"><span>Done today</span></label>
-        <div class="warn" id="warn"></div>
-        <div class="hint">Use the <a href="https://neetcode.io" target="_blank" rel="noopener">NeetCode 150 list</a>. Try each problem for 25 minutes. Then watch the video.</div>
-      </div>
-      <div class="streakbox">
-        <div class="streak"><span class="flame" aria-hidden="true">🔥</span><b id="streakn">0</b><span class="streak-l">day streak</span></div>
-        <div class="best" id="best"></div>
-        <div class="days" id="dots" aria-label="Last 14 days"></div>
-      </div>
-    </section>
-    <section class="rule report" aria-label="Daily report">
-      <div>
-        <div class="rule-n">Rule 2</div>
-        <div class="rule-t">Write a report of what you did, every day</div>
-        <textarea id="rep" rows="4" placeholder="Today I did: ...&#10;I finished: ...&#10;Tomorrow I do: ..." aria-label="Today's report"></textarea>
-        <div class="warn" id="repwarn"></div>
-      </div>
-      <div class="streakbox">
-        <div class="streak"><span class="flame" aria-hidden="true">📝</span><b id="repn">0</b><span class="streak-l">day streak</span></div>
-        <div class="best" id="repbest"></div>
-        <div class="days" id="repdots" aria-label="Last 14 days of reports"></div>
-        <div class="repbtns"><button type="button" id="repdl">Download all reports</button></div>
-        <details class="repold"><summary>Past reports</summary><div id="replist"></div></details>
-      </div>
-    </section>
-    <div class="rule"><div class="rule-n">Rule 3</div>No AI.</div>
-    <div class="rule"><div class="rule-n">Rule 4</div>Learn now, not later.</div>
-    <div class="rule"><div class="rule-n">Rule 5</div>Do not waste time.</div>
-    <div class="rule last"><div class="rule-n">Rule 6</div>DO NOT GIVE UP.</div>
+<div class="wrap">
+<header class="top">
+  <div class="brand">LOCK IN</div>
+  <div class="stats">
+    <span class="stat">LeetCode streak <b id="streakn">0</b></span>
+    <span class="stat">Report streak <b id="repn">0</b></span>
+    <span class="stat"><b id="totalmini">0</b> steps done</span>
   </div>
+  <p id="syncst">Saved in this browser only.</p>
 </header>
+<nav class="tabs" role="tablist" aria-label="Views">
+  <button role="tab" id="t-cal" aria-selected="true" data-v="cal">Calendar</button>
+  <button role="tab" id="t-phases" aria-selected="false" data-v="phases">All phases</button>
+  <button role="tab" id="t-rules" aria-selected="false" data-v="rules">Rules</button>
+</nav>
 
-<div class="route" aria-label="Timeline of all phases">
-  <div class="route-track" id="track"></div>
-  <div class="months" id="months"></div>
-</div>
-
-<div class="layout">
-  <aside>
-    <input class="search" id="q" type="search" placeholder="Search a topic, book, or lecture" aria-label="Search">
-    <div class="filters" role="group" aria-label="Filter steps">
-      <button data-f="all" aria-pressed="true">All</button>
-      <button data-f="watch" aria-pressed="false">Watch</button>
-      <button data-f="read" aria-pressed="false">Read</button>
-      <button data-f="todo" aria-pressed="false">Not done</button>
+<section id="v-cal" aria-labelledby="t-cal">
+  <div class="calwrap">
+    <div>
+      <div class="card cal">
+        <div class="calhead"><h2 id="mtitle"></h2><button id="mprev" aria-label="Previous month">&lt;</button><button id="mtoday">Today</button><button id="mnext" aria-label="Next month">&gt;</button></div>
+        <div class="dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+        <div class="grid" id="grid"></div>
+      </div>
+      <div class="legend" id="legend"></div>
     </div>
-    <ul class="toc" id="toc"></ul>
-    <div class="total" id="total"></div>
-  </aside>
-  <main id="main"></main>
+    <div class="day" id="day">
+      <div class="catchip" id="dcat"></div><h2 id="dh"></h2><p class="sub" id="ds"></p>
+      <div class="sec"><h3>Learning today</h3><div class="group" id="tasks"></div></div>
+      <div class="sec hidden" id="latesec"><h3>Late from earlier days</h3><div id="late" class="late-list group"></div></div>
+      <div class="sec"><h3>Daily rules</h3>
+        <div class="group" style="padding:0 14px"><label class="lcrow"><input type="checkbox" id="today"><span>Solve 1 LeetCode problem</span></label></div>
+        <div class="rn" id="lcn"></div>
+        <div style="height:10px"></div>
+        <textarea id="rep" rows="4" placeholder="Today I did: ...&#10;I finished: ...&#10;Tomorrow I do: ..." aria-label="Report for this day"></textarea>
+        <div class="rn" id="repwarn"></div>
+        <div class="sec" id="filesec" hidden><h3>Files for this day</h3>
+          <label class="drop" id="drop"><input type="file" id="fin" multiple accept=".pdf,.txt,.md,.csv,.json,image/*" hidden><span>Drop a PDF, text file or image here, or tap to choose</span></label>
+          <div class="rn" id="fmsg"></div><div id="flist"></div></div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="repdl" type="button">Download all reports</button></div>
+        <div class="rn" id="dlmsg"></div>
+      </div>
+      <details class="more" id="projbox"><summary>Project and what you need first</summary><div id="proj"></div></details>
+    </div>
+  </div>
+</section>
+
+<section id="v-phases" hidden aria-labelledby="t-phases">
+  <div class="layout">
+    <aside>
+      <input class="search" id="q" type="search" placeholder="Search a topic, book, or lecture" aria-label="Search">
+      <div class="filters" role="group" aria-label="Filter steps">
+        <button data-f="all" aria-pressed="true">All</button>
+        <button data-f="watch" aria-pressed="false">Watch</button>
+        <button data-f="read" aria-pressed="false">Read</button>
+        <button data-f="todo" aria-pressed="false">Not done</button>
+      </div>
+      <ul class="toc" id="toc"></ul>
+      <div class="total" id="total"></div>
+    </aside>
+    <main id="main"></main>
+  </div>
+</section>
+
+<section id="v-rules" hidden aria-labelledby="t-rules">
+  <div class="rules-list">
+    <div class="rl"><b>1</b><span>Solve 1 LeetCode problem every day.</span><small>Tick the box in the day view. The streak counts days in a row. Use the NeetCode 150 list: <a href="https://neetcode.io" target="_blank" rel="noopener">neetcode.io</a>. Try each problem for 25 minutes, then watch the video.</small></div>
+    <div class="rl"><b>2</b><span>Write a report of what you did every day.</span><small>At least 20 characters. Say what you did, what you finished, and what you do tomorrow.</small></div>
+    <div class="rl"><b>3</b><span>No AI.</span><small>Claude explains and reviews. It does not write your homework.</small></div>
+    <div class="rl"><b>4</b><span>Learn now, not later.</span></div>
+    <div class="rl"><b>5</b><span>Do not waste time.</span></div>
+    <div class="rl"><b>6</b><span>DO NOT GIVE UP.</span></div>
+    <div class="rl"><b>7</b><span>Review yourself.</span><small>Wednesday and Sunday, 15 minutes: 3 lines for done, late, and next. Once a month, 1 hour: show one project as if you teach it.</small></div>
+  </div>
+</section>
 </div>
 
 <script>
@@ -563,7 +609,7 @@ const data=[
  [R,"Go by Example (free)",L.gobyex,"Goroutines, channels, select, and the HTTP server examples.",4,"8 May to 11 May","I did not open this page."]],
  project:"A small HTTP server with 2 routes and a worker that uses goroutines and channels.",need:"Phases 3 and 13."},
 
-{group:"Part 5: Going deeper",sub:"Phases 29 to 31 come after phase 28. Do them in this order: 29, 30, 31."},
+{group:"Part 5: Quantum, systems, and theory",sub:"These finish the 8-month plan on 26 Jun 2027. Quantum comes first. Then operating systems, probability, theory, GPUs, and numerical computing."},
 {id:"laterA",n:"29",t:"Quantum computing, deeper",color:"#5B4BDB",start:"2027-05-12",end:"2027-05-25",hours:"80 hours",
  why:"Finish the Watrous course. Do this track first. Quantum is your focus.",
  steps:[
@@ -573,107 +619,161 @@ const data=[
  [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Pages 375 to 495.",null,"19 May to 25 May","The page split is my estimate. Follow the lesson boundaries in the book."]],
  project:"Write one algorithm from each unit in Qiskit. Run one of them on real IBM hardware.",need:"Phase 6."},
 
-{id:"laterB",n:"30",t:"Deep learning, deeper",color:"#2B7A78",start:"2027-05-26",end:"2027-06-05",hours:"60 hours",
+{id:"os",n:"30",t:"Operating systems",color:"#455A64",start:"2027-05-26",end:"2027-06-01",hours:"40 hours",
+ why:"How a computer runs many programs: processes, memory, threads, locks, and files. Every interview asks about this.",
+ steps:[
+ [R,"OSTEP: Operating Systems, Three Easy Pieces (free PDFs): Virtualization","https://pages.cs.wisc.edu/~remzi/OSTEP/","Ch 4 Processes, Ch 5 Process API, Ch 6 Direct Execution, Ch 7 CPU Scheduling, Ch 8 Multi-level Feedback, Ch 9 Lottery Scheduling, Ch 10 Multi-CPU Scheduling.",8,"26 May to 28 May","I checked these chapter titles on the OSTEP site. I found no verified lecture videos for this book."],
+ [R,"OSTEP: Virtualization of memory","https://pages.cs.wisc.edu/~remzi/OSTEP/","Ch 13 Address Spaces, Ch 14 Memory API, Ch 15 Address Translation, Ch 16 Segmentation, Ch 17 Free Space Management, Ch 18 Paging, Ch 19 TLBs, Ch 20 Advanced Page Tables, Ch 21 Swapping: Mechanisms, Ch 22 Swapping: Policies, Ch 23 Complete VM Systems.",12,"26 May to 28 May"],
+ [R,"OSTEP: Concurrency","https://pages.cs.wisc.edu/~remzi/OSTEP/","Ch 26 Concurrency and Threads, Ch 27 Thread API, Ch 28 Locks, Ch 29 Locked Data Structures, Ch 30 Condition Variables, Ch 31 Semaphores, Ch 32 Concurrency Bugs.",10,"29 May to 1 Jun"],
+ [R,"OSTEP: Persistence","https://pages.cs.wisc.edu/~remzi/OSTEP/","Ch 36 I/O Devices, Ch 37 Hard Disk Drives, Ch 38 RAID, Ch 39 Files and Directories, Ch 40 File System Implementation, Ch 41 FFS, Ch 42 FSCK and Journaling.",10,"29 May to 1 Jun"]],
+ project:"In C: a small shell that runs programs with fork and exec and supports pipes. Then a thread-safe queue with locks and condition variables. Test both with many threads.",need:"Phases 1, 3, and 8."},
+
+{id:"prob",n:"31",t:"Probability and statistics",color:"#8E6A00",start:"2027-06-02",end:"2027-06-08",hours:"40 hours",
+ why:"Quantum computing and AI are probability. You also need it for algorithms and for data work.",
+ steps:[
+ [W,"MIT 6.041SC Probabilistic Systems Analysis, Unit I","https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/","Unit I: Probability Models and Discrete Random Variables, lectures 1 to 7. Solve the problems after each lecture on paper.",20,"2 Jun to 4 Jun","I checked the unit list. The page gives lecture numbers, not titles. I did not check if the videos are free."],
+ [W,"MIT 6.041SC, Units II and IV","https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/","Unit II: General Random Variables, lectures 8 to 12. Then Unit IV, lectures 19 to 22.",20,"5 Jun to 8 Jun","Lectures 23 to 25 are optional. The course book is not free, so use the lecture notes."]],
+ project:"A Python notebook: simulate Monte Carlo estimates of pi and of the birthday problem. Check each against the exact answer.",need:"Phases 4 and 5. Your Stanford PAI course covers the same ideas, so do not do both twice."},
+
+{id:"toc",n:"32",t:"Theory of computation",color:"#6A1B9A",start:"2027-06-09",end:"2027-06-15",hours:"40 hours",
+ why:"What a computer can and cannot do, and what is hard. P and NP, and why quantum computers matter.",
+ steps:[
+ [W,"MIT 18.404J Theory of Computation, Fall 2020, lectures 1 to 12","https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/pages/lecture-videos/","1 Finite Automata, 2 Nondeterminism, 3 Pumping Lemma and CFGs, 4 Pushdown Automata, 5 CF Pumping Lemma and Turing Machines, 6 TM Variants and Church-Turing Thesis, 7 Decision Problems, 8 Undecidability, 9 Reducibility, 10 Computation History, 11 Recursion Theorem, 12 Time Complexity.",20,"9 Jun to 11 Jun","I checked these lecture titles on the OCW page. The course book (Sipser) is not free."],
+ [W,"MIT 18.404J, lectures 14 to 22","https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/pages/lecture-videos/","14 P and NP and SAT, 15 NP-Completeness, 16 Cook-Levin Theorem, 17 Space Complexity and PSPACE, 18 PSPACE-Completeness, 19 Games, 20 L and NL, 21 Hierarchy Theorems, 22 Provably Intractable Problems.",20,"12 Jun to 15 Jun","The page has no lecture 13."]],
+ project:"A DFA simulator and a Turing machine simulator in Python. Then a small 3-SAT solver. Write one page that shows how 3-SAT reduces to another problem.",need:"Phase 4."},
+
+{id:"gpu",n:"33",t:"Parallel and GPU programming",color:"#C62828",start:"2027-06-16",end:"2027-06-22",hours:"40 hours",
+ why:"AMD builds GPUs. You learn how a GPU runs thousands of threads and how to write a kernel with HIP.",
+ steps:[
+ [R,"AMD HIP docs: Programming guide","https://rocm.docs.amd.com/projects/HIP/en/latest/","Introduction to the HIP programming model, Understanding GPU performance, Hardware implementation, HIP C++ language extensions. Then the SAXPY tutorial and the Reduction tutorial. Write the code yourself.",20,"16 Jun to 18 Jun","I checked these section titles on the HIP site. I found no verified lecture videos. HIP needs a GPU. I did not check a free cloud option."],
+ [R,"AMD HIP docs: GPU programming patterns","https://rocm.docs.amd.com/projects/HIP/en/latest/","Two-dimensional kernels (matrix multiplication), Atomic operations (histogram), CPU-GPU cooperative computing (K-means), Stencil operations (image convolution), Multi-kernel programming (breadth-first search). Then read Performance guidelines.",20,"19 Jun to 22 Jun"]],
+ project:"Matrix multiplication and image convolution as HIP kernels. Time them against your C++ CPU versions. Write the speed-up in the README.",need:"Phases 8, 10, and 30."},
+
+{id:"num",n:"34",t:"Numerical and scientific computing",color:"#00695C",start:"2027-06-23",end:"2027-06-26",hours:"20 hours",
+ why:"Floating point, simulation, and the tools that CERN uses to analyze data.",
+ steps:[
+ [R,"Goldberg: What every computer scientist should know about floating-point arithmetic","https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html","Read the sections on rounding error and on the IEEE standard.",5,"23 Jun to 26 Jun","I could not open this page today. The details come from my own knowledge. Check them on the site."],
+ [R,"ROOT manual (CERN), basics","https://root.cern/manual/","First steps with ROOT, ROOT macros and shared libraries, Python interface.",7,"23 Jun to 26 Jun","I checked these chapter titles on the ROOT site."],
+ [R,"ROOT manual, functional parts","https://root.cern/manual/","Histograms, Fitting, Dataframes. Also try the Primer at https://root.cern/primer/.",8,"23 Jun to 26 Jun"]],
+ project:"Simulate a pendulum with Euler and with Runge-Kutta. Plot the error. Then fill a histogram with random data in ROOT (PyROOT) and fit a Gaussian.",need:"Phases 3, 5, and 10."},
+
+{group:"Part 6: Optional, only if time is left",sub:"You do not need these for Google STEP, CERN, or AMD. Do them after Part 5, or skip any phase. Distributed systems and software engineering come first."},
+{id:"dist",n:"35",t:"Distributed systems",color:"#1565C0",start:"2027-06-27",end:"2027-07-03",hours:"40 hours",
+ why:"Many computers that act as one. Google and CERN run on this. You read the key papers and build real parts.",
+ steps:[
+ [R,"MIT 6.824 Distributed Systems: lectures 1 to 7","https://pdos.csail.mit.edu/6.824/schedule.html","1 Introduction (MapReduce paper), 2 RPC and Threads, 3 GFS, 4 Paxos, 5 Go patterns, 6 and 7 Raft. Read each paper. Do Lab 1: MapReduce.",20,"27 Jun to 29 Jun","I checked the lecture and paper list on the schedule page. I could not confirm that videos are on YouTube."],
+ [R,"MIT 6.824: lectures 8 to 14","https://pdos.csail.mit.edu/6.824/schedule.html","8 Linearizability, 9 ZooKeeper, 11 Distributed Transactions, 12 Spanner, 13 Chain Replication, 14 Optimistic Concurrency Control. Do Lab 2: Key/Value server.",20,"30 Jun to 3 Jul","Lecture 10 is only a lab Q and A."]],
+ project:"Labs 1 and 2 of the course in Go. Write one page that explains how Raft elects a leader.",need:"Phases 13, 28, and 30."},
+
+{id:"swe",n:"36",t:"Software engineering and design",color:"#4E342E",start:"2027-07-04",end:"2027-07-10",hours:"40 hours",
+ why:"How to write code that other people can read, test, and change. Teams and interviews both test this.",
+ steps:[
+ [R,"MIT 6.031 Software Construction (sp22), readings 1 to 13","https://web.mit.edu/6.031/www/sp22/","Static Checking, Basic TypeScript, Testing, Code Review, Version Control, Specifications, Designing Specifications, Mutability and Immutability, Avoiding Debugging, Abstract Data Types, Abstraction Functions and Rep Invariants, Interfaces Generics and Enums, Debugging.",20,"4 Jul to 6 Jul","I checked the reading titles. The page does not say the readings are free, but they are open without a login."],
+ [R,"MIT 6.031, readings 14 to 24","https://web.mit.edu/6.031/www/sp22/","Recursion, Equality, Map Filter Reduce, Recursive Data Types, Regular Expressions and Grammars, Parsers, Callbacks and GUIs, Concurrency, Promises, Mutual Exclusion, Message Passing.",20,"7 Jul to 10 Jul"]],
+ project:"One small library with a written spec, tests, an abstract data type, and a rep invariant. Ask a friend or Claude Code to review it. Claude explains. You fix.",need:"Phases 3 and 25."},
+
+{id:"laterB",n:"37",t:"Deep learning, deeper",color:"#2B7A78",start:"2027-07-11",end:"2027-07-21",hours:"60 hours",
  why:"Move from your own micrograd to real deep learning with PyTorch.",
  steps:[
- [R,"Dive into Deep Learning (free)","https://d2l.ai/","Ch 2: Preliminaries. Ch 3: Linear Neural Networks for Regression. Ch 4: Linear Neural Networks for Classification.",null,"26 May to 1 Jun","The chapter titles come from my own knowledge. Check them on d2l.ai."],
- [R,"Dive into Deep Learning","https://d2l.ai/","Ch 5: Multilayer Perceptrons. Ch 6: Builders' Guide. Ch 7: Convolutional Neural Networks.",null,"2 Jun to 5 Jun"]],
+ [R,"Dive into Deep Learning (free)","https://d2l.ai/","Ch 2: Preliminaries. Ch 3: Linear Neural Networks for Regression. Ch 4: Linear Neural Networks for Classification.",null,"11 Jul to 17 Jul","The chapter titles come from my own knowledge. Check them on d2l.ai."],
+ [R,"Dive into Deep Learning","https://d2l.ai/","Ch 5: Multilayer Perceptrons. Ch 6: Builders' Guide. Ch 7: Convolutional Neural Networks.",null,"18 Jul to 21 Jul"]],
  project:"Train a convolutional network on a public image dataset with PyTorch. Write a one-page report.",need:"Phases 5 and 15."},
 
-{id:"laterC",n:"31",t:"Computers, deeper",color:"#B23A8F",start:"2027-06-06",end:"2027-06-19",hours:"80 hours",
+{id:"laterC",n:"38",t:"Computers, deeper",color:"#B23A8F",start:"2027-07-22",end:"2027-08-04",hours:"80 hours",
  why:"Finish the Nand2Tetris path. You build the compiler and the operating system for your own computer.",
  steps:[
- [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 7: VM I, Stack Arithmetic. Project 8: VM II, Program Control.",null,"6 Jun to 12 Jun","The project titles come from my own knowledge. Check them on the course page."],
- [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 9: High-Level Language. Project 10: Compiler I, Syntax Analysis.",null,"13 Jun to 15 Jun"],
- [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 11: Compiler II, Code Generation. Project 12: Operating System.",null,"16 Jun to 19 Jun"]],
+ [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 7: VM I, Stack Arithmetic. Project 8: VM II, Program Control.",null,"22 Jul to 28 Jul","The project titles come from my own knowledge. Check them on the course page."],
+ [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 9: High-Level Language. Project 10: Compiler I, Syntax Analysis.",null,"29 Jul to 31 Jul"],
+ [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 11: Compiler II, Code Generation. Project 12: Operating System.",null,"1 Aug to 4 Aug"]],
  project:"The full chain on your Hack computer: a VM translator, a compiler, and a small operating system.",need:"Phase 8."},
 
-{group:"Part 6: The remaining roles from your list",sub:"Backend, mobile, games, blockchain, AR/VR, edge, and enterprise systems. Do these after Part 5."},
-{id:"backend",n:"32",t:"Web backend frameworks",color:"#0C6B4D",start:"2027-06-20",end:"2027-06-26",hours:"40 hours",
+{id:"backend",n:"39",t:"Web backend frameworks",color:"#0C6B4D",start:"2027-08-05",end:"2027-08-11",hours:"40 hours",
  why:"Servers, routes, databases, and login. Django is Python. Express is JavaScript. You learn one of each.",
  steps:[
- [R,"Django official tutorial, parts 1 to 4","https://docs.djangoproject.com/en/5.2/intro/tutorial01/","Part 1 is 'Writing your first Django app, part 1'. Read parts 1 to 4 in order and build the polls app as you read. Next page link at the bottom of each part.",12,"20 Jun to 22 Jun","I checked parts 1 and 2 exist. The titles of parts 3 and 4 are from my own knowledge."],
- [R,"MDN: Express web framework (Node.js/JavaScript)","https://developer.mozilla.org/en-US/docs/Learn_web_development/Server-side/Express_Nodejs","Read the introduction, then 'Creating a skeleton website'. Build the skeleton on your computer.",7,"20 Jun to 22 Jun","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
- [R,"Django official tutorial, parts 5 to 7","https://docs.djangoproject.com/en/5.2/intro/tutorial05/","Part 5 testing, part 6 static files, part 7 the admin site. Write tests for your polls app.",8,"23 Jun to 26 Jun","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
- [R,"MDN: Express tutorial, the Local Library website","https://developer.mozilla.org/en-US/docs/Learn_web_development/Server-side/Express_Nodejs","The pages on routes and controllers and on using a database. Build the library site.",10,"23 Jun to 26 Jun","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
+ [R,"Django official tutorial, parts 1 to 4","https://docs.djangoproject.com/en/5.2/intro/tutorial01/","Part 1 is 'Writing your first Django app, part 1'. Read parts 1 to 4 in order and build the polls app as you read. Next page link at the bottom of each part.",12,"5 Aug to 7 Aug","I checked parts 1 and 2 exist. The titles of parts 3 and 4 are from my own knowledge."],
+ [R,"MDN: Express web framework (Node.js/JavaScript)","https://developer.mozilla.org/en-US/docs/Learn_web_development/Server-side/Express_Nodejs","Read the introduction, then 'Creating a skeleton website'. Build the skeleton on your computer.",7,"5 Aug to 7 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
+ [R,"Django official tutorial, parts 5 to 7","https://docs.djangoproject.com/en/5.2/intro/tutorial05/","Part 5 testing, part 6 static files, part 7 the admin site. Write tests for your polls app.",8,"8 Aug to 11 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
+ [R,"MDN: Express tutorial, the Local Library website","https://developer.mozilla.org/en-US/docs/Learn_web_development/Server-side/Express_Nodejs","The pages on routes and controllers and on using a database. Build the library site.",10,"8 Aug to 11 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
  project:"Put your Python study tracker behind a Django web app with login and a database. Then write 3 routes of the same app in Express and compare them in the README.",need:"Phases 3, 13, 14, and 24."},
 
-{id:"mobile",n:"33",t:"Mobile apps: Android and iOS",color:"#2E7D32",start:"2027-06-27",end:"2027-07-07",hours:"60 hours",
+{id:"mobile",n:"40",t:"Mobile apps: Android and iOS",color:"#2E7D32",start:"2027-08-12",end:"2027-08-22",hours:"60 hours",
  why:"One small app on each system. Android uses Kotlin. iOS uses Swift. These are 2 new languages.",
  steps:[
- [W,"Android Basics with Compose, Unit 1: Your first Android app","https://developer.android.com/courses/android-basics-compose/course","Do all of Unit 1. The page says it takes about 10 hours.",10,"27 Jun to 29 Jun","I checked the unit list and hours on the course page. I did not check if every part is free."],
- [W,"Stanford CS193p, Spring 2025 (YouTube playlist)","https://cs193p.stanford.edu/","Lectures 1 and 2. The course has 16 lectures. Code along in Xcode.",8,"27 Jun to 29 Jun","Xcode runs only on a Mac. If you have no Mac, do the Android steps and skip this block."],
- [W,"Android Basics with Compose, Unit 2: Building app UI","https://developer.android.com/courses/android-basics-compose/course","Do Unit 2. The page says about 21 hours. Skip the optional extras to stay at 20.",20,"30 Jun to 3 Jul"],
- [W,"Stanford CS193p, Spring 2025","https://cs193p.stanford.edu/","Lectures 3 to 8. Code along. I did not check the lecture topics or lengths.",20,"4 Jul to 7 Jul"]],
+ [W,"Android Basics with Compose, Unit 1: Your first Android app","https://developer.android.com/courses/android-basics-compose/course","Do all of Unit 1. The page says it takes about 10 hours.",10,"12 Aug to 14 Aug","I checked the unit list and hours on the course page. I did not check if every part is free."],
+ [W,"Stanford CS193p, Spring 2025 (YouTube playlist)","https://cs193p.stanford.edu/","Lectures 1 and 2. The course has 16 lectures. Code along in Xcode.",8,"12 Aug to 14 Aug","Xcode runs only on a Mac. If you have no Mac, do the Android steps and skip this block."],
+ [W,"Android Basics with Compose, Unit 2: Building app UI","https://developer.android.com/courses/android-basics-compose/course","Do Unit 2. The page says about 21 hours. Skip the optional extras to stay at 20.",20,"15 Aug to 18 Aug"],
+ [W,"Stanford CS193p, Spring 2025","https://cs193p.stanford.edu/","Lectures 3 to 8. Code along. I did not check the lecture topics or lengths.",20,"19 Aug to 22 Aug"]],
  project:"One small habit tracker app, built twice: once in Kotlin with Compose, once in Swift with SwiftUI. It saves data on the phone.",need:"Phases 3 and 10."},
 
-{id:"games",n:"34",t:"Game development",color:"#B5651D",start:"2027-07-08",end:"2027-07-11",hours:"20 hours",
+{id:"games",n:"41",t:"Game development",color:"#B5651D",start:"2027-08-23",end:"2027-08-26",hours:"20 hours",
  why:"Make one finished small game with the free Godot engine.",
  steps:[
- [R,"Godot docs: Your first 2D game","https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html","All 7 pages: Setting up the project, Creating the player scene, Coding the player, Creating the enemy, The main game scene, Heads up display, Finishing up.",8,"8 Jul to 11 Jul","I checked the 7 page titles on the Godot site."],
- [R,"Godot docs: Step by step","https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html","Read the whole section. It explains nodes, scenes, and scripting.",6,"8 Jul to 11 Jul","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
+ [R,"Godot docs: Your first 2D game","https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html","All 7 pages: Setting up the project, Creating the player scene, Coding the player, Creating the enemy, The main game scene, Heads up display, Finishing up.",8,"23 Aug to 26 Aug","I checked the 7 page titles on the Godot site."],
+ [R,"Godot docs: Step by step","https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html","Read the whole section. It explains nodes, scenes, and scripting.",6,"23 Aug to 26 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
  project:"Finish the tutorial game. Then add a start screen, a high score saved to a file, and sound. Export it and send it to a friend.",need:"Phase 3."},
 
-{id:"chain",n:"35",t:"Blockchain and smart contracts",color:"#6D4C9F",start:"2027-07-12",end:"2027-07-18",hours:"40 hours",
+{id:"chain",n:"42",t:"Blockchain and smart contracts",color:"#6D4C9F",start:"2027-08-27",end:"2027-09-02",hours:"40 hours",
  why:"How Bitcoin and Ethereum work, and how to write a smart contract. This reuses your discrete math and networking.",
  steps:[
- [W,"Princeton: Bitcoin and Cryptocurrency Technologies, lectures 1 to 6","https://bitcoinbook.cs.princeton.edu/","The page has 12 lecture videos. Watch videos 1 to 6.",8,"12 Jul to 14 Jul","I checked that the page has 12 videos and a free PDF."],
- [R,"Princeton: Bitcoin and Cryptocurrency Technologies (free draft PDF)","https://d28rh4a8wq0iu5.cloudfront.net/bitcointech/readings/princeton_bitcoin_book.pdf","Ch 1 to 6: introduction to crypto, decentralization, mechanics of Bitcoin, storing Bitcoins, mining, anonymity.",12,"12 Jul to 14 Jul","The PDF is the pre-publication draft. The chapter titles are from my own knowledge. Check them in the PDF."],
- [W,"Princeton: Bitcoin and Cryptocurrency Technologies, lectures 7 to 12","https://bitcoinbook.cs.princeton.edu/","Watch videos 7 to 12.",8,"15 Jul to 18 Jul"],
- [R,"ethereum.org: Intro to Ethereum, then Smart contracts","https://ethereum.org/en/developers/docs/intro-to-ethereum/","Read 'Intro to Ethereum', then the 'Smart contracts' page in the same docs. Write a first Solidity contract.",12,"15 Jul to 18 Jul","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
+ [W,"Princeton: Bitcoin and Cryptocurrency Technologies, lectures 1 to 6","https://bitcoinbook.cs.princeton.edu/","The page has 12 lecture videos. Watch videos 1 to 6.",8,"27 Aug to 29 Aug","I checked that the page has 12 videos and a free PDF."],
+ [R,"Princeton: Bitcoin and Cryptocurrency Technologies (free draft PDF)","https://d28rh4a8wq0iu5.cloudfront.net/bitcointech/readings/princeton_bitcoin_book.pdf","Ch 1 to 6: introduction to crypto, decentralization, mechanics of Bitcoin, storing Bitcoins, mining, anonymity.",12,"27 Aug to 29 Aug","The PDF is the pre-publication draft. The chapter titles are from my own knowledge. Check them in the PDF."],
+ [W,"Princeton: Bitcoin and Cryptocurrency Technologies, lectures 7 to 12","https://bitcoinbook.cs.princeton.edu/","Watch videos 7 to 12.",8,"30 Aug to 2 Sep"],
+ [R,"ethereum.org: Intro to Ethereum, then Smart contracts","https://ethereum.org/en/developers/docs/intro-to-ethereum/","Read 'Intro to Ethereum', then the 'Smart contracts' page in the same docs. Write a first Solidity contract.",12,"30 Aug to 2 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
  project:"Write a toy blockchain in Python with proof of work. Then write a simple voting contract in Solidity and run it on a test network. Solidity is a new language.",need:"Phases 3, 4, and 13."},
 
-{id:"xr",n:"36",t:"AR and VR on the web",color:"#C2185B",start:"2027-07-19",end:"2027-07-22",hours:"20 hours",
+{id:"xr",n:"43",t:"AR and VR on the web",color:"#C2185B",start:"2027-09-03",end:"2027-09-06",hours:"20 hours",
  why:"Build 3D worlds in the browser with A-Frame and WebXR. You need no headset to start.",
  steps:[
- [R,"A-Frame docs: Introduction","https://aframe.io/docs/1.7.0/introduction/","Pages in order: Introduction, Installation, VR Headsets and WebXR Browsers, HTML and Primitives, Entity-Component-System, JavaScript Events and DOM APIs, Developing with three.js, Writing a Component.",9,"19 Jul to 22 Jul","I checked these page titles on the A-Frame site."],
- [R,"MDN: Building up a basic demo with A-Frame","https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_A-Frame","Build the demo from start to end.",3,"19 Jul to 22 Jul"],
- [R,"A-Frame docs: Introduction, second half","https://aframe.io/docs/1.7.0/introduction/","Interactions and Controllers, 3D Models, Visual Inspector and Dev Tools, Hosting and Publishing, Best Practices.",5,"19 Jul to 22 Jul"]],
+ [R,"A-Frame docs: Introduction","https://aframe.io/docs/1.7.0/introduction/","Pages in order: Introduction, Installation, VR Headsets and WebXR Browsers, HTML and Primitives, Entity-Component-System, JavaScript Events and DOM APIs, Developing with three.js, Writing a Component.",9,"3 Sep to 6 Sep","I checked these page titles on the A-Frame site."],
+ [R,"MDN: Building up a basic demo with A-Frame","https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_A-Frame","Build the demo from start to end.",3,"3 Sep to 6 Sep"],
+ [R,"A-Frame docs: Introduction, second half","https://aframe.io/docs/1.7.0/introduction/","Interactions and Controllers, 3D Models, Visual Inspector and Dev Tools, Hosting and Publishing, Best Practices.",5,"3 Sep to 6 Sep"]],
  project:"A small 3D room in A-Frame with 3 objects you can click and a custom component you wrote. Host it on GitHub Pages.",need:"Phases 5, 23, and 24."},
 
-{id:"edge",n:"37",t:"Edge computing and TinyML",color:"#00838F",start:"2027-07-23",end:"2027-07-26",hours:"20 hours",
+{id:"edge",n:"44",t:"Edge computing and TinyML",color:"#00838F",start:"2027-09-07",end:"2027-09-10",hours:"20 hours",
  why:"Run small AI models on small devices, close to the sensor. This reuses your Arduino work.",
  steps:[
- [R,"Machine Learning Systems (mlsysbook.ai), chapter 2: ML Systems","https://mlsysbook.ai/contents/ml_systems/ml_systems.html","Read 2.1 Introduction, 2.2 Cloud ML, 2.3 Edge ML, 2.4 Tiny ML, 2.5 Comparison.",5,"23 Jul to 26 Jul","I checked these section titles on the site."],
- [R,"Machine Learning Systems (mlsysbook.ai)","https://mlsysbook.ai/","Then read the chapters on model optimization and on-device learning. Pick them from the book's table of contents.",8,"23 Jul to 26 Jul","I did not check the other chapter titles. Pick them yourself on the site."],
- [R,"TensorFlow Lite for Microcontrollers","https://www.tensorflow.org/lite/microcontrollers","Read the overview and the 'Get started' guide.",5,"23 Jul to 26 Jul","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
+ [R,"Machine Learning Systems (mlsysbook.ai), chapter 2: ML Systems","https://mlsysbook.ai/contents/ml_systems/ml_systems.html","Read 2.1 Introduction, 2.2 Cloud ML, 2.3 Edge ML, 2.4 Tiny ML, 2.5 Comparison.",5,"7 Sep to 10 Sep","I checked these section titles on the site."],
+ [R,"Machine Learning Systems (mlsysbook.ai)","https://mlsysbook.ai/","Then read the chapters on model optimization and on-device learning. Pick them from the book's table of contents.",8,"7 Sep to 10 Sep","I did not check the other chapter titles. Pick them yourself on the site."],
+ [R,"TensorFlow Lite for Microcontrollers","https://www.tensorflow.org/lite/microcontrollers","Read the overview and the 'Get started' guide.",5,"7 Sep to 10 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
  project:"Train a tiny model on sensor data from your Arduino from Phase 9. Shrink it and write down its size and speed before and after.",need:"Phases 3, 9, and 15."},
 
-{id:"ent",n:"38",t:"Enterprise systems: Salesforce, ServiceNow, SAP",color:"#37474F",start:"2027-07-27",end:"2027-08-02",hours:"40 hours",
+{id:"ent",n:"45",t:"Enterprise systems: Salesforce, ServiceNow, SAP",color:"#37474F",start:"2027-09-11",end:"2027-09-17",hours:"40 hours",
  why:"Companies run on these systems. Each vendor has free learning sites. You do the modules, not the exams.",
  steps:[
- [R,"Salesforce Trailhead: Admin Beginner trail","https://trailhead.salesforce.com/","Create a free Trailhead account and a free developer org. Do the Admin Beginner trail.",20,"27 Jul to 29 Jul","I could not open this page today. The titles come from my own knowledge. Check them on the site. Skip all exams and badges for money."],
- [R,"ServiceNow Now Learning (free on-demand courses)","https://nowlearning.servicenow.com/","Create a free account and a personal developer instance. Do the on-demand fundamentals course.",10,"30 Jul to 2 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
- [R,"SAP Learning (free learning journeys)","https://learning.sap.com/","Do one free learning journey about SAP basics. Read about ERP, in general, before it.",10,"30 Jul to 2 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
+ [R,"Salesforce Trailhead: Admin Beginner trail","https://trailhead.salesforce.com/","Create a free Trailhead account and a free developer org. Do the Admin Beginner trail.",20,"11 Sep to 13 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site. Skip all exams and badges for money."],
+ [R,"ServiceNow Now Learning (free on-demand courses)","https://nowlearning.servicenow.com/","Create a free account and a personal developer instance. Do the on-demand fundamentals course.",10,"14 Sep to 17 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
+ [R,"SAP Learning (free learning journeys)","https://learning.sap.com/","Do one free learning journey about SAP basics. Read about ERP, in general, before it.",10,"14 Sep to 17 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
  project:"One page for each vendor: build a small thing in its free test system, for example a custom object with a flow in Salesforce, and a table with a workflow in ServiceNow. Write what each system is for.",need:"Phases 3 and 14."},
 
 ];
 
-const KEY="route-done-v2";
-let done={};try{done=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}};
+const KEY="route-done-v2",LK="lockin-days-v1",RK="lockin-reports-v1";
+let done={},days={},reps={};
+try{done=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+try{days=JSON.parse(localStorage.getItem(LK))||{}}catch(e){}
+try{reps=JSON.parse(localStorage.getItem(RK))||{}}catch(e){}
+const sync={done(){},days(){},rep(){}};
+let filesMap={},filesHook=null;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(done))}catch(e){}sync.done()};
+const saveDays=()=>{try{localStorage.setItem(LK,JSON.stringify(days))}catch(e){}sync.days()};
+const saveReps=()=>{try{localStorage.setItem(RK,JSON.stringify(reps))}catch(e){}sync.rep()};
 const fmt=d=>new Date(d+"T00:00").toLocaleDateString("en-GB",{day:"numeric",month:"short"});
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
 const cats=data.filter(c=>c.id);
+const CATS={
+ found:{n:"Foundations",c:"#007AFF"},quantum:{n:"Quantum",c:"#5856D6"},math:{n:"Math and algorithms",c:"#FF9500"},
+ hw:{n:"Hardware",c:"#FF3B30"},lang:{n:"Languages",c:"#34C759"},sys:{n:"Systems",c:"#30B0C7"},
+ ai:{n:"Data and AI",c:"#AF52DE"},sec:{n:"Security",c:"#FF2D55"},web:{n:"Apps and web",c:"#32ADE6"},
+ career:{n:"Career",c:"#00B8A9"},biz:{n:"Process and business",c:"#A2845E"},exam:{n:"Exams",c:"#8E8E93"}};
+const CATOF={tools:"found",term:"found",prog:"found",math:"math",linalg:"math",quantum:"quantum",laterA:"quantum",dsa:"math",toc:"math",prob:"math",num:"math",
+ hw:"hw",elec:"hw",verilog:"hw",riscv:"hw",gpu:"hw",laterC:"hw",edge:"hw",cpp:"lang",java:"lang",rust:"lang",htmlcss:"lang",js:"lang",tsl:"lang",react:"lang",php:"lang",golang:"lang",
+ os:"sys",dist:"sys",net:"sys",cloud:"sys",data:"ai",ai:"ai",laterB:"ai",sec:"sec",chain:"sec",backend:"web",mobile:"web",games:"web",xr:"web",
+ prep:"career",qa:"biz",design:"biz",swe:"biz",ent:"biz",exams:"exam"};
+cats.forEach(c=>{const k=CATOF[c.id]||"found";c.cat=k;c.color=CATS[k].c});
 
-/* Route bar */
-const t0=new Date("2026-11-02"),t1=new Date("2027-08-03"),span=t1-t0;
-const track=document.getElementById("track"),months=document.getElementById("months");
-cats.filter(c=>c.start).forEach(c=>{
-  (c.split||[[c.start,c.end]]).forEach(([s,e])=>{
-    const a=document.createElement("a");a.href="#"+c.id;a.className="seg"+(c.exam?" exam":"");
-    const l=(new Date(s)-t0)/span*100,w=(new Date(e)-new Date(s)+864e5)/span*100;
-    a.style.left=l+"%";a.style.width="calc("+w+"% - 3px)";if(!c.exam)a.style.background=c.color;
-    a.textContent=c.exam?"Exams":c.n;a.title=c.t+": "+fmt(s)+" to "+fmt(e);track.appendChild(a);
-  });
-});
-["2026-12-01","2027-01-01","2027-02-01","2027-03-01","2027-04-01","2027-05-01","2027-06-01","2027-07-01"].forEach(m=>{
-  const s=document.createElement("span");s.style.left=((new Date(m)-t0)/span*100)+"%";
-  s.textContent=new Date(m).toLocaleDateString("en-GB",{month:"short"});months.appendChild(s);
-});
-const cut=document.createElement("div");cut.title="End of phase 28: 11 May 2027";cut.style.cssText="position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed var(--soft);left:"+((new Date("2027-05-12")-t0)/span*100)+"%";track.appendChild(cut);
-const now=new Date();if(now>t0&&now<t1){const d=document.createElement("div");d.className="today";d.title="Today";d.style.left=((now-t0)/span*100)+"%";track.appendChild(d)}
-
+const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const pd=s=>new Date(s+"T12:00");
+const okRep=t=>(t||"").trim().length>=20;
 /* Sections */
 const main=document.getElementById("main"),toc=document.getElementById("toc");
 data.forEach(c=>{
@@ -687,7 +787,7 @@ data.forEach(c=>{
   const steps=c.steps.map((s,i)=>{
     const [kind,title,url,part,hrs,week,note]=s,k=c.id+"-"+i;
     let wk="";if(week&&week!==lastWeek){wk=`</ol><div class="week">${week}</div><ol class="res">`;lastWeek=week;}
-    return `${wk}<li data-kind="${kind}" data-k="${k}" class="${done[k]?"done":""}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs}h</span>`:""}<div class="res-part">${esc(part)}</div>${note?`<div class="res-note">${esc(note)}</div>`:""}</div></li>`;
+    return `${wk}<li data-kind="${kind}" data-k="${k}" class="${done[k]?"done":""}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs}h</span>`:""}<div class="res-part">${esc(part)}</div>${note?`<div class="res-note">${esc(note)}</div>`:""}</div></li>`;
   }).join("");
   main.insertAdjacentHTML("beforeend",`<section class="cat${c.exam?" exam":""}" id="${c.id}">
     <div class="cat-head"><div class="num${c.n&&c.n.length>2?" word":""}" style="color:${c.color||"var(--soft)"}">${c.n}</div><div><h2>${c.t}</h2><div class="when">${dates}</div>${c.exam?"":`<div class="why">${c.why}</div>`}</div>${c.steps.length?`<div class="bar" title="Progress"><i id="b-${c.id}" style="background:${c.color}"></i></div>`:""}</div>
@@ -698,17 +798,156 @@ data.forEach(c=>{
 });
 document.querySelectorAll("ol.res").forEach(o=>{if(!o.children.length)o.remove()});
 
+/* Schedule: which steps fall on which day */
+const MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+function parseLabel(lbl,start){
+  const m=/^(\d+) (\w{3}) to (\d+) (\w{3})$/.exec(lbl||"");if(!m)return null;
+  const st=pd(start);const mk=(d,mo)=>{let y=st.getFullYear();let x=new Date(y,MON[mo],+d,12);if(x<new Date(st.getTime()-864e5*2))x=new Date(y+1,MON[mo],+d,12);return x};
+  return [mk(m[1],m[2]),mk(m[3],m[4])];
+}
+const tasks=[];/* {cat, i, step, s, e, key} */
+const phases=[];/* {cat, s, e, exam} */
+cats.forEach(c=>{
+  if(!c.start)return;
+  phases.push({cat:c,s:pd(c.start),e:pd(c.end),exam:!!c.exam});
+  c.steps.forEach((st,i)=>{const r=parseLabel(st[5],c.start);if(r)tasks.push({cat:c,i,step:st,s:r[0],e:r[1],key:c.id+"-"+i})});
+});
+const PLAN0=pd("2026-11-02"),PLAN_END=phases.reduce((m,p)=>p.e>m?p.e:m,PLAN0);
+const optionalFrom=(()=>{const p=phases.find(p=>p.cat.n==="35");return p?p.s:null})();
+const phaseOn=d=>phases.find(p=>d>=p.s&&d<=p.e);
+const dayOnly=d=>{const x=new Date(d);x.setHours(12,0,0,0);return x};
+const TODAY=dayOnly(new Date());
+let sel=TODAY;
+let vm=new Date(sel.getFullYear(),sel.getMonth(),1);
+const MONTHS_MIN=new Date(Math.min(new Date(2026,10,1),new Date(TODAY.getFullYear(),TODAY.getMonth(),1))),MONTHS_MAX=new Date(PLAN_END.getFullYear(),PLAN_END.getMonth(),1);
+
+/* Calendar */
+function lateTasks(){return tasks.filter(t=>t.e<TODAY&&!done[t.key])}
+(function(){const lg=document.getElementById("legend");lg.innerHTML=Object.keys(CATS).filter(k=>k!=="exam").map(k=>`<span><i style="background:${CATS[k].c}"></i>${CATS[k].n}</span>`).join("")+'<span><i style="background:var(--blue)"></i>LeetCode done</span><span><i style="background:var(--green)"></i>Report written</span>'})();
+function renderCal(){
+  const y=vm.getFullYear(),m=vm.getMonth();
+  document.getElementById("mtitle").textContent=vm.toLocaleDateString("en-GB",{month:"long",year:"numeric"});
+  document.getElementById("mprev").disabled=vm<=MONTHS_MIN;document.getElementById("mnext").disabled=vm>=MONTHS_MAX;
+  const grid=document.getElementById("grid");grid.innerHTML="";
+  const first=new Date(y,m,1),lead=(first.getDay()+6)%7,dim=new Date(y,m+1,0).getDate();
+  const late=lateTasks();const lateEnd=new Set(late.map(t=>dkey(t.e)));
+  for(let i=0;i<lead;i++){const e=document.createElement("div");e.className="cell empty";grid.appendChild(e)}
+  for(let d=1;d<=dim;d++){
+    const dt=new Date(y,m,d,12),k=dkey(dt),ph=phaseOn(dt);
+    const b=document.createElement("button");b.type="button";b.className="cell";b.dataset.k=k;if(ph)b.style.setProperty("--c",ph.cat.color);
+    if(ph){if(ph.exam)b.classList.add("exam");else if(optionalFrom&&dt>=optionalFrom)b.classList.add("optional");else b.classList.add("plan")}
+    if(k===dkey(TODAY))b.classList.add("today");
+    if(k===dkey(sel))b.classList.add("sel");
+    b.setAttribute("aria-label",dt.toDateString());
+    b.innerHTML=`<span class="n">${d}</span><span class="p">${ph&&!ph.exam?"P"+ph.cat.n:(ph?"Exam":"")}</span><span class="dots"><i class="lc${days[k]?" on":""}"></i><i class="rp${okRep(reps[k])?" on":""}"></i></span>`;
+    b.addEventListener("click",()=>{sel=dt;renderCal();renderDay(true)});
+    grid.appendChild(b);
+  }
+}
+function taskRow(t,showPhase){
+  const [kind,title,url,part,hrs,,note]=t.step,k=t.key;
+  return `<div class="task${done[k]?" done":""}" data-tk="${k}" style="--c:${t.cat.color}"><input type="checkbox" aria-label="Mark step as done" ${done[k]?"checked":""}><div><span class="tdot"></span><span class="kind ${kind}">${kind==="watch"?"Watch":"Read"}</span><a class="res-title" href="${url}" target="_blank" rel="noopener">${esc(title)}</a>${hrs?`<span class="hrs">${hrs} h</span>`:""}<div class="res-part">${esc(part)}</div>${showPhase?`<div class="res-note" style="color:var(--soft)">Phase ${t.cat.n}: ${esc(t.cat.t)}, ${esc(t.step[5])}</div>`:""}${note?`<div class="res-note">${esc(note)}</div>`:""}</div></div>`;
+}
+let repLoadedFor=null;
+function renderDay(force){
+  const k=dkey(sel),ph=phaseOn(sel);
+  document.getElementById("dh").textContent=sel.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long"});
+  let sub="";
+  if(sel<PLAN0)sub="The plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+". Install your tools now.";
+  else if(ph&&ph.exam)sub="Exam block. No plan work. Do your LeetCode problem and your report.";
+  else if(ph){const n=Math.round((sel-ph.s)/864e5)+1,t=Math.round((ph.e-ph.s)/864e5)+1;sub=`Phase ${ph.cat.n} of 45: ${ph.cat.t}. Day ${n} of ${t}.`}
+  else sub="No phase today. Catch up on late steps or rest.";
+  document.getElementById("ds").textContent=sub;const dc=document.getElementById("dcat");if(ph){dc.hidden=false;dc.style.setProperty("--c",ph.cat.color);dc.textContent=CATS[ph.cat.cat].n}else dc.hidden=true;
+  const todayTasks=tasks.filter(t=>sel>=t.s&&sel<=t.e);
+  document.getElementById("tasks").innerHTML=todayTasks.length?todayTasks.map(t=>taskRow(t,false)).join(""):'<p class="empty-note">Nothing planned for this day.</p>';
+  const ls=document.getElementById("latesec"),late=lateTasks().filter(t=>dkey(sel)===dkey(TODAY));
+  ls.classList.toggle("hidden",!late.length);
+  document.getElementById("late").innerHTML=late.slice(0,12).map(t=>taskRow(t,true)).join("")+(late.length>12?`<p class="empty-note">And ${late.length-12} more.</p>`:"");
+  const cb=document.getElementById("today"),future=sel>TODAY;
+  cb.checked=!!days[k];cb.disabled=future;
+  document.getElementById("lcn").textContent=future?"Opens on "+sel.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+".":(days[k]?"Locked in.":(k===dkey(TODAY)?"Solve one before midnight.":"Missed. You cannot get this day back."));
+  renderFiles();
+  const rep=document.getElementById("rep");
+  rep.disabled=future;
+  if(force||repLoadedFor!==k||document.activeElement!==rep){rep.value=reps[k]||"";repLoadedFor=k}
+  repNote();
+  const pj=document.getElementById("projbox");
+  if(ph&&!ph.exam){pj.classList.remove("hidden");document.getElementById("proj").innerHTML=`<p><b>Then build:</b> ${ph.cat.project}</p><p class="need"><b>You need first:</b> ${ph.cat.need}</p><p><a href="#${ph.cat.id}" data-open="${ph.cat.id}">Open this phase in All phases</a></p>`}
+  else pj.classList.add("hidden");
+}
+function repNote(){
+  const k=dkey(sel),n=(reps[k]||"").trim().length,w=document.getElementById("repwarn");
+  w.classList.toggle("ok",okRep(reps[k]));
+  w.textContent=sel>TODAY?"":(okRep(reps[k])?"Report saved.":"Write at least 20 characters. "+n+" so far.");
+}
+document.getElementById("mprev").addEventListener("click",()=>{vm=new Date(vm.getFullYear(),vm.getMonth()-1,1);renderCal()});
+document.getElementById("mnext").addEventListener("click",()=>{vm=new Date(vm.getFullYear(),vm.getMonth()+1,1);renderCal()});
+document.getElementById("mtoday").addEventListener("click",()=>{sel=TODAY;vm=new Date(sel.getFullYear(),sel.getMonth(),1);renderCal();renderDay(true)});
+document.getElementById("today").addEventListener("change",e=>{days[dkey(sel)]=e.target.checked;saveDays();refreshStreaks();renderCal();renderDay()});
+const repEl=document.getElementById("rep");
+repEl.addEventListener("input",()=>{reps[dkey(sel)]=repEl.value;saveReps();repNote();refreshStreaks();renderCal()});
+document.getElementById("day").addEventListener("change",e=>{
+  const row=e.target.closest("[data-tk]");if(!row)return;setDone(row.dataset.tk,e.target.checked);
+});
+document.getElementById("day").addEventListener("click",e=>{
+  const a=e.target.closest("[data-open]");if(!a)return;e.preventDefault();showView("phases");
+  const el=document.getElementById(a.dataset.open);if(el)el.scrollIntoView();
+});
+function runStats(map){let streak=0;const d=new Date(TODAY);if(!map[dkey(d)])d.setDate(d.getDate()-1);
+  while(map[dkey(d)]){streak++;d.setDate(d.getDate()-1)}
+  return streak}
+function refreshStreaks(){
+  const rm={};Object.keys(reps).forEach(k=>{rm[k]=okRep(reps[k])});
+  document.getElementById("streakn").textContent=runStats(days);
+  document.getElementById("repn").textContent=runStats(rm);
+}
+document.getElementById("repdl").addEventListener("click",async()=>{
+  const m=document.getElementById("dlmsg");m.textContent="";
+  const txt=Object.keys(reps).filter(k=>reps[k].trim()).sort().map(k=>k+"\n"+reps[k].trim()+"\n").join("\n");
+  let dl=null;try{dl=window.claude&&window.claude.use?await window.claude.use("downloads"):null}catch(e){}
+  if(!dl){m.textContent="Downloads do not work in this view. Open the page from your claude.ai Artifacts and try again.";return}
+  try{await dl.save({filename:"lock-in-reports.txt",data:txt||"No reports yet."});m.textContent="Saved."}
+  catch(e){m.textContent=e&&e.code==="declined"?"You said no. Tap again to save.":"Could not save: "+((e&&(e.code||e.message))||"unknown error")}});
+
+function fmtSize(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB"}
+function renderFiles(){
+  const box=document.getElementById("filesec");if(!box)return;
+  box.hidden=!filesHook;if(!filesHook)return;
+  const k=dkey(sel),rows=Object.keys(filesMap).map(id=>({id,...filesMap[id]})).filter(f=>f.day===k).sort((x,y)=>(x.t||0)-(y.t||0));
+  document.getElementById("flist").innerHTML=rows.map(f=>`<div class="frow"><a href="/_blob/${f.id}" target="_blank" rel="noopener">${esc(f.name||"File")}</a><small>${fmtSize(f.size||0)}</small><button type="button" data-del="${f.id}">Remove</button></div>`).join("");
+}
+(function(){
+  const drop=document.getElementById("drop"),fin=document.getElementById("fin"),msg=document.getElementById("fmsg");
+  const TYPES={pdf:"application/pdf",txt:"text/plain",md:"text/markdown",csv:"text/csv",json:"application/json"};
+  async function add(list){
+    if(!filesHook)return;msg.textContent="";const day=dkey(sel);
+    for(const f of Array.from(list)){
+      const ext=(f.name.split(".").pop()||"").toLowerCase();
+      let type=TYPES[ext]||(f.type&&f.type.indexOf("image/")===0?f.type:"");
+      if(ext==="doc"||ext==="docx"){msg.textContent="Word files do not work here. Save "+f.name+" as PDF and drop that.";continue}
+      if(!type){msg.textContent="Not allowed: "+f.name+". Use PDF, text, Markdown, CSV, JSON or an image.";continue}
+      if(f.size>20*1048576){msg.textContent=f.name+" is over 20 MB.";continue}
+      try{msg.textContent="Uploading "+f.name+"...";await filesHook.add(f,type,day);msg.textContent=""}
+      catch(e){msg.textContent="Upload failed: "+((e&&(e.code||e.message))||"unknown error")}
+    }
+  }
+  fin.addEventListener("change",()=>{add(fin.files);fin.value=""});
+  ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
+  ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
+  drop.addEventListener("drop",e=>add(e.dataTransfer.files));
+  document.getElementById("flist").addEventListener("click",async e=>{
+    const id=e.target.getAttribute&&e.target.getAttribute("data-del");if(!id||!filesHook)return;
+    try{await filesHook.del(id)}catch(err){msg.textContent="Could not remove: "+((err&&(err.code||err.message))||"unknown error")}
+  });
+})();
+
 function progress(){
   let all=0,fin=0;
   cats.forEach(c=>{if(!c.steps.length)return;const n=c.steps.length,d=c.steps.filter((_,i)=>done[c.id+"-"+i]).length;all+=n;fin+=d;
-    document.getElementById("p-"+c.id).textContent=d+"/"+n;document.getElementById("b-"+c.id).style.width=(d/n*100)+"%";});
+    const p=document.getElementById("p-"+c.id),b=document.getElementById("b-"+c.id);if(p)p.textContent=d+"/"+n;if(b)b.style.width=(d/n*100)+"%";});
   document.getElementById("total").innerHTML=`<b>${fin} of ${all}</b> steps done`;
+  document.getElementById("totalmini").textContent=fin;
 }
-main.addEventListener("change",e=>{
-  const li=e.target.closest("li[data-k]");if(!li)return;
-  done[li.dataset.k]=e.target.checked;li.classList.toggle("done",e.target.checked);save();progress();apply();
-});
-
 let filter="all";
 function apply(){
   const q=document.getElementById("q").value.trim().toLowerCase();
@@ -728,56 +967,61 @@ document.getElementById("q").addEventListener("input",apply);
 document.querySelectorAll(".filters button").forEach(b=>b.addEventListener("click",()=>{
   filter=b.dataset.f;document.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b));apply();
 }));
-progress();
-/* Lock In: daily LeetCode streak */
-const LK="lockin-days-v1";let days={};try{days=JSON.parse(localStorage.getItem(LK))||{}}catch(e){}
-const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-function lockin(){
-  const now=new Date(),tk=dkey(now),done=!!days[tk];
-  let streak=0;const d=new Date(now);if(!days[dkey(d)])d.setDate(d.getDate()-1);
-  while(days[dkey(d)]){streak++;d.setDate(d.getDate()-1)}
-  let best=0,run=0,prev=null;
-  Object.keys(days).filter(k=>days[k]).sort().forEach(k=>{const t=new Date(k+"T12:00");run=(prev&&Math.round((t-prev)/864e5)===1)?run+1:1;prev=t;if(run>best)best=run});
-  document.getElementById("today").checked=done;
-  document.getElementById("streakn").textContent=streak;
-  document.getElementById("best").textContent=best?"Best: "+best+(best===1?" day":" days"):"";
-  document.getElementById("warn").classList.toggle("ok",done);document.getElementById("warn").textContent=done?"Locked in today. Come back tomorrow.":(streak>0?"Your "+streak+"-day streak dies at midnight. Solve one now.":"Zero days. Solve one now.");
-  const box=document.getElementById("dots");box.innerHTML="";
-  for(let n=13;n>=0;n--){const x=new Date(now);x.setDate(x.getDate()-n);const e=document.createElement("i");
-    if(days[dkey(x)])e.className="on";if(n===0)e.classList.add("now");e.title=dkey(x);box.appendChild(e)}
+function setDone(k,v){done[k]=v;save();refreshAll()}
+function refreshAll(){
+  document.querySelectorAll("li[data-k]").forEach(li=>{const v=!!done[li.dataset.k];li.classList.toggle("done",v);const cb=li.querySelector('input[type=checkbox]');if(cb)cb.checked=v});
+  progress();apply();renderCal();renderDay();refreshStreaks();
 }
-document.getElementById("today").addEventListener("change",e=>{days[dkey(new Date())]=e.target.checked;try{localStorage.setItem(LK,JSON.stringify(days))}catch(x){}lockin()});
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)lockin()});
-lockin();
+document.getElementById("main").addEventListener("change",e=>{
+  const li=e.target.closest("li[data-k]");if(!li)return;setDone(li.dataset.k,e.target.checked);
+});
+function showView(v){
+  ["cal","phases","rules"].forEach(x=>{document.getElementById("v-"+x).hidden=x!==v;document.getElementById("t-"+x).setAttribute("aria-selected",x===v)});
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.v)));
 
-/* Daily report */
-const RK="lockin-reports-v1";let reps={};try{reps=JSON.parse(localStorage.getItem(RK))||{}}catch(e){}
-const saveReps=()=>{try{localStorage.setItem(RK,JSON.stringify(reps))}catch(e){}};
-const okRep=t=>(t||"").trim().length>=20;
-function runStats(map){const now=new Date();let streak=0;const d=new Date(now);if(!map[dkey(d)])d.setDate(d.getDate()-1);
-  while(map[dkey(d)]){streak++;d.setDate(d.getDate()-1)}
-  let best=0,run=0,prev=null;Object.keys(map).filter(k=>map[k]).sort().forEach(k=>{const t=new Date(k+"T12:00");run=(prev&&Math.round((t-prev)/864e5)===1)?run+1:1;prev=t;if(run>best)best=run});
-  return {streak,best}}
-function reportUI(){
-  const map={};Object.keys(reps).forEach(k=>{map[k]=okRep(reps[k])});
-  const {streak,best}=runStats(map),now=new Date(),done=!!map[dkey(now)];
-  document.getElementById("repn").textContent=streak;
-  document.getElementById("repbest").textContent=best?"Best: "+best+(best===1?" day":" days"):"";
-  const w=document.getElementById("repwarn");w.classList.toggle("ok",done);
-  w.textContent=done?"Report saved. Today is safe.":(streak>0?"Your "+streak+"-day report streak dies at midnight. Write at least 20 characters.":"No report today. Write at least 20 characters.");
-  const box=document.getElementById("repdots");box.innerHTML="";
-  for(let n=13;n>=0;n--){const x=new Date(now);x.setDate(x.getDate()-n);const e=document.createElement("i");
-    if(map[dkey(x)])e.className="on";if(n===0)e.classList.add("now");e.title=dkey(x);box.appendChild(e)}
-  const list=document.getElementById("replist");list.innerHTML="";
-  Object.keys(reps).filter(k=>reps[k].trim()).sort().reverse().slice(0,30).forEach(k=>{const d=document.createElement("div"),b=document.createElement("b");b.textContent=k;d.appendChild(b);d.appendChild(document.createTextNode(reps[k].trim()));list.appendChild(d)});
-}
-const repEl=document.getElementById("rep");repEl.value=reps[dkey(new Date())]||"";
-repEl.addEventListener("input",()=>{reps[dkey(new Date())]=repEl.value;saveReps();reportUI()});
-document.getElementById("repdl").addEventListener("click",()=>{
-  const txt=Object.keys(reps).filter(k=>reps[k].trim()).sort().map(k=>k+"\n"+reps[k].trim()+"\n").join("\n");
-  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"text/plain"}));a.download="lock-in-reports.txt";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)});
-document.addEventListener("visibilitychange",()=>{if(!document.hidden){repEl.value=reps[dkey(new Date())]||repEl.value;reportUI()}});
-reportUI();
+progress();apply();renderCal();renderDay(true);refreshStreaks();
+
+/* Account sync */
+(function(){
+  const setSt=s=>{const e=document.getElementById("syncst");if(e)e.textContent=s};
+  (async()=>{
+    let db=null;
+    try{db=window.claude&&window.claude.use?await window.claude.use("db"):null}catch(e){}
+    if(!db)return;
+    setSt("Connecting to your account...");
+    const shadow={done:{},days:{},reps:{}};
+    let chain=Promise.resolve();
+    const put=(col,id,body)=>{chain=chain.then(()=>db.collection(col).doc(id).set(body)).then(()=>setSt("Saved to your account. Same on every device."),()=>setSt("Could not save to your account. Open this page signed in as the owner."))};
+    sync.done=()=>Object.keys(done).forEach(k=>{if(done[k]!==shadow.done[k]&&(done[k]||k in shadow.done)){shadow.done[k]=done[k];put("done",k,{v:!!done[k],t:Date.now()})}});
+    sync.days=()=>Object.keys(days).forEach(k=>{if(days[k]!==shadow.days[k]&&(days[k]||k in shadow.days)){shadow.days[k]=days[k];put("days",k,{v:!!days[k],t:Date.now()})}});
+    let tm=null;
+    sync.rep=()=>{clearTimeout(tm);tm=setTimeout(()=>Object.keys(reps).forEach(k=>{if(reps[k]!==shadow.reps[k]&&(reps[k]||k in shadow.reps)){shadow.reps[k]=reps[k];put("reports",k,{text:reps[k],t:Date.now()})}}),800)};
+    const cache=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+    const sub=(col,onDoc,first)=>{
+      let one=true;
+      db.collection(col).onSnapshot(snap=>{
+        snap.docs.forEach(d=>onDoc(d.id,d.data()||{}));
+        if(one){one=false;first()}
+        cache(KEY,done);cache(LK,days);cache(RK,reps);
+        refreshAll();
+        setSt("Saved to your account. Same on every device.");
+      },()=>setSt("Sync stopped. Reload the page."));
+    };
+    sub("done",(id,x)=>{done[id]=!!x.v;shadow.done[id]=done[id]},()=>sync.done());
+    sub("days",(id,x)=>{days[id]=!!x.v;shadow.days[id]=days[id]},()=>sync.days());
+    let assets=null;try{assets=await window.claude.use("assets")}catch(e){}
+    if(assets){
+      filesHook={
+        async add(f,type,day){const r=await assets.upload(f,{type});await db.collection("files").doc(r.id).set({name:f.name,day,size:r.sizeBytes,type:r.contentType,t:Date.now()})},
+        async del(id){await db.collection("files").doc(id).delete();try{await assets.delete(id)}catch(e){}}
+      };
+    }
+    db.collection("files").onSnapshot(snap=>{filesMap={};snap.docs.forEach(d=>{filesMap[d.id]=d.data()||{}});renderFiles()},()=>{});
+    renderFiles();
+    sub("reports",(id,x)=>{if(id===dkey(sel)&&document.activeElement===repEl)return;reps[id]=x.text||"";shadow.reps[id]=reps[id]},()=>sync.rep());
+  })();
+})();
 </script>
 </body>
 </html>
