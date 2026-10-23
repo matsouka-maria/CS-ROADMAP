@@ -272,6 +272,33 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 @media (prefers-reduced-motion:reduce){#v-cal,#v-phases,#v-rules{animation:none!important}}
 
 .kind.build{color:#9A5B00;background:#FFF0D9}
+
+/* Roadmaps home */
+.road{--step:34px}
+.roads{display:grid;gap:22px;padding-bottom:40px}
+.road{background:#fff;border-radius:24px;padding:22px 20px 26px;box-shadow:0 10px 30px -14px rgba(60,50,120,.28);--rc:#5E5CE6}
+.roadhead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.roadhead h2{margin:0;font-size:34px;font-weight:800;letter-spacing:-.04em;color:var(--rc);text-wrap:balance}
+.roadhead p{margin:2px 0 0;color:#6B6885;font-size:14px;font-weight:600}
+.roadpct{font-size:14px;font-weight:700;color:var(--rc);white-space:nowrap}
+.roadbar{height:8px;border-radius:99px;background:#EEEDF7;overflow:hidden;margin:10px 0 18px}
+.roadbar i{display:block;height:100%;width:0;border-radius:99px;background:var(--rc);transition:width .4s}
+.rnodes{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rnode{display:block;width:100%;text-align:left;background:none;border:0;font:inherit;color:inherit;cursor:pointer;border-radius:18px;padding:8px 10px;padding-left:calc(10px + var(--i,0)*var(--step,22px));display:flex;align-items:center;gap:14px;transition:background .15s}
+.rnode:hover{background:#F6F5FD}
+.rnode:focus-visible{outline:3px solid #5E5CE6;outline-offset:1px}
+.rbadge{flex:none;width:58px;height:58px;display:grid;place-items:center;font-size:17px;font-weight:800;color:#fff;background:linear-gradient(150deg,color-mix(in srgb,var(--nc) 70%,#fff),var(--nc) 55%,color-mix(in srgb,var(--nc) 80%,#000));clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);position:relative}
+.rbadge svg{width:26px;height:26px}
+.rnode.todo .rbadge{background:#E7E6F2;color:#6B6885}
+.rnode.part .rbadge{background:conic-gradient(var(--nc) calc(var(--pp)*1%),#E7E6F2 0)}
+.rnode.part .rbadge::after{content:"";position:absolute;inset:6px;background:#fff;clip-path:inherit}
+.rnode.part .rbadge span{position:relative;z-index:1;color:var(--nc);font-size:14px}
+.rtxt{min-width:0}
+.rtxt b{display:block;font-size:18px;font-weight:700;letter-spacing:-.02em;overflow-wrap:anywhere}
+.rtxt small{display:block;color:#8A87A3;font-size:14px;font-weight:500;margin-top:1px}
+.rnode.now .rtxt b::after{content:"Today";margin-left:8px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:#FF375F;border-radius:99px;padding:3px 8px;vertical-align:2px}
+.rnode.done .rtxt b{color:#6B6885}
+@media (max-width:520px){.tabs{max-width:100%}.tabs button{padding:8px 13px;font-size:13px}.rnode{--step:14px}.rbadge{width:50px;height:50px}.rtxt b{font-size:16px}.roadhead h2{font-size:28px}}
 </style>
 </head>
 <body>
@@ -288,12 +315,17 @@ input[type=checkbox]:checked{animation:pop .22s ease}
   </div>
 </header>
 <nav class="tabs" role="tablist" aria-label="Views">
-  <button role="tab" id="t-cal" aria-selected="true" data-v="cal">Calendar</button>
+  <button role="tab" id="t-home" aria-selected="true" data-v="home">Roadmaps</button>
+  <button role="tab" id="t-cal" aria-selected="false" data-v="cal">Calendar</button>
   <button role="tab" id="t-phases" aria-selected="false" data-v="phases">All phases</button>
   <button role="tab" id="t-rules" aria-selected="false" data-v="rules">Rules</button>
 </nav>
 
-<section id="v-cal" aria-labelledby="t-cal">
+<section id="v-home" aria-labelledby="t-home">
+  <div class="roads" id="roads"></div>
+</section>
+
+<section id="v-cal" hidden aria-labelledby="t-cal">
   <div class="calwrap">
     <div>
       <div class="card cal">
@@ -542,25 +574,8 @@ const data=[
  [R,"Lessons in Electric Circuits, Volume I: DC (free online book)",L.lic,"Ch 1: Basic Concepts of Electricity. Ch 2: Ohm's Law. Ch 5: Series and Parallel Circuits. Ch 6: Divider Circuits and Kirchhoff's Laws. Ch 13: Capacitors.",4,"7 Jan to 10 Jan","I could not open the chapter pages. The chapter titles come from my own knowledge. Check them on the site."]],
  project:"An Arduino sensor logger: read one sensor, print the values to the serial monitor, and light an LED when a value passes a limit. Draw the circuit on paper. Show the Ohm's law numbers for each resistor.",need:"Phases 1 and 8."},
 
-{group:"Part 2: Fast track for your three targets",sub:"C++, Verilog, and internship prep. Google STEP, CERN, and AMD ask for these most."},
-{id:"cpp",n:"10",t:"C++",color:"#00599C",start:"2027-01-11",end:"2027-01-17",hours:"40 hours",
- why:"The main language of CERN, AMD, and many Google systems teams. You already know C, so you move faster.",
- steps:[
- [R,"learncpp.com (free)",L.lcpp,"Ch 1: C++ Basics. Ch 2: Functions and Files. Ch 4: Fundamental Data Types. Ch 5: Constants and Strings. Ch 6: Operators. Ch 7: Scope, Duration, and Linkage. Ch 8: Control Flow.",14,"11 Jan to 13 Jan"],
- [W,"The Cherno: C++ series (YouTube)",L.cherno,"The first 15 videos of the C++ series, in order.",3,"11 Jan to 13 Jan","I could not open the playlist. Search 'The Cherno C++' on YouTube and use the C++ series. Skip the game engine videos."],
- [R,"learncpp.com",L.lcpp,"Ch 11: Function Overloading and Function Templates. Ch 12: Compound Types: References and Pointers. Ch 13: Enums and Structs. Ch 14: Introduction to Classes. Ch 15: More on Classes. Ch 16: Dynamic arrays: std::vector.",8,"14 Jan to 17 Jan"],
- [R,"learncpp.com",L.lcpp,"Ch 22: Move Semantics and Smart Pointers. Ch 24: Inheritance. Ch 25: Virtual Functions.",6,"14 Jan to 17 Jan"],
- [W,"The Cherno: C++ series (YouTube)",L.cherno,"Videos 16 to 30 of the C++ series.",3,"14 Jan to 17 Jan"]],
- project:"Rewrite your data structures from Phase 7 in C++: dynamic array, linked list with unique_ptr, and hash map. Add tests.",need:"Phases 3 and 7."},
-
-{id:"verilog",n:"11",t:"Verilog (hardware design)",color:"#6B7F3A",start:"2027-01-18",end:"2027-01-21",hours:"20 hours",
- why:"Hardware companies like AMD write chips in hardware description languages. This is your first one.",
- steps:[
- [R,"HDLBits (free practice site)",L.hdl,"Getting Started. Verilog Language. Combinational Logic. Sequential Logic. Do every problem in the first two sections. Then do at least 20 problems in each of the other two.",14,"18 Jan to 21 Jan","The site page does not state a price. It has no login wall. It teaches Verilog. SystemVerilog is the next step. I found no verified free SystemVerilog course."],
- [R,"ASIC World: Verilog tutorial",L.asic,"Use it as a reference: Verilog syntax and how to write testbenches.",3,"18 Jan to 21 Jan","You can read it for free. It is not open licensed."]],
- project:"A 4-bit ALU and a counter in Verilog, each with a testbench. Simulate them with Icarus Verilog and GTKWave.",need:"Phases 8 and 9."},
-
-{id:"prep",n:"12",t:"Internship prep",color:"#1F2937",start:"2027-02-15",end:"2027-02-18",hours:"20 hours",
+{group:"Part 2: Internship prep",sub:"A resume, interview practice, and projects. Google STEP, CERN, and AMD ask for these."},
+{id:"prep",n:"10",t:"Internship prep",color:"#1F2937",start:"2027-02-15",end:"2027-02-18",hours:"20 hours",
  why:"Resume, behavioral stories, mock interviews, and a clean profile. You run LeetCode every day next to this.",
  steps:[
  [R,"Tech Interview Handbook: resume",L.tihres,"Read the full page. Then write a 1-page resume.",3,"15 Feb to 18 Feb"],
@@ -571,10 +586,10 @@ const data=[
  [R,"AMD careers",L.amdc,"Find the student and intern roles. Write down the languages and tools they ask for.",1,"15 Feb to 18 Feb","I did not open this page. One AMD intern listing I found asked for C++, Python, C, Shell, Verilog, and SystemVerilog."],
  [R,"Pramp (free mock interviews, now on Aced Practice)",L.pramp,"Do 2 mock interviews: 1 coding and 1 behavioral. Ask for feedback.",4,"15 Feb to 18 Feb"],
  [R,"NeetCode 150",L.neet,"6 timed problems. 45 minutes each. No videos until the time ends.",5,"15 Feb to 18 Feb"]],
- project:"A 1-page resume. A clean GitHub profile with 6 pinned projects from this plan. An updated portfolio site. 2 mock interviews done. 1 pull request to an open source project.",need:"Phases 3, 7, and 10."},
+ project:"A 1-page resume. A clean GitHub profile with 6 pinned projects from this plan. An updated portfolio site. 2 mock interviews done. 1 pull request to an open source project.",need:"Phases 3 and 7."},
 
 {group:"Part 3: The IT categories",sub:"Each phase builds on Part 1."},
-{id:"net",n:"13",t:"Networking",color:"#0E8F7E",start:"2027-02-19",end:"2027-02-25",hours:"40 hours",
+{id:"net",n:"11",t:"Networking",color:"#0E8F7E",start:"2027-02-19",end:"2027-02-25",hours:"40 hours",
  why:"How data moves between computers. Every cloud, security, and backend job needs it.",
  steps:[
  [W,"Kurose and Ross: online lectures (authors' site)",L.kurose,"Chapter 1: Computer Networks and the Internet. Chapter 2: The Application Layer.",6,"19 Feb to 21 Feb",
@@ -585,7 +600,7 @@ const data=[
  [R,"Kurose and Ross Wireshark labs",L.wire,"Labs: Getting Started, HTTP, DNS, TCP. Follow the PDF and use the trace files.",4,"22 Feb to 25 Feb"]],
  project:"A TCP chat server and client in Python sockets, plus a Wireshark capture that shows the TCP handshake.",need:"Phases 1 and 3."},
 
-{id:"data",n:"14",t:"Databases and data",color:"#7A5C3E",start:"2027-02-26",end:"2027-03-04",hours:"40 hours",
+{id:"data",n:"12",t:"Databases and data",color:"#7A5C3E",start:"2027-02-26",end:"2027-03-04",hours:"40 hours",
  why:"SQL and data analysis. Every backend and data job uses them.",
  steps:[
  [W,"CMU 15-445 Database Systems, Fall 2024 (YouTube)",L.cmu445,"#01 Relational Model and Algebra. #02 Modern SQL. #03 Database Storage I. #07 Hash Tables. #08 Indexes and Filters I. #16 Concurrency Control Theory.",8,"26 Feb to 28 Feb"],
@@ -593,7 +608,7 @@ const data=[
  [R,"Python for Data Analysis, 3rd edition (McKinney, free)",L.pda,"Ch 4: NumPy Basics. Ch 5: Getting Started with pandas. Ch 7: Data Cleaning and Preparation. Ch 8: Data Wrangling. Ch 9: Plotting and Visualization. Ch 10: Data Aggregation and Group Operations.",20,"1 Mar to 4 Mar"]],
  project:"Load a public dataset into PostgreSQL. Answer 5 questions with SQL. Then analyze it with pandas and charts.",need:"Phase 3."},
 
-{id:"ai",n:"15",t:"AI and machine learning",color:"#2B7A78",start:"2027-03-05",end:"2027-03-11",hours:"40 hours",
+{id:"ai",n:"13",t:"AI and machine learning",color:"#2B7A78",start:"2027-03-05",end:"2027-03-11",hours:"40 hours",
  why:"How neural networks learn, from scratch.",
  steps:[
  [W,"3Blue1Brown: Neural Networks",L.nn3b,"Chapter 1: What is a neural network. Chapter 2: Gradient descent. Chapter 3: Backpropagation. Chapter 4: Backpropagation calculus.",2,"5 Mar to 7 Mar"],
@@ -602,24 +617,24 @@ const data=[
  [R,"Code along",L.karpathy,"Rebuild micrograd and makemore yourself while you watch. Pause often.",14,"8 Mar to 11 Mar"]],
  project:"micrograd from scratch, and a digit classifier from Nielsen Ch 1 written by you.",need:"Phases 3 and 5. Your Calculus 1 course covers the derivatives."},
 
-{id:"sec",n:"16",t:"Cybersecurity",color:"#8A3FC2",start:"2027-03-12",end:"2027-03-18",hours:"40 hours",
+{id:"sec",n:"14",t:"Cybersecurity",color:"#8A3FC2",start:"2027-03-12",end:"2027-03-18",hours:"40 hours",
  why:"How systems break and how to defend them.",
  steps:[
  [W,"MIT 6.858 Computer Systems Security, Fall 2014",L.mit6858,"Lecture 1: Introduction, Threat Models. Lecture 2: Control Hijacking Attacks. Lecture 3: Buffer Overflow Exploits and Defenses. Lecture 4: Privilege Separation.",6,"12 Mar to 14 Mar"],
  [R,"Security Engineering, 2nd edition (Anderson, free)",L.anderson,"Ch 1: What is Security Engineering? Ch 2: Usability and Psychology. Ch 3: Protocols. Ch 4: Access Control.",14,"12 Mar to 14 Mar"],
  [W,"MIT 6.858, Fall 2014",L.mit6858,"Lecture 8: Web Security Model. Lecture 9: Securing Web Applications. Lecture 12: Network Security. Lecture 14: SSL and HTTPS. Lecture 17: User Authentication.",7,"15 Mar to 18 Mar"],
  [R,"Security Engineering, 2nd edition",L.anderson,"Ch 5: Cryptography. Ch 21: Network Attack and Defence.",13,"15 Mar to 18 Mar"]],
- project:"In your own VM: show a buffer overflow in a small C program, then fix it. Write a threat model for your study tracker app.",need:"Phases 3, 8, and 13."},
+ project:"In your own VM: show a buffer overflow in a small C program, then fix it. Write a threat model for your study tracker app.",need:"Phases 3, 8, and 11."},
 
-{id:"cloud",n:"17",t:"Cloud and DevOps",color:"#5E8C31",start:"2027-03-19",end:"2027-03-22",hours:"20 hours",
+{id:"cloud",n:"15",t:"Cloud and DevOps",color:"#5E8C31",start:"2027-03-19",end:"2027-03-22",hours:"20 hours",
  why:"How real systems run in production.",
  steps:[
  [W,"freeCodeCamp: Docker and Kubernetes course",L.dock,"The full 4-hour course.",4,"19 Mar to 22 Mar"],
  [R,"Site Reliability Engineering (Google, free)",L.sre,"Ch 1: Introduction. Ch 3: Embracing Risk. Ch 4: Service Level Objectives. Ch 6: Monitoring Distributed Systems. Ch 15: Postmortem Culture.",10,"19 Mar to 22 Mar"],
  [R,"Software Engineering at Google (free)",L.sweg,"Ch 23: Continuous Integration. Ch 24: Continuous Delivery.",6,"19 Mar to 22 Mar"]],
- project:"Put your study tracker in Docker. Add a GitHub Actions pipeline that runs tests on every push.",need:"Phases 1, 3, and 13."},
+ project:"Put your study tracker in Docker. Add a GitHub Actions pipeline that runs tests on every push.",need:"Phases 1, 3, and 11."},
 
-{id:"qa",n:"18",t:"Quality and IT support",color:"#B8A10C",start:"2027-03-23",end:"2027-03-29",hours:"40 hours",
+{id:"qa",n:"16",t:"Quality and IT support",color:"#B8A10C",start:"2027-03-23",end:"2027-03-29",hours:"40 hours",
  why:"How to test code well, and how to fix machines. This phase has two weeks because testing is a core job skill.",
  steps:[
  [W,"MIT Missing Semester (2020)",L.missing,"Lecture 8: Metaprogramming (build systems, testing, CI).",1,"23 Mar to 25 Mar"],
@@ -629,9 +644,9 @@ const data=[
  [R,"pytest official docs",L.pytest,"How-to guides: Invoking pytest, Writing and reporting assertions, Using fixtures, Marking test functions, Parametrizing, Using skip and xfail.",5,"26 Mar to 29 Mar"],
  [R,"Playwright for Python official docs",L.pw,"Getting started and Writing tests. Write 3 end-to-end tests for a web page.",4,"26 Mar to 29 Mar"],
  [W,"Professor Messer: CompTIA A+ Core 1 videos (free)",L.messer1,"Pick the sections on hardware, networking basics, and troubleshooting. Skip exam tips.",6,"26 Mar to 29 Mar","Videos are free. His notes and practice exams are paid. Skip them."]],
- project:"A pytest suite for your study tracker that runs in your pipeline, with fixtures and parametrized tests. Three Playwright tests for a web page. A Linux guide for 5 common fixes.",need:"Phases 3 and 17."},
+ project:"A pytest suite for your study tracker that runs in your pipeline, with fixtures and parametrized tests. Three Playwright tests for a web page. A Linux guide for 5 common fixes.",need:"Phases 3 and 15."},
 
-{id:"design",n:"19",t:"Design and management",color:"#E0457B",start:"2027-03-30",end:"2027-04-02",hours:"20 hours",
+{id:"design",n:"17",t:"Design and management",color:"#E0457B",start:"2027-03-30",end:"2027-04-02",hours:"20 hours",
  why:"Explaining your work and working in a team.",
  steps:[
  [R,"Google: Technical Writing One",L.tw1,"All units. Self-paced.",3,"30 Mar to 2 Apr"],
@@ -642,52 +657,45 @@ const data=[
  [R,"Software Engineering at Google",L.sweg,"Ch 2: How to Work Well on Teams. Ch 9: Code Review. Ch 10: Documentation.",9,"30 Mar to 2 Apr"]],
  project:"A Figma mockup of your study tracker, a one-page design doc, and a two-week sprint plan.",need:"Phase 3."},
 
-{group:"Part 4: More programming languages",sub:"You will know 17 languages and tools at the end. Python, C, Bash, Hack assembly, C++, and Verilog come in Parts 1 and 2. SQL comes in Part 3. These 10 come in this part: Java, RISC-V assembly, Rust, HTML, CSS, JavaScript, TypeScript, React, PHP, and Go. HTML and CSS are markup and style languages. React is a library. You reach working level in each one, not mastery."},
-{id:"java",n:"20",t:"Java",color:"#C2713B",start:"2027-04-03",end:"2027-04-06",hours:"20 hours",
+{group:"Part 4: More programming languages",sub:"You will know 12 languages and tools at the end. Bash, Python, C, and Hack assembly come in Part 1. SQL comes in Part 3. These 7 come in this part: Java, Rust, HTML, CSS, JavaScript, TypeScript, and React. HTML and CSS are markup and style languages. React is a library. You reach working level in each one, not mastery."},
+{id:"java",n:"18",t:"Java",color:"#C2713B",start:"2027-04-03",end:"2027-04-06",hours:"20 hours",
  why:"Google uses Java a lot, and many interview and uni courses use it.",
  steps:[
  [R,"Java Programming MOOC, University of Helsinki (free)",L.mooc,"Part 1 to Part 3. Go fast, you know programming. Do all exercises.",6,"3 Apr to 6 Apr","This is a legacy course. It is not updated any more. It is still free."],
  [R,"Java Programming MOOC, University of Helsinki",L.mooc,"Part 4 to Part 7. Do all exercises.",10,"3 Apr to 6 Apr","The course page does not name the topic of each part. Follow the parts in order."]],
  project:"A command-line library manager in Java: 3 classes, 1 interface, and saving to a file.",need:"Phase 3."},
 
-{id:"riscv",n:"21",t:"RISC-V assembly",color:"#7A3E9D",start:"2027-04-07",end:"2027-04-10",hours:"20 hours",
- why:"You learn what the processor really runs. AMD and CERN both care about this.",
- steps:[
- [R,"An Introduction to Assembly Programming with RISC-V (Borgo, free book)",L.rv,"Read from the start until you can write loops, functions, and a stack frame. About 14 hours.",14,"7 Apr to 10 Apr","I could not open the chapter list of this book. Follow the book in order."],
- [R,"Ripes, a free RISC-V simulator",L.ripes,"Install it. Run your programs and watch the pipeline view.",3,"7 Apr to 10 Apr","I did not open the Ripes page."]],
- project:"Write factorial, Fibonacci, and string length in RISC-V assembly. Run them in Ripes.",need:"Phase 8."},
-
-{id:"rust",n:"22",t:"Rust",color:"#B7410E",start:"2027-04-11",end:"2027-04-14",hours:"20 hours",
+{id:"rust",n:"19",t:"Rust",color:"#B7410E",start:"2027-04-11",end:"2027-04-14",hours:"20 hours",
  why:"A safe systems language. Companies use it more every year.",
  steps:[
  [R,"The Rust Programming Language (free book)",L.rust,"Ch 1: Getting Started. Ch 2: Programming a Guessing Game. Ch 3: Common Programming Concepts. Ch 4: Understanding Ownership. Ch 5: Using Structs. Ch 6: Enums and Pattern Matching.",9,"11 Apr to 14 Apr","The page did not show the table of contents. The chapter titles come from my own knowledge. Check them on the site."],
  [R,"The Rust Programming Language",L.rust,"Ch 7: Packages, Crates, and Modules. Ch 8: Common Collections. Ch 9: Error Handling. Ch 10: Generic Types, Traits, and Lifetimes.",7,"11 Apr to 14 Apr"],
  [R,"Rustlings (free exercises)",L.rustlings,"Do the exercises for the chapters you read.",2,"11 Apr to 14 Apr","I did not open the Rustlings page."]],
- project:"Chapter 12 of the book: build minigrep, your own small version of grep.",need:"Phases 3 and 10."},
+ project:"Chapter 12 of the book: build minigrep, your own small version of grep.",need:"Phase 3."},
 
-{id:"htmlcss",n:"23",t:"HTML and CSS",color:"#E34F26",start:"2027-04-15",end:"2027-04-18",hours:"20 hours",
+{id:"htmlcss",n:"20",t:"HTML and CSS",color:"#E34F26",start:"2027-04-15",end:"2027-04-18",hours:"20 hours",
  why:"The base of every web page. HTML is the structure. CSS is the look. Both are markup and style languages, not programming languages.",
  steps:[
  [R,"web.dev Learn HTML (Google, free)",L.htmlc,"Overview of HTML. Document structure. Metadata. Semantic HTML. Headings and sections. Attributes. Text basics. Links. Lists. Navigation. Tables. Forms. Images.",6,"15 Apr to 18 Apr","Skip the quiz and the badge at the end."],
  [R,"web.dev Learn CSS (Google, free)",L.cssc,"Box Model. Selectors. Nesting. The cascade. Specificity. Inheritance. Color. Sizing Units. Layout. Flexbox. Grid. Spacing. Text and typography. Container queries.",9,"15 Apr to 18 Apr","Skip the quiz and the badge at the end. The course pages do not state a price. I saw no paywall."]],
  project:"A responsive personal page: header, navigation, 3 sections, and a contact form. Use Flexbox and Grid. It must look right at phone width. No JavaScript.",need:"Phase 3."},
 
-{id:"js",n:"24",t:"JavaScript",color:"#C9A400",start:"2027-04-19",end:"2027-04-22",hours:"20 hours",
+{id:"js",n:"21",t:"JavaScript",color:"#C9A400",start:"2027-04-19",end:"2027-04-22",hours:"20 hours",
  why:"The language of the web. You need it for web projects and many interviews.",
  steps:[
  [R,"Eloquent JavaScript (free book)",L.ejs,"Ch 2: Values, Types, and Operators. Ch 3: Program Structure. Ch 4: Functions. Ch 5: Data Structures: Objects and Arrays. Ch 6: Higher-order Functions. Ch 7: The Secret Life of Objects.",10,"19 Apr to 22 Apr"],
  [R,"Eloquent JavaScript",L.ejs,"Ch 9: Bugs and Errors. Ch 12: Asynchronous Programming.",4,"19 Apr to 22 Apr"],
  [R,"Eloquent JavaScript",L.ejs,"Ch 14: JavaScript and the Browser. Ch 15: The Document Object Model. Ch 16: Handling Events.",6,"19 Apr to 22 Apr"]],
- project:"A to-do web page: add, delete, and save to localStorage. No framework.",need:"Phases 3 and 23."},
+ project:"A to-do web page: add, delete, and save to localStorage. No framework.",need:"Phases 3 and 20."},
 
-{id:"tsl",n:"25",t:"TypeScript",color:"#3178C6",start:"2027-04-23",end:"2027-04-26",hours:"20 hours",
+{id:"tsl",n:"22",t:"TypeScript",color:"#3178C6",start:"2027-04-23",end:"2027-04-26",hours:"20 hours",
  why:"JavaScript with types. Most big web teams use it.",
  steps:[
  [R,"TypeScript Handbook (official, free)",L.ts,"The Basics. Everyday Types. Narrowing. More on Functions. Object Types.",6,"23 Apr to 26 Apr"],
  [R,"TypeScript Handbook",L.ts,"Type Manipulation: Generics, Keyof, Typeof, Indexed Access, Conditional Types, Mapped Types. Then Classes and Modules.",6,"23 Apr to 26 Apr"]],
- project:"Rewrite your JavaScript to-do page in TypeScript with strict mode on. Fix every type error yourself.",need:"Phase 24."},
+ project:"Rewrite your JavaScript to-do page in TypeScript with strict mode on. Fix every type error yourself.",need:"Phase 21."},
 
-{id:"react",n:"26",t:"React",color:"#087EA4",start:"2027-04-27",end:"2027-05-03",hours:"40 hours",
+{id:"react",n:"23",t:"React",color:"#087EA4",start:"2027-04-27",end:"2027-05-03",hours:"40 hours",
  why:"The most used library for web interfaces. You use it with TypeScript.",
  steps:[
  [R,"React docs: Quick Start (official, free)",L.reactl,"Read the full page.",1,"27 Apr to 29 Apr"],
@@ -697,25 +705,10 @@ const data=[
  [R,"React docs: Adding Interactivity",L.reactint,"All pages in this section.",6,"27 Apr to 29 Apr"],
  [R,"React docs: Managing State",L.reactstate,"All pages in this section.",7,"30 Apr to 3 May"],
  [R,"React docs: Escape Hatches",L.reactesc,"All pages in this section.",5,"30 Apr to 3 May","The docs show the page names only at section level. I found no verified free video series for React. The official docs are the best free source."]],
- project:"Rebuild your TypeScript to-do app in React with TypeScript: components, state, and saving to localStorage with useEffect.",need:"Phases 23, 24, and 25."},
+ project:"Rebuild your TypeScript to-do app in React with TypeScript: components, state, and saving to localStorage with useEffect.",need:"Phases 20, 21, and 22."},
 
-{id:"php",n:"27",t:"PHP",color:"#777BB4",start:"2027-05-04",end:"2027-05-07",hours:"20 hours",
- why:"The language behind WordPress and WooCommerce. It helps your freelance web work.",
- steps:[
- [R,"PHP Manual: A simple tutorial (official, free)",L.phptut,"Your first PHP-enabled page. Something Useful. Dealing with Forms.",2,"4 May to 7 May"],
- [R,"PHP Manual: Language Reference",L.phplang,"Basic syntax. Types. Variables. Constants. Expressions. Operators. Control Structures. Functions. Classes and Objects. Namespaces. Error Handling.",8,"4 May to 7 May"],
- [R,"PHP: The Right Way (free online)",L.phpright,"Getting Started. Language Highlights. Databases. Security. Testing.",5,"4 May to 7 May","The page does not state a price. The website is open. I found no verified free video series for PHP."]],
- project:"A guestbook in PHP: a form, input checks, saving to a database, and a page that shows the messages. Use prepared statements to stop SQL injection.",need:"Phases 14 and 23."},
-
-{id:"golang",n:"28",t:"Go",color:"#00ADD8",start:"2027-05-08",end:"2027-05-11",hours:"20 hours",
- why:"Simple language for servers and cloud tools. Docker and Kubernetes use it.",
- steps:[
- [R,"A Tour of Go (official, free)",L.gotour,"Basics. Flow control. More types. Methods and interfaces. Generics. Concurrency.",8,"8 May to 11 May","The tour page did not show its section list. The section names come from my own knowledge."],
- [R,"Go by Example (free)",L.gobyex,"Goroutines, channels, select, and the HTTP server examples.",4,"8 May to 11 May","I did not open this page."]],
- project:"A small HTTP server with 2 routes and a worker that uses goroutines and channels.",need:"Phases 3 and 13."},
-
-{group:"Part 5: Quantum, deeper",sub:"You finish this part on 28 Jun 2027. That is the end of the 8-month plan."},
-{id:"laterA",n:"29",t:"Quantum computing, deeper",color:"#5B4BDB",start:"2027-05-12",end:"2027-05-25",hours:"80 hours",
+{group:"Part 5: Quantum, deeper",sub:"You finish this part on 2 Jun 2027. That is the end of the plan, 7 months after you start."},
+{id:"laterA",n:"24",t:"Quantum computing, deeper",color:"#5B4BDB",start:"2027-05-12",end:"2027-05-25",hours:"80 hours",
  why:"Finish the Watrous course. Do this track first. Quantum is your focus.",
  steps:[
  [W,"Watrous lectures (Qiskit YouTube)",L.watrousV,"Lessons 9 to 12.",null,"12 May to 18 May"],
@@ -724,8 +717,8 @@ const data=[
  [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Pages 375 to 495.",null,"19 May to 25 May","The page split is my estimate. Follow the lesson boundaries in the book."]],
  project:"Write one algorithm from each unit in Qiskit. Run one of them on real IBM hardware.",need:"Phase 6."},
 
-{group:"Part 6: Next, only if time is left",sub:"These stay in the plan. They start after Part 5 because you have 4.5 hours a day. Do operating systems, probability, theory, GPUs, and numerical computing first. You do not need Part 6 for Google STEP, CERN, or AMD. You can skip any phase."},
-{id:"os",n:"30",t:"Operating systems",color:"#455A64",start:"2027-05-26",end:"2027-06-01",hours:"40 hours",
+{group:"Part 6: Next, only if time is left",sub:"These stay in the plan. They start after Part 5 because you have 4.5 hours a day. Do operating systems, probability, and theory first. You do not need Part 6 for Google STEP, CERN, or AMD. You can skip any phase."},
+{id:"os",n:"25",t:"Operating systems",color:"#455A64",start:"2027-05-26",end:"2027-06-01",hours:"40 hours",
  why:"How a computer runs many programs: processes, memory, threads, locks, and files. Every interview asks about this.",
  steps:[
  [R,"OSTEP: Operating Systems, Three Easy Pieces (free PDFs): Virtualization","https://pages.cs.wisc.edu/~remzi/OSTEP/","Ch 4 Processes, Ch 5 Process API, Ch 6 Direct Execution, Ch 7 CPU Scheduling, Ch 8 Multi-level Feedback, Ch 9 Lottery Scheduling, Ch 10 Multi-CPU Scheduling.",8,"26 May to 28 May","I checked these chapter titles on the OSTEP site. I found no verified lecture videos for this book."],
@@ -734,57 +727,42 @@ const data=[
  [R,"OSTEP: Persistence","https://pages.cs.wisc.edu/~remzi/OSTEP/","Ch 36 I/O Devices, Ch 37 Hard Disk Drives, Ch 38 RAID, Ch 39 Files and Directories, Ch 40 File System Implementation, Ch 41 FFS, Ch 42 FSCK and Journaling.",10,"29 May to 1 Jun"]],
  project:"In C: a small shell that runs programs with fork and exec and supports pipes. Then a thread-safe queue with locks and condition variables. Test both with many threads.",need:"Phases 1, 3, and 8."},
 
-{id:"prob",n:"31",t:"Probability and statistics",color:"#8E6A00",start:"2027-06-02",end:"2027-06-08",hours:"40 hours",
+{id:"prob",n:"26",t:"Probability and statistics",color:"#8E6A00",start:"2027-06-02",end:"2027-06-08",hours:"40 hours",
  why:"Quantum computing and AI are probability. You also need it for algorithms and for data work.",
  steps:[
  [W,"MIT 6.041SC Probabilistic Systems Analysis, Unit I","https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/","Unit I: Probability Models and Discrete Random Variables, lectures 1 to 7. Solve the problems after each lecture on paper.",20,"2 Jun to 4 Jun","I checked the unit list. The page gives lecture numbers, not titles. I did not check if the videos are free."],
  [W,"MIT 6.041SC, Units II and IV","https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/","Unit II: General Random Variables, lectures 8 to 12. Then Unit IV, lectures 19 to 22.",20,"5 Jun to 8 Jun","Lectures 23 to 25 are optional. The course book is not free, so use the lecture notes."]],
  project:"A Python notebook: simulate Monte Carlo estimates of pi and of the birthday problem. Check each against the exact answer.",need:"Phases 4 and 5. Your Stanford PAI course covers the same ideas, so do not do both twice."},
 
-{id:"toc",n:"32",t:"Theory of computation",color:"#6A1B9A",start:"2027-06-09",end:"2027-06-15",hours:"40 hours",
+{id:"toc",n:"27",t:"Theory of computation",color:"#6A1B9A",start:"2027-06-09",end:"2027-06-15",hours:"40 hours",
  why:"What a computer can and cannot do, and what is hard. P and NP, and why quantum computers matter.",
  steps:[
  [W,"MIT 18.404J Theory of Computation, Fall 2020, lectures 1 to 12","https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/pages/lecture-videos/","1 Finite Automata, 2 Nondeterminism, 3 Pumping Lemma and CFGs, 4 Pushdown Automata, 5 CF Pumping Lemma and Turing Machines, 6 TM Variants and Church-Turing Thesis, 7 Decision Problems, 8 Undecidability, 9 Reducibility, 10 Computation History, 11 Recursion Theorem, 12 Time Complexity.",20,"9 Jun to 11 Jun","I checked these lecture titles on the OCW page. The course book (Sipser) is not free."],
  [W,"MIT 18.404J, lectures 14 to 22","https://ocw.mit.edu/courses/18-404j-theory-of-computation-fall-2020/pages/lecture-videos/","14 P and NP and SAT, 15 NP-Completeness, 16 Cook-Levin Theorem, 17 Space Complexity and PSPACE, 18 PSPACE-Completeness, 19 Games, 20 L and NL, 21 Hierarchy Theorems, 22 Provably Intractable Problems.",20,"12 Jun to 15 Jun","The page has no lecture 13."]],
  project:"A DFA simulator and a Turing machine simulator in Python. Then a small 3-SAT solver. Write one page that shows how 3-SAT reduces to another problem.",need:"Phase 4."},
 
-{id:"gpu",n:"33",t:"Parallel and GPU programming",color:"#C62828",start:"2027-06-16",end:"2027-06-22",hours:"40 hours",
- why:"AMD builds GPUs. You learn how a GPU runs thousands of threads and how to write a kernel with HIP.",
- steps:[
- [R,"AMD HIP docs: Programming guide","https://rocm.docs.amd.com/projects/HIP/en/latest/","Introduction to the HIP programming model, Understanding GPU performance, Hardware implementation, HIP C++ language extensions. Then the SAXPY tutorial and the Reduction tutorial. Write the code yourself.",20,"16 Jun to 18 Jun","I checked these section titles on the HIP site. I found no verified lecture videos. HIP needs a GPU. I did not check a free cloud option."],
- [R,"AMD HIP docs: GPU programming patterns","https://rocm.docs.amd.com/projects/HIP/en/latest/","Two-dimensional kernels (matrix multiplication), Atomic operations (histogram), CPU-GPU cooperative computing (K-means), Stencil operations (image convolution), Multi-kernel programming (breadth-first search). Then read Performance guidelines.",20,"19 Jun to 22 Jun"]],
- project:"Matrix multiplication and image convolution as HIP kernels. Time them against your C++ CPU versions. Write the speed-up in the README.",need:"Phases 8, 10, and 30."},
-
-{id:"num",n:"34",t:"Numerical and scientific computing",color:"#00695C",start:"2027-06-23",end:"2027-06-26",hours:"20 hours",
- why:"Floating point, simulation, and the tools that CERN uses to analyze data.",
- steps:[
- [R,"Goldberg: What every computer scientist should know about floating-point arithmetic","https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html","Read the sections on rounding error and on the IEEE standard.",5,"23 Jun to 26 Jun","I could not open this page today. The details come from my own knowledge. Check them on the site."],
- [R,"ROOT manual (CERN), basics","https://root.cern/manual/","First steps with ROOT, ROOT macros and shared libraries, Python interface.",7,"23 Jun to 26 Jun","I checked these chapter titles on the ROOT site."],
- [R,"ROOT manual, functional parts","https://root.cern/manual/","Histograms, Fitting, Dataframes. Also try the Primer at https://root.cern/primer/.",8,"23 Jun to 26 Jun"]],
- project:"Simulate a pendulum with Euler and with Runge-Kutta. Plot the error. Then fill a histogram with random data in ROOT (PyROOT) and fit a Gaussian.",need:"Phases 3, 5, and 10."},
-
-{id:"dist",n:"35",t:"Distributed systems",color:"#1565C0",start:"2027-06-27",end:"2027-07-03",hours:"40 hours",
- why:"Many computers that act as one. Google and CERN run on this. You read the key papers and build real parts.",
+{id:"dist",n:"28",t:"Distributed systems",color:"#1565C0",start:"2027-06-27",end:"2027-07-03",hours:"40 hours",
+ why:"Many computers that act as one. Google and CERN run on this. You read the key papers and build real parts. The labs use Go. Do A Tour of Go (official, free, about 4 hours) before Lab 1.",
  steps:[
  [R,"MIT 6.824 Distributed Systems: lectures 1 to 7","https://pdos.csail.mit.edu/6.824/schedule.html","1 Introduction (MapReduce paper), 2 RPC and Threads, 3 GFS, 4 Paxos, 5 Go patterns, 6 and 7 Raft. Read each paper. Do Lab 1: MapReduce.",20,"27 Jun to 29 Jun","I checked the lecture and paper list on the schedule page. I could not confirm that videos are on YouTube."],
  [R,"MIT 6.824: lectures 8 to 14","https://pdos.csail.mit.edu/6.824/schedule.html","8 Linearizability, 9 ZooKeeper, 11 Distributed Transactions, 12 Spanner, 13 Chain Replication, 14 Optimistic Concurrency Control. Do Lab 2: Key/Value server.",20,"30 Jun to 3 Jul","Lecture 10 is only a lab Q and A."]],
- project:"Labs 1 and 2 of the course in Go. Write one page that explains how Raft elects a leader.",need:"Phases 13, 28, and 30."},
+ project:"Labs 1 and 2 of the course in Go. Write one page that explains how Raft elects a leader.",need:"Phases 11 and 25."},
 
-{id:"swe",n:"36",t:"Software engineering and design",color:"#4E342E",start:"2027-07-04",end:"2027-07-10",hours:"40 hours",
+{id:"swe",n:"29",t:"Software engineering and design",color:"#4E342E",start:"2027-07-04",end:"2027-07-10",hours:"40 hours",
  why:"How to write code that other people can read, test, and change. Teams and interviews both test this.",
  steps:[
  [R,"MIT 6.031 Software Construction (sp22), readings 1 to 13","https://web.mit.edu/6.031/www/sp22/","Static Checking, Basic TypeScript, Testing, Code Review, Version Control, Specifications, Designing Specifications, Mutability and Immutability, Avoiding Debugging, Abstract Data Types, Abstraction Functions and Rep Invariants, Interfaces Generics and Enums, Debugging.",20,"4 Jul to 6 Jul","I checked the reading titles. The page does not say the readings are free, but they are open without a login."],
  [R,"MIT 6.031, readings 14 to 24","https://web.mit.edu/6.031/www/sp22/","Recursion, Equality, Map Filter Reduce, Recursive Data Types, Regular Expressions and Grammars, Parsers, Callbacks and GUIs, Concurrency, Promises, Mutual Exclusion, Message Passing.",20,"7 Jul to 10 Jul"]],
- project:"One small library with a written spec, tests, an abstract data type, and a rep invariant. Ask a friend or Claude Code to review it. Claude explains. You fix.",need:"Phases 3 and 25."},
+ project:"One small library with a written spec, tests, an abstract data type, and a rep invariant. Ask a friend or Claude Code to review it. Claude explains. You fix.",need:"Phases 3 and 22."},
 
-{id:"laterB",n:"37",t:"Deep learning, deeper",color:"#2B7A78",start:"2027-07-11",end:"2027-07-21",hours:"60 hours",
+{id:"laterB",n:"30",t:"Deep learning, deeper",color:"#2B7A78",start:"2027-07-11",end:"2027-07-21",hours:"60 hours",
  why:"Move from your own micrograd to real deep learning with PyTorch.",
  steps:[
  [R,"Dive into Deep Learning (free)","https://d2l.ai/","Ch 2: Preliminaries. Ch 3: Linear Neural Networks for Regression. Ch 4: Linear Neural Networks for Classification.",null,"11 Jul to 17 Jul","The chapter titles come from my own knowledge. Check them on d2l.ai."],
  [R,"Dive into Deep Learning","https://d2l.ai/","Ch 5: Multilayer Perceptrons. Ch 6: Builders' Guide. Ch 7: Convolutional Neural Networks.",null,"18 Jul to 21 Jul"]],
- project:"Train a convolutional network on a public image dataset with PyTorch. Write a one-page report.",need:"Phases 5 and 15."},
+ project:"Train a convolutional network on a public image dataset with PyTorch. Write a one-page report.",need:"Phases 5 and 13."},
 
-{id:"laterC",n:"38",t:"Computers, deeper",color:"#B23A8F",start:"2027-07-22",end:"2027-08-04",hours:"80 hours",
+{id:"laterC",n:"31",t:"Computers, deeper",color:"#B23A8F",start:"2027-07-22",end:"2027-08-04",hours:"80 hours",
  why:"Finish the Nand2Tetris path. You build the compiler and the operating system for your own computer.",
  steps:[
  [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 7: VM I, Stack Arithmetic. Project 8: VM II, Program Control.",null,"22 Jul to 28 Jul","The project titles come from my own knowledge. Check them on the course page."],
@@ -792,63 +770,30 @@ const data=[
  [R,"Nand2Tetris Part 2 (project pages)",L.n2t,"Project 11: Compiler II, Code Generation. Project 12: Operating System.",null,"1 Aug to 4 Aug"]],
  project:"The full chain on your Hack computer: a VM translator, a compiler, and a small operating system.",need:"Phase 8."},
 
-{id:"backend",n:"39",t:"Web backend frameworks",color:"#0C6B4D",start:"2027-08-05",end:"2027-08-11",hours:"40 hours",
+{id:"backend",n:"32",t:"Web backend frameworks",color:"#0C6B4D",start:"2027-08-05",end:"2027-08-11",hours:"40 hours",
  why:"Servers, routes, databases, and login. Django is Python. Express is JavaScript. You learn one of each.",
  steps:[
  [R,"Django official tutorial, parts 1 to 4","https://docs.djangoproject.com/en/5.2/intro/tutorial01/","Part 1 is 'Writing your first Django app, part 1'. Read parts 1 to 4 in order and build the polls app as you read. Next page link at the bottom of each part.",12,"5 Aug to 7 Aug","I checked parts 1 and 2 exist. The titles of parts 3 and 4 are from my own knowledge."],
  [R,"MDN: Express web framework (Node.js/JavaScript)","https://developer.mozilla.org/en-US/docs/Learn_web_development/Server-side/Express_Nodejs","Read the introduction, then 'Creating a skeleton website'. Build the skeleton on your computer.",7,"5 Aug to 7 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
  [R,"Django official tutorial, parts 5 to 7","https://docs.djangoproject.com/en/5.2/intro/tutorial05/","Part 5 testing, part 6 static files, part 7 the admin site. Write tests for your polls app.",8,"8 Aug to 11 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
  [R,"MDN: Express tutorial, the Local Library website","https://developer.mozilla.org/en-US/docs/Learn_web_development/Server-side/Express_Nodejs","The pages on routes and controllers and on using a database. Build the library site.",10,"8 Aug to 11 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
- project:"Put your Python study tracker behind a Django web app with login and a database. Then write 3 routes of the same app in Express and compare them in the README.",need:"Phases 3, 13, 14, and 24."},
+ project:"Put your Python study tracker behind a Django web app with login and a database. Then write 3 routes of the same app in Express and compare them in the README.",need:"Phases 3, 11, 12, and 21."},
 
-{id:"mobile",n:"40",t:"Mobile apps: Android and iOS",color:"#2E7D32",start:"2027-08-12",end:"2027-08-22",hours:"60 hours",
+{id:"mobile",n:"33",t:"Mobile apps: Android and iOS",color:"#2E7D32",start:"2027-08-12",end:"2027-08-22",hours:"60 hours",
  why:"One small app on each system. Android uses Kotlin. iOS uses Swift. These are 2 new languages.",
  steps:[
  [W,"Android Basics with Compose, Unit 1: Your first Android app","https://developer.android.com/courses/android-basics-compose/course","Do all of Unit 1. The page says it takes about 10 hours.",10,"12 Aug to 14 Aug","I checked the unit list and hours on the course page. I did not check if every part is free."],
  [W,"Stanford CS193p, Spring 2025 (YouTube playlist)","https://cs193p.stanford.edu/","Lectures 1 and 2. The course has 16 lectures. Code along in Xcode.",8,"12 Aug to 14 Aug","Xcode runs only on a Mac. If you have no Mac, do the Android steps and skip this block."],
  [W,"Android Basics with Compose, Unit 2: Building app UI","https://developer.android.com/courses/android-basics-compose/course","Do Unit 2. The page says about 21 hours. Skip the optional extras to stay at 20.",20,"15 Aug to 18 Aug"],
  [W,"Stanford CS193p, Spring 2025","https://cs193p.stanford.edu/","Lectures 3 to 8. Code along. I did not check the lecture topics or lengths.",20,"19 Aug to 22 Aug"]],
- project:"One small habit tracker app, built twice: once in Kotlin with Compose, once in Swift with SwiftUI. It saves data on the phone.",need:"Phases 3 and 10."},
+ project:"One small habit tracker app, built twice: once in Kotlin with Compose, once in Swift with SwiftUI. It saves data on the phone.",need:"Phase 3."},
 
-{id:"games",n:"41",t:"Game development",color:"#B5651D",start:"2027-08-23",end:"2027-08-26",hours:"20 hours",
+{id:"games",n:"34",t:"Game development",color:"#B5651D",start:"2027-08-23",end:"2027-08-26",hours:"20 hours",
  why:"Make one finished small game with the free Godot engine.",
  steps:[
  [R,"Godot docs: Your first 2D game","https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html","All 7 pages: Setting up the project, Creating the player scene, Coding the player, Creating the enemy, The main game scene, Heads up display, Finishing up.",8,"23 Aug to 26 Aug","I checked the 7 page titles on the Godot site."],
  [R,"Godot docs: Step by step","https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html","Read the whole section. It explains nodes, scenes, and scripting.",6,"23 Aug to 26 Aug","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
  project:"Finish the tutorial game. Then add a start screen, a high score saved to a file, and sound. Export it and send it to a friend.",need:"Phase 3."},
-
-{id:"chain",n:"42",t:"Blockchain and smart contracts",color:"#6D4C9F",start:"2027-08-27",end:"2027-09-02",hours:"40 hours",
- why:"How Bitcoin and Ethereum work, and how to write a smart contract. This reuses your discrete math and networking.",
- steps:[
- [W,"Princeton: Bitcoin and Cryptocurrency Technologies, lectures 1 to 6","https://bitcoinbook.cs.princeton.edu/","The page has 12 lecture videos. Watch videos 1 to 6.",8,"27 Aug to 29 Aug","I checked that the page has 12 videos and a free PDF."],
- [R,"Princeton: Bitcoin and Cryptocurrency Technologies (free draft PDF)","https://d28rh4a8wq0iu5.cloudfront.net/bitcointech/readings/princeton_bitcoin_book.pdf","Ch 1 to 6: introduction to crypto, decentralization, mechanics of Bitcoin, storing Bitcoins, mining, anonymity.",12,"27 Aug to 29 Aug","The PDF is the pre-publication draft. The chapter titles are from my own knowledge. Check them in the PDF."],
- [W,"Princeton: Bitcoin and Cryptocurrency Technologies, lectures 7 to 12","https://bitcoinbook.cs.princeton.edu/","Watch videos 7 to 12.",8,"30 Aug to 2 Sep"],
- [R,"ethereum.org: Intro to Ethereum, then Smart contracts","https://ethereum.org/en/developers/docs/intro-to-ethereum/","Read 'Intro to Ethereum', then the 'Smart contracts' page in the same docs. Write a first Solidity contract.",12,"30 Aug to 2 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
- project:"Write a toy blockchain in Python with proof of work. Then write a simple voting contract in Solidity and run it on a test network. Solidity is a new language.",need:"Phases 3, 4, and 13."},
-
-{id:"xr",n:"43",t:"AR and VR on the web",color:"#C2185B",start:"2027-09-03",end:"2027-09-06",hours:"20 hours",
- why:"Build 3D worlds in the browser with A-Frame and WebXR. You need no headset to start.",
- steps:[
- [R,"A-Frame docs: Introduction","https://aframe.io/docs/1.7.0/introduction/","Pages in order: Introduction, Installation, VR Headsets and WebXR Browsers, HTML and Primitives, Entity-Component-System, JavaScript Events and DOM APIs, Developing with three.js, Writing a Component.",9,"3 Sep to 6 Sep","I checked these page titles on the A-Frame site."],
- [R,"MDN: Building up a basic demo with A-Frame","https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_on_the_web/Building_up_a_basic_demo_with_A-Frame","Build the demo from start to end.",3,"3 Sep to 6 Sep"],
- [R,"A-Frame docs: Introduction, second half","https://aframe.io/docs/1.7.0/introduction/","Interactions and Controllers, 3D Models, Visual Inspector and Dev Tools, Hosting and Publishing, Best Practices.",5,"3 Sep to 6 Sep"]],
- project:"A small 3D room in A-Frame with 3 objects you can click and a custom component you wrote. Host it on GitHub Pages.",need:"Phases 5, 23, and 24."},
-
-{id:"edge",n:"44",t:"Edge computing and TinyML",color:"#00838F",start:"2027-09-07",end:"2027-09-10",hours:"20 hours",
- why:"Run small AI models on small devices, close to the sensor. This reuses your Arduino work.",
- steps:[
- [R,"Machine Learning Systems (mlsysbook.ai), chapter 2: ML Systems","https://mlsysbook.ai/contents/ml_systems/ml_systems.html","Read 2.1 Introduction, 2.2 Cloud ML, 2.3 Edge ML, 2.4 Tiny ML, 2.5 Comparison.",5,"7 Sep to 10 Sep","I checked these section titles on the site."],
- [R,"Machine Learning Systems (mlsysbook.ai)","https://mlsysbook.ai/","Then read the chapters on model optimization and on-device learning. Pick them from the book's table of contents.",8,"7 Sep to 10 Sep","I did not check the other chapter titles. Pick them yourself on the site."],
- [R,"TensorFlow Lite for Microcontrollers","https://www.tensorflow.org/lite/microcontrollers","Read the overview and the 'Get started' guide.",5,"7 Sep to 10 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
- project:"Train a tiny model on sensor data from your Arduino from Phase 9. Shrink it and write down its size and speed before and after.",need:"Phases 3, 9, and 15."},
-
-{id:"ent",n:"45",t:"Enterprise systems: Salesforce, ServiceNow, SAP",color:"#37474F",start:"2027-09-11",end:"2027-09-17",hours:"40 hours",
- why:"Companies run on these systems. Each vendor has free learning sites. You do the modules, not the exams.",
- steps:[
- [R,"Salesforce Trailhead: Admin Beginner trail","https://trailhead.salesforce.com/","Create a free Trailhead account and a free developer org. Do the Admin Beginner trail.",20,"11 Sep to 13 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site. Skip all exams and badges for money."],
- [R,"ServiceNow Now Learning (free on-demand courses)","https://nowlearning.servicenow.com/","Create a free account and a personal developer instance. Do the on-demand fundamentals course.",10,"14 Sep to 17 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."],
- [R,"SAP Learning (free learning journeys)","https://learning.sap.com/","Do one free learning journey about SAP basics. Read about ERP, in general, before it.",10,"14 Sep to 17 Sep","I could not open this page today. The titles come from my own knowledge. Check them on the site."]],
- project:"One page for each vendor: build a small thing in its free test system, for example a custom object with a flow in Salesforce, and a table with a workflow in ServiceNow. Write what each system is for.",need:"Phases 3 and 14."},
 
 ];
 
@@ -948,7 +893,7 @@ cats.forEach(c=>{
   });
 });
 const PLAN0=PSTART,PLAN_END=phases.reduce((m,p)=>p.e>m?p.e:m,PLAN0);
-const optionalFrom=(()=>{const p=phases.find(p=>p.cat.n==="30");return p?p.s:null})();
+const optionalFrom=(()=>{const p=phases.find(p=>p.cat.id==="os");return p?p.s:null})();
 const dayBest={};cats.forEach(c=>{(c._items||[]).forEach(it=>Object.keys(it.alloc).forEach(k=>{const m=dayBest[k]||(dayBest[k]={});m[c.id]=(m[c.id]||0)+it.alloc[k]}))});
 const phaseOn=d=>{if(d>=EX0&&d<=EX1)return phases.find(p=>p.exam);const m=dayBest[dkey(d)];if(!m)return null;let best=null,bh=-1;phases.forEach(p=>{const v=m[p.cat.id]||0;if(v>bh){bh=v;best=p}});return best};
 const onDay=(x,d)=>!!x.alloc[dkey(d)];
@@ -995,7 +940,7 @@ function renderDay(force){
   let sub="";
   if(sel<PLAN0)sub="The plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+". Install your tools now.";
   else if(ph&&ph.exam)sub="Exam block. No plan work. Do your LeetCode problem and your report.";
-  else if(ph){const n=Math.round((sel-ph.s)/864e5)+1,t=Math.round((ph.e-ph.s)/864e5)+1;sub=`Phase ${ph.cat.n} of 45: ${ph.cat.t}. Day ${n} of ${t}.`}
+  else if(ph){const n=Math.round((sel-ph.s)/864e5)+1,t=Math.round((ph.e-ph.s)/864e5)+1;sub=`Phase ${ph.cat.n} of ${data.filter(c=>c.id&&!c.exam).length}: ${ph.cat.t}. Day ${n} of ${t}.`}
   else sub="No phase today. Catch up on late steps or rest.";
   {const hrsToday=tasks.reduce((a,x)=>a+(x.alloc[k]||0),0);if(hrsToday&&!(ph&&ph.exam))sub+=" "+(Math.round(hrsToday*10)/10)+" hours planned."}
   document.getElementById("ds").textContent=sub;document.getElementById("dayhero").style.setProperty("--c",ph?ph.cat.color:"#8E8E93");const dc=document.getElementById("dcat");if(ph){dc.hidden=false;dc.style.setProperty("--c",ph.cat.color);dc.textContent=CATS[ph.cat.cat].n}else dc.hidden=true;
@@ -1099,7 +1044,39 @@ function renderFiles(){
   });
 })();
 
+
+/* Roadmaps home page */
+const ROADS=[
+ {t:"FUNDAMENTALS",sub:"Learn these first. Every other roadmap needs them.",c:"#2D7DD2",ids:["tools","term","prog","math","linalg","dsa","data"],lab:{prog:"C and Python",tools:"Shell and Git",term:"Bash and Claude Code",math:"Discrete math",linalg:"Linear algebra",dsa:"Algorithms",data:"Databases and SQL"}},
+ {t:"SWE",sub:"Languages, web, systems, and the work of a software engineer.",c:"#E5702A",ids:["java","rust","htmlcss","js","tsl","react","backend","mobile","games","net","sec","cloud","qa","design","swe","dist","prep"],lab:{htmlcss:"HTML and CSS",js:"JavaScript",tsl:"TypeScript",backend:"Web backend",mobile:"Android and iOS",games:"Game development",net:"Networking",sec:"Cybersecurity",cloud:"Cloud and DevOps",qa:"Testing and QA",design:"Design and Agile",swe:"Software design",dist:"Distributed systems",prep:"Internship prep"}},
+ {t:"HARDWARE",sub:"How a computer works, from logic gates to the operating system.",c:"#B23A8F",ids:["hw","elec","os","laterC"],lab:{hw:"Computer architecture",elec:"Electronics and Arduino",os:"Operating systems",laterC:"Computers, deeper"}},
+ {t:"MACHINE LEARNING",sub:"Math for data, neural networks, and deep learning.",c:"#2B7A78",ids:["prob","ai","laterB"],lab:{prob:"Probability and statistics",ai:"AI and machine learning",laterB:"Deep learning, deeper"}},
+ {t:"QUANTUM",sub:"Your main focus. Start in phase 6 and finish in Part 5.",c:"#5B4BDB",ids:["quantum","toc","laterA"],lab:{quantum:"Quantum computing",toc:"Theory of computation",laterA:"Quantum, deeper"}}
+];
+const IND=[0,1,2,3,2,1];
+const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.5"/></svg>';
+function renderRoad(){
+  const el=document.getElementById("roads");if(!el)return;
+  const byId={};cats.forEach(c=>byId[c.id]=c);
+  const nowPh=(function(){try{const x=phaseOn(TODAY);return x&&!x.exam?x.cat.id:null}catch(e){return null}})();
+  el.innerHTML=ROADS.map(r=>{
+    let all=0,fin=0,full=0;
+    const nodes=r.ids.map((id,j)=>{
+      const c=byId[id];if(!c)return"";
+      const n=c.steps.length,d=c.steps.filter((_,i)=>done[c.id+"-"+i]).length;all+=n;fin+=d;
+      const st=n&&d===n?"done":d>0?"part":"todo";if(st==="done")full++;
+      const hrs=(c.hours||"").replace(" hours"," h");
+      const badge=st==="done"?CHECK:st==="part"?`<span>${d}/${n}</span>`:c.n;
+      return `<li><button type="button" class="rnode ${st}${nowPh===id?" now":""}" data-road="${id}" style="--i:${IND[j%IND.length]};--nc:${c.color||r.c};--pp:${n?Math.round(d/n*100):0}"><span class="rbadge">${badge}</span><span class="rtxt"><b>${r.lab[id]||c.t}</b><small>Phase ${c.n} · ${n} steps · ${hrs}</small></span></button></li>`}).join("");
+    return `<article class="road" style="--rc:${r.c}"><div class="roadhead"><div><h2>${r.t}</h2><p>${r.sub}</p></div><div class="roadpct">${full} of ${r.ids.length} phases · ${all?Math.round(fin/all*100):0}%</div></div><div class="roadbar"><i style="width:${all?fin/all*100:0}%"></i></div><ul class="rnodes">${nodes}</ul></article>`}).join("");
+}
+document.getElementById("roads").addEventListener("click",e=>{
+  const b=e.target.closest("[data-road]");if(!b)return;showView("phases");
+  const t=document.getElementById(b.dataset.road);if(t)t.scrollIntoView();
+});
+
 function progress(){
+  renderRoad();
   let all=0,fin=0;
   cats.forEach(c=>{if(!c.steps.length)return;const n=c.steps.length,d=c.steps.filter((_,i)=>done[c.id+"-"+i]).length;all+=n;fin+=d;
     const p=document.getElementById("p-"+c.id),b=document.getElementById("b-"+c.id);if(p)p.textContent=d+"/"+n;if(b)b.style.width=(d/n*100)+"%";});
@@ -1146,7 +1123,7 @@ document.getElementById("main").addEventListener("change",e=>{
   const li=e.target.closest("li[data-k]");if(!li)return;setDone(li.dataset.k,e.target.checked);
 });
 function showView(v){
-  ["cal","phases","rules"].forEach(x=>{document.getElementById("v-"+x).hidden=x!==v;document.getElementById("t-"+x).setAttribute("aria-selected",x===v)});
+  ["home","cal","phases","rules"].forEach(x=>{document.getElementById("v-"+x).hidden=x!==v;document.getElementById("t-"+x).setAttribute("aria-selected",x===v)});
 }
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.v)));
 
