@@ -479,6 +479,7 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 .gbtn{width:100%;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);border-radius:14px;padding:13px;font-weight:700;font-size:16px;cursor:pointer;margin-top:6px}
 .aor{text-align:center;color:var(--soft);font-size:13px;margin:14px 0 4px}
 .afld{display:grid;gap:4px;font-size:13px;font-weight:700;color:var(--soft);margin-top:10px}
+.ghh{margin-top:26px;border-top:1px solid var(--line);padding-top:20px}
 .afld input{font:inherit;font-size:16px;color:var(--ink);background:var(--fill);border:1.5px solid var(--line);border-radius:12px;padding:11px 12px}
 .amsg{font-size:14px;color:var(--soft);min-height:1.4em;margin:12px 0 0}
 @media (max-width:520px){.ovp{padding:18px 16px 20px;border-radius:20px}.tbar{margin:-18px -16px 6px;padding:12px 16px;top:0}}
@@ -1423,8 +1424,54 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     try{await fb.fs.setDoc(ref,payload());setSt("Saved to your account ("+user.email+"). Same on every device.")}
     catch(e){setSt("Could not save to your account. Check the Firestore rules.")}
   }
-  function change(){touch();clearTimeout(pt);pt=setTimeout(push,700)}
+  function change(){touch();clearTimeout(pt);pt=setTimeout(()=>{push();if(gh)ghSync()},900)}
   sync.done=sync.days=sync.rep=sync.tests=change;
+  /* ---- GitHub sync: progress saved as lockin-data.json in a private repo ---- */
+  const GHK="lockin-gh-v1";let gh=null,ghBusy=false,ghAgain=false,ghT=null;
+  try{gh=JSON.parse(localStorage.getItem(GHK))}catch(e){}
+  if(gh&&!(gh.token&&gh.repo))gh=null;
+  const norm=o=>Array.isArray(o)?o.map(norm):o&&typeof o==="object"?Object.keys(o).sort().reduce((a,k)=>{a[k]=norm(o[k]);return a},{}):o;
+  const body=o=>{const c=Object.assign({},o);delete c.u;return JSON.stringify(norm(c))};
+  const b64=t=>btoa(unescape(encodeURIComponent(t))),unb64=t=>decodeURIComponent(escape(atob(t.replace(/\s/g,""))));
+  const GH=()=>({Authorization:"Bearer "+gh.token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"});
+  const GU=()=>"https://api.github.com/repos/"+gh.repo+"/contents/lockin-data.json";
+  class GErr extends Error{constructor(c){super("gh"+c);this.code=c}}
+  async function ghPull(){
+    const r=await fetch(GU()+"?t="+Date.now(),{headers:GH(),cache:"no-store"});
+    if(r.status===404)return{sha:null,doc:{}};
+    if(!r.ok)throw new GErr(r.status);
+    const j=await r.json();let doc={};try{doc=JSON.parse(unb64(j.content||""))}catch(e){}
+    return{sha:j.sha,doc};
+  }
+  async function ghPut(sha){
+    const p=payload();
+    const r=await fetch(GU(),{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},GH()),body:JSON.stringify({message:"LOCK IN sync",content:b64(JSON.stringify(p)),sha:sha||undefined})});
+    if(r.status===409||r.status===422)throw new GErr(409);
+    if(!r.ok)throw new GErr(r.status);
+  }
+  const ghMsg=c=>c===401?"The GitHub token is not valid. Make a new one.":c===403?"GitHub says no. The token needs Contents: Read and write.":c===404?"GitHub cannot find the repo. Check the name and the token access.":c===409?"Sync clashed. It tries again.":"GitHub error "+c+". Try again later.";
+  async function ghSync(){
+    if(!gh)return;
+    if(ghBusy){ghAgain=true;return}
+    ghBusy=true;
+    try{
+      for(let n=0;n<3;n++){
+        const {sha,doc}=await ghPull();
+        loginT=loginT||Date.now();
+        applyRemote(doc);touch();
+        if(body(payload())===body(doc)){setSt("Saved to GitHub ("+gh.repo+"). Same on every device.");break}
+        try{await ghPut(sha);setSt("Saved to GitHub ("+gh.repo+"). Same on every device.");break}
+        catch(e){if(!(e instanceof GErr&&e.code===409&&n<2))throw e}
+      }
+    }catch(e){setSt(e instanceof GErr?ghMsg(e.code):"No internet. Saved on this device.");if(!am.hidden)say(e instanceof GErr?ghMsg(e.code):"No internet.")}
+    ghBusy=false;
+    if(ghAgain){ghAgain=false;ghSync()}
+  }
+  function ghStart(){
+    label();ghSync();
+    clearInterval(ghT);ghT=setInterval(()=>{if(!document.hidden)ghSync()},60000);
+  }
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden&&gh)ghSync()});
   async function loadFb(){
     if(fb)return fb;
     const b="https://www.gstatic.com/firebasejs/10.12.2/";
@@ -1433,21 +1480,28 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     fb={auth,fs,a:auth.getAuth(a),db:fs.getFirestore(a)};
     return fb;
   }
-  function label(){abtn.textContent=user?(user.email||"Account").split("@")[0]:"Log in"}
+  function label(){abtn.textContent=user?(user.email||"Account").split("@")[0]:gh?"Synced":"Log in"}
   function render(){
     const e=s=>esc(s||"");
     let h='<button type="button" class="x" id="aclose" aria-label="Close">&times;</button><div class="tk">Account</div>';
-    if(!cfg){
-      h+='<h2>Login is not set up yet</h2><p>Your progress is saved on this device only. To save it in an account, do the Firebase setup once. It is free.</p><p class="amsg">Put your Firebase config in <b>firebase-config.js</b> in your PLANNER repository.</p>';
-    }else if(user){
-      h+=`<h2>You are logged in</h2><p><b>${e(user.email)}</b></p><p>Your steps, days, reports, and test grades save to this account. Log in on any device to see them.</p><div class="tbtns"><button type="button" class="tgo" id="aout">Log out</button></div>`;
-    }else{
+    if(cfg&&user){
+      h+=`<h2>You are logged in</h2><p><b>${e(user.email)}</b></p><p>Your steps, days, reports, and test grades save to this account.</p><div class="tbtns"><button type="button" class="tgo" id="aout">Log out</button></div>`;
+    }else if(cfg){
       h+=`<h2>Log in or make an account</h2><p>Your progress saves to your account. Same on every device.</p>
         <button type="button" class="gbtn" id="agoogle">Continue with Google</button>
         <div class="aor">or use email</div>
         <label class="afld">Email<input id="aemail" type="email" autocomplete="email" inputmode="email"></label>
         <label class="afld">Password<input id="apass" type="password" autocomplete="current-password"></label>
         <div class="tbtns"><button type="button" class="tgo" id="ain">Log in</button><button type="button" class="tx" id="aup">Make account</button><button type="button" class="tx" id="areset">Forgot password</button></div>`;
+    }
+    if(gh){
+      h+=`<h2${cfg?' class="ghh"':""}>GitHub sync is on</h2><p>Repo: <b>${e(gh.repo)}</b></p><p>Your steps, days, reports, and test grades save there. Do the same on your other devices to see them.</p><div class="tbtns"><button type="button" class="tgo" id="ghnow">Sync now</button><button type="button" class="tx" id="ghoff">Turn off</button></div>`;
+    }else{
+      h+=`<h2${cfg?' class="ghh"':""}>Save your progress on GitHub</h2><p>Use a private repo. Your progress goes into one file there. Use the same token on every device.</p>
+        <label class="afld">Repo (owner/name)<input id="ghrepo" type="text" value="matsouka-maria/lockin-data" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
+        <label class="afld">GitHub token<input id="ghtok" type="password" autocomplete="off" placeholder="github_pat_..." autocapitalize="off" spellcheck="false"></label>
+        <div class="tbtns"><button type="button" class="tgo" id="ghon">Turn on sync</button></div>
+        <p class="amsg">The token needs <b>Contents: Read and write</b> for that one repo only. It stays on this device.</p>`;
     }
     h+=`<p class="amsg" id="amsg" role="status">${e(msg)}</p>`;
     abox.innerHTML=h;
@@ -1461,6 +1515,18 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     if(e.target===am){close();return}
     const t=e.target.closest("button");if(!t)return;
     if(t.id==="aclose"){close();return}
+    if(t.id==="ghon"){
+      const repo=(document.getElementById("ghrepo").value||"").trim().replace(/^https?:\/\/github.com\//,"").replace(/\.git$/,"").replace(/\/$/,""),tok=(document.getElementById("ghtok").value||"").trim();
+      if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){say("Write the repo like owner/name.");return}
+      if(!tok){say("Paste your GitHub token.");return}
+      gh={repo,token:tok};say("Connecting to GitHub...");
+      try{localStorage.setItem(GHK,JSON.stringify(gh))}catch(x){}
+      try{const r=await fetch("https://api.github.com/repos/"+repo,{headers:GH()});
+        if(!r.ok){gh=null;try{localStorage.removeItem(GHK)}catch(x){}say(ghMsg(r.status));return}
+      }catch(x){gh=null;try{localStorage.removeItem(GHK)}catch(y){}say("No internet.");return}
+      loginT=Date.now();msg="";render();ghStart();return}
+    if(t.id==="ghnow"){say("Syncing...");await ghSync();say("");return}
+    if(t.id==="ghoff"){gh=null;clearInterval(ghT);try{localStorage.removeItem(GHK)}catch(x){}label();setSt("Saved on this device.");msg="";render();return}
     if(!cfg)return;
     const f=await loadFb().catch(()=>null);if(!f){say("Could not load the login. Check your internet.");return}
     const em=()=>(document.getElementById("aemail").value||"").trim(),pw=()=>document.getElementById("apass").value||"";
@@ -1477,6 +1543,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
   });
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!am.hidden)close()});
   label();
+  if(gh){loginT=Date.now();ghStart()}
   if(cfg){
     loadFb().then(f=>{
       f.auth.onAuthStateChanged(f.a,u=>{
