@@ -1491,7 +1491,8 @@ function showView(v){
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.v)));
 
 progress();apply();renderCal();renderDay(true);refreshStreaks();
-try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeItem("lockin-view");showView(v);if(v==="cal"){const ps=document.getElementById("planset");if(ps)ps.scrollIntoView()}}}catch(e){}
+try{const ps=document.getElementById("planset"),cw=document.querySelector("#v-cal .calwrap");if(PCFG.set&&ps&&cw){cw.after(ps);ps.style.marginTop="16px";ps.style.marginBottom="0";const h=ps.querySelector("h2");if(h)h.textContent="Change your plan"}}catch(e){}
+try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeItem("lockin-view");showView(v)}}catch(e){}
 
 /* Account: Firebase login and sync. Setup: put your Firebase config in firebase-config.js */
 (function(){
