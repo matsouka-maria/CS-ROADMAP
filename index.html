@@ -1487,25 +1487,14 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     if(cfg&&user){
       h+=`<h2>You are logged in</h2><p><b>${e(user.email)}</b></p><p>Your steps, days, reports, and test grades save to this account.</p><div class="tbtns"><button type="button" class="tgo" id="aout">Log out</button></div>`;
     }else if(cfg){
-      h+=`<h2>Log in or make an account</h2><p>Your progress saves to your account. Same on every device.</p>
-        <button type="button" class="gbtn" id="agoogle">Continue with Google</button>
-        <button type="button" class="gbtn" id="agithub">Continue with GitHub</button>
-        <div class="aor">or use email</div>
-        <label class="afld">Email<input id="aemail" type="email" autocomplete="email" inputmode="email"></label>
-        <label class="afld">Password<input id="apass" type="password" autocomplete="current-password"></label>
-        <div class="tbtns"><button type="button" class="tgo" id="ain">Log in</button><button type="button" class="tx" id="aup">Make account</button><button type="button" class="tx" id="areset">Forgot password</button></div>`;
+      h+=`<h2>Log in with Google</h2><p>Your progress saves to your account. Same on every device.</p>
+        <button type="button" class="gbtn" id="agoogle">Continue with Google</button>`;
     }
     if(gh){
       h+=`<h2${cfg?' class="ghh"':""}>GitHub sync is on</h2><p>Repo: <b>${e(gh.repo)}</b></p><p>Your steps, days, reports, and test grades save there. Do the same on your other devices to see them.</p><div class="tbtns"><button type="button" class="tgo" id="ghnow">Sync now</button><button type="button" class="tx" id="ghoff">Turn off</button></div>`;
-    }else{
-      h+=`<h2${cfg?' class="ghh"':""}>Save your progress on GitHub</h2><p>Make your own private repo first, for example <b>lockin-data</b>. Your progress goes into one file there. Use the same token on every device. Each person uses their own repo and token.</p>
-        <label class="afld">Repo (owner/name)<input id="ghrepo" type="text" placeholder="your-github-name/lockin-data" autocapitalize="off" autocorrect="off" spellcheck="false"></label>
-        <label class="afld">GitHub token<input id="ghtok" type="password" autocomplete="off" placeholder="github_pat_..." autocapitalize="off" spellcheck="false"></label>
-        <div class="tbtns"><button type="button" class="tgo" id="ghon">Turn on sync</button></div>
-        <p class="amsg">The token needs <b>Contents: Read and write</b> for that one repo only. It stays on this device.</p>`;
     }
     h+=`<p class="amsg" id="amsg" role="status">${e(msg)}</p>`;
-    h+=`<p class="amsg" style="font-size:11px;opacity:.6">Login build 5 &middot; ${cfg?"Firebase on":"Firebase off"}</p>`;
+    h+=`<p class="amsg" style="font-size:11px;opacity:.6">Login build 6 &middot; ${cfg?"Firebase on":"Firebase off"}</p>`;
     abox.innerHTML=h;
   }
   const POPFAIL=new Set(["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/web-storage-unsupported","auth/internal-error","auth/cancelled-popup-request"]);
