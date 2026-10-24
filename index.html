@@ -299,6 +299,136 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 .rnode.now .rtxt b::after{content:"Today";margin-left:8px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:#FF375F;border-radius:99px;padding:3px 8px;vertical-align:2px}
 .rnode.done .rtxt b{color:#6B6885}
 @media (max-width:520px){.tabs{max-width:100%}.tabs button{padding:8px 13px;font-size:13px}.rnode{--step:14px}.rbadge{width:50px;height:50px}.rtxt b{font-size:16px}.roadhead h2{font-size:28px}}
+/* speed: no blur on big lists */
+.card,.day,.cat,aside,.rules-list,.tile,.stat{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+:root{--glass:rgba(255,255,255,.96)}
+.cat{content-visibility:auto;contain-intrinsic-size:auto 600px}
+
+/* Roadmaps side by side */
+#v-home{width:min(1480px,calc(100vw - 48px));position:relative;left:50%;transform:translateX(-50%)}
+.roads{grid-template-columns:repeat(auto-fit,minmax(236px,1fr));align-items:start;gap:14px}
+.road{--step:14px;padding:18px 14px 20px}
+.roadhead{flex-direction:column;align-items:flex-start;gap:2px}
+.roadhead h2{font-size:26px}
+.rnode{gap:10px;padding:7px 6px;padding-left:calc(6px + var(--i,0)*var(--step))}
+.rbadge{width:50px;height:50px;font-size:15px}
+.rtxt b{font-size:15.5px}.rtxt small{font-size:12.5px}
+.road{border-top:6px solid var(--rc)}
+/* Phases grouped by roadmap */
+.part-title{color:var(--rc);border-left:6px solid var(--rc);padding-left:12px}
+.toc .grp{color:var(--rc);font-weight:800}
+/* Rules */
+.rules-wrap{display:grid;gap:18px;padding-bottom:60px}
+.rn{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.mot{border-radius:var(--r);padding:26px 24px;color:#fff;background:linear-gradient(120deg,#5E5CE6,#BF5AF2 55%,#FF6B8B);box-shadow:0 18px 36px -18px rgba(94,92,230,.7)}
+.motk{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:10px}
+.motgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 24px}
+.motgrid div{font-size:clamp(22px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.1;text-wrap:balance}
+.lcard{background:var(--panel);border-radius:var(--r);padding:20px 22px;border-left:8px solid #FF9F0A;box-shadow:var(--sh)}
+.lcard .rn{color:#FF9F0A}
+.lcard h3,.rcol h3{margin:0 0 6px;font-size:20px;letter-spacing:-.02em;text-transform:none;color:var(--ink);font-weight:800}
+.lcard p{margin:0;color:var(--soft)}
+.rcols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+.rcol{background:var(--panel);border-radius:var(--r);padding:20px 22px;border-top:8px solid var(--k);box-shadow:var(--sh)}
+.rcol .rn{color:var(--k)}
+.rcol ul{margin:8px 0 0;padding-left:20px;display:grid;gap:8px}
+.rcol li::marker{color:var(--k)}
+.c1{--k:#2D7DD2}.c2{--k:#1FA971}.c3{--k:#B23A8F}
+@media (max-width:820px){.rcols{grid-template-columns:minmax(0,1fr)}}
+/* Theme button */
+.wrap{position:relative}
+.themebtn{position:absolute;top:30px;right:0;border:0;border-radius:999px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;background:#fff;color:#1C1C1E;box-shadow:0 4px 14px -8px rgba(60,50,120,.4)}
+@media (max-width:520px){.themebtn{top:8px}.top{padding-top:48px}}
+/* Dark theme */
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"]){--bg:#131318;--panel:#1D1D24;--ink:#ECECF2;--soft:#A0A0B0;--line:#2D2D37;--fill:#272730;--blue:#5AAEFF;--green:#3DDC84;--red:#FF5A52;--amber:#FFB020;--glass:rgba(29,29,36,.96);--glass-b:rgba(255,255,255,.07);--sh:0 10px 30px -12px rgba(0,0,0,.65);color-scheme:dark}
+:root:not([data-theme="light"]) body{background:#131318;background-image:radial-gradient(900px 600px at 5% -5%,rgba(124,92,255,.34),transparent 60%),radial-gradient(800px 600px at 100% 0%,rgba(255,92,140,.24),transparent 55%),radial-gradient(900px 700px at 50% 105%,rgba(40,200,190,.2),transparent 60%)}
+:root:not([data-theme="light"]) .tabs{background:rgba(255,255,255,.08)}
+:root:not([data-theme="light"]) .tabs button[aria-selected="true"]{background:#3A3A52;color:#fff}
+:root:not([data-theme="light"]) .cell.plan{background:color-mix(in srgb,var(--c) 28%,#1D1D24)}
+:root:not([data-theme="light"]) .cell.optional{background:color-mix(in srgb,var(--c) 14%,#1D1D24)}
+:root:not([data-theme="light"]) .legend span{background:rgba(255,255,255,.08)}
+:root:not([data-theme="light"]) .dayhero{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 40%,#1D1D24) 0%,color-mix(in srgb,var(--c) 10%,#1D1D24) 70%)}
+:root:not([data-theme="light"]) .catchip{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.14)}
+:root:not([data-theme="light"]) #tasks .task,:root:not([data-theme="light"]) #late .task,:root:not([data-theme="light"]) .group:has(.lcrow),:root:not([data-theme="light"]) textarea#rep,:root:not([data-theme="light"]) details.more,:root:not([data-theme="light"]) .road{background:#23232C}
+:root:not([data-theme="light"]) .btn.ghost{background:#2D2D3D;color:#B3A8FF}
+:root:not([data-theme="light"]) .drop{background:rgba(255,255,255,.05)}
+:root:not([data-theme="light"]) .ring::before{background:#1D1D24}
+:root:not([data-theme="light"]) .cat-head{background:linear-gradient(120deg,color-mix(in srgb,var(--c) 32%,#1D1D24),transparent 75%)}
+:root:not([data-theme="light"]) .dbar{background:rgba(255,255,255,.14)}
+:root:not([data-theme="light"]) .roadhead p{color:#B0ADCB}
+:root:not([data-theme="light"]) .roadbar{background:#35353F}
+:root:not([data-theme="light"]) .rnode:hover{background:#2D2D3A}
+:root:not([data-theme="light"]) .rnode.todo .rbadge{background:#3A3A49;color:#BDBAD6}
+:root:not([data-theme="light"]) .rnode.part .rbadge{background:conic-gradient(var(--nc) calc(var(--pp)*1%),#3A3A49 0)}
+:root:not([data-theme="light"]) .rnode.part .rbadge::after{background:#23232C}
+:root:not([data-theme="light"]) .rtxt small{color:#A09DBB}
+:root:not([data-theme="light"]) .rnode.done .rtxt b{color:#B0ADCB}
+:root:not([data-theme="light"]) .kind.build{color:#FFC470;background:rgba(255,176,32,.16)}
+:root:not([data-theme="light"]) input[type=checkbox]{border-color:#5A5A6C}
+:root:not([data-theme="light"]) .calhead button:disabled{color:#555566}
+:root:not([data-theme="light"]) .themebtn{background:#2D2D3D;color:#ECECF2}
+:root:not([data-theme="light"]) .mot{background:linear-gradient(120deg,#4B2BA8,#B13C8F 55%,#E8603C)}
+:root:not([data-theme="light"]) .lcard{background:#23232C}
+:root:not([data-theme="light"]) .rcol{background:#23232C}
+}
+:root[data-theme="dark"]{--bg:#131318;--panel:#1D1D24;--ink:#ECECF2;--soft:#A0A0B0;--line:#2D2D37;--fill:#272730;--blue:#5AAEFF;--green:#3DDC84;--red:#FF5A52;--amber:#FFB020;--glass:rgba(29,29,36,.96);--glass-b:rgba(255,255,255,.07);--sh:0 10px 30px -12px rgba(0,0,0,.65);color-scheme:dark}
+:root[data-theme="dark"] body{background:#131318;background-image:radial-gradient(900px 600px at 5% -5%,rgba(124,92,255,.34),transparent 60%),radial-gradient(800px 600px at 100% 0%,rgba(255,92,140,.24),transparent 55%),radial-gradient(900px 700px at 50% 105%,rgba(40,200,190,.2),transparent 60%)}
+:root[data-theme="dark"] .tabs{background:rgba(255,255,255,.08)}
+:root[data-theme="dark"] .tabs button[aria-selected="true"]{background:#3A3A52;color:#fff}
+:root[data-theme="dark"] .cell.plan{background:color-mix(in srgb,var(--c) 28%,#1D1D24)}
+:root[data-theme="dark"] .cell.optional{background:color-mix(in srgb,var(--c) 14%,#1D1D24)}
+:root[data-theme="dark"] .legend span{background:rgba(255,255,255,.08)}
+:root[data-theme="dark"] .dayhero{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 40%,#1D1D24) 0%,color-mix(in srgb,var(--c) 10%,#1D1D24) 70%)}
+:root[data-theme="dark"] .catchip{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.14)}
+:root[data-theme="dark"] #tasks .task,:root[data-theme="dark"] #late .task,:root[data-theme="dark"] .group:has(.lcrow),:root[data-theme="dark"] textarea#rep,:root[data-theme="dark"] details.more,:root[data-theme="dark"] .road{background:#23232C}
+:root[data-theme="dark"] .btn.ghost{background:#2D2D3D;color:#B3A8FF}
+:root[data-theme="dark"] .drop{background:rgba(255,255,255,.05)}
+:root[data-theme="dark"] .ring::before{background:#1D1D24}
+:root[data-theme="dark"] .cat-head{background:linear-gradient(120deg,color-mix(in srgb,var(--c) 32%,#1D1D24),transparent 75%)}
+:root[data-theme="dark"] .dbar{background:rgba(255,255,255,.14)}
+:root[data-theme="dark"] .roadhead p{color:#B0ADCB}
+:root[data-theme="dark"] .roadbar{background:#35353F}
+:root[data-theme="dark"] .rnode:hover{background:#2D2D3A}
+:root[data-theme="dark"] .rnode.todo .rbadge{background:#3A3A49;color:#BDBAD6}
+:root[data-theme="dark"] .rnode.part .rbadge{background:conic-gradient(var(--nc) calc(var(--pp)*1%),#3A3A49 0)}
+:root[data-theme="dark"] .rnode.part .rbadge::after{background:#23232C}
+:root[data-theme="dark"] .rtxt small{color:#A09DBB}
+:root[data-theme="dark"] .rnode.done .rtxt b{color:#B0ADCB}
+:root[data-theme="dark"] .kind.build{color:#FFC470;background:rgba(255,176,32,.16)}
+:root[data-theme="dark"] input[type=checkbox]{border-color:#5A5A6C}
+:root[data-theme="dark"] .calhead button:disabled{color:#555566}
+:root[data-theme="dark"] .themebtn{background:#2D2D3D;color:#ECECF2}
+:root[data-theme="dark"] .mot{background:linear-gradient(120deg,#4B2BA8,#B13C8F 55%,#E8603C)}
+:root[data-theme="dark"] .lcard{background:#23232C}
+:root[data-theme="dark"] .rcol{background:#23232C}
+
+:root[data-theme="dark"] .roadhead h2,:root[data-theme="dark"] .part-title,:root[data-theme="dark"] .toc .grp,:root[data-theme="dark"] .roadpct{color:color-mix(in srgb,var(--rc) 60%,#fff)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .roadhead h2,:root:not([data-theme="light"]) .part-title,:root:not([data-theme="light"]) .toc .grp,:root:not([data-theme="light"]) .roadpct{color:color-mix(in srgb,var(--rc) 60%,#fff)}}
+
+/* Reactive roadmaps */
+.road,.rnode,.rbadge,.rtxt b{transition:transform .22s cubic-bezier(.3,1.4,.5,1),box-shadow .25s,opacity .25s,background .15s,filter .2s}
+.rbadge{will-change:transform}
+@media (hover:hover){
+ .roads:hover .road:not(:hover){opacity:.62;transform:scale(.985)}
+ .road:hover{transform:translateY(-5px);box-shadow:0 26px 44px -20px var(--rc)}
+ .rnode:hover{transform:translateX(8px);background:color-mix(in srgb,var(--nc) 14%,transparent)}
+ .rnode:hover .rbadge{transform:scale(1.14) rotate(10deg);filter:brightness(1.12) drop-shadow(0 6px 10px color-mix(in srgb,var(--nc) 55%,transparent))}
+ .rnode:hover .rtxt b{color:var(--nc)}
+}
+.rnode:active{transform:scale(.96)}
+.rnode:active .rbadge{transform:scale(.9)}
+.rnode.now .rbadge{animation:nowpulse 2s ease-in-out infinite}
+.rnode.done .rbadge{filter:saturate(1.15)}
+@keyframes nowpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes growbar{from{width:0}}
+@keyframes popin{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.roads.intro .road{animation:rise .55s cubic-bezier(.2,.9,.3,1) both}
+.roads.intro .road:nth-child(2){animation-delay:.07s}.roads.intro .road:nth-child(3){animation-delay:.14s}.roads.intro .road:nth-child(4){animation-delay:.21s}.roads.intro .road:nth-child(5){animation-delay:.28s}
+.roads.intro .roadbar i{animation:growbar 1s ease-out .3s both}
+.roads.intro .rbadge{animation:popin .4s cubic-bezier(.3,1.5,.5,1) .25s both}
+@media (prefers-reduced-motion:reduce){.road,.rnode,.rbadge,.rtxt b{transition:none}.rnode.now .rbadge,.roads.intro *{animation:none!important}.roads:hover .road:not(:hover){opacity:1;transform:none}.road:hover,.rnode:hover,.rnode:hover .rbadge{transform:none}}
 </style>
 </head>
 <body>
@@ -306,6 +436,7 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 <header class="top">
   <div class="eyebrow">Google STEP &middot; CERN openlab &middot; AMD &middot; Summer 2027</div>
   <div class="brand">LOCK IN</div>
+  <button class="themebtn" id="themebtn" type="button">Dark mode</button>
   <p id="syncst">Saved on this device.</p>
   <div class="bento">
     <div class="tile hero"><div class="tl">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub"></div><div class="pbar"><i id="pfill"></i></div></div>
@@ -371,14 +502,49 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 </section>
 
 <section id="v-rules" hidden aria-labelledby="t-rules">
-  <div class="rules-list">
-    <div class="rl"><b>1</b><span>Solve 1 LeetCode problem every day.</span><small>Tick the box in the day view. The streak counts days in a row. Use the NeetCode 150 list: <a href="https://neetcode.io" target="_blank" rel="noopener">neetcode.io</a>. Try each problem for 25 minutes, then watch the video.</small></div>
-    <div class="rl"><b>2</b><span>Write a report of what you did every day.</span><small>At least 20 characters. Say what you did, what you finished, and what you do tomorrow.</small></div>
-    <div class="rl"><b>3</b><span>No AI.</span><small>Claude explains and reviews. It does not write your homework.</small></div>
-    <div class="rl"><b>4</b><span>Learn now, not later.</span></div>
-    <div class="rl"><b>5</b><span>Do not waste time.</span></div>
-    <div class="rl"><b>6</b><span>DO NOT GIVE UP.</span></div>
-    <div class="rl"><b>7</b><span>Review yourself.</span><small>Wednesday and Sunday, 15 minutes: 3 lines for done, late, and next. Once a month, 1 hour: show one project as if you teach it.</small></div>
+  <div class="rules-wrap">
+    <div class="mot">
+      <div class="motk">Motivation</div>
+      <div class="motgrid">
+        <div class="m1">Learn now, not later.</div>
+        <div class="m2">Do not waste time.</div>
+        <div class="m3">DO NOT GIVE UP.</div>
+      </div>
+    </div>
+    <div class="lcard">
+      <b class="rn">LeetCode</b>
+      <h3>Solve 1 LeetCode problem every day.</h3>
+      <p>Tick the box in the day view. The streak counts days in a row. Use the NeetCode 150 list: <a href="https://neetcode.io" target="_blank" rel="noopener">neetcode.io</a>. Try each problem for 25 minutes, then watch the video.</p>
+    </div>
+    <div class="rcols">
+      <article class="rcol c1">
+        <b class="rn">Rules</b>
+        <h3>How you work</h3>
+        <ul>
+          <li><b>No AI.</b> Claude explains and reviews. It does not write your homework.</li>
+          <li><b>Review yourself.</b> Wednesday and Sunday, 15 minutes: 3 lines for done, late, and next.</li>
+        </ul>
+      </article>
+      <article class="rcol c2">
+        <b class="rn">Report</b>
+        <h3>Write a report every day.</h3>
+        <ul>
+          <li>At least 20 characters.</li>
+          <li>Say what you did.</li>
+          <li>Say what you finished.</li>
+          <li>Say what you do tomorrow.</li>
+        </ul>
+      </article>
+      <article class="rcol c3">
+        <b class="rn">Presentation</b>
+        <h3>Teach one project, once a month.</h3>
+        <ul>
+          <li>Time: 1 hour.</li>
+          <li>Pick one project you built.</li>
+          <li>Show it as if you teach it.</li>
+        </ul>
+      </article>
+    </div>
   </div>
 </section>
 </div>
@@ -849,12 +1015,23 @@ const EXAMP=data.find(c=>c.exam),EX0=pd(EXAMP.start),EX1=pd(EXAMP.end),PSTART=pd
       c.steps[it.i][5]="Week "+(w+1)+": "+sdate(wm)+" to "+sdate(we)});
   });
 })();
+const ROADS=[
+ {t:"FUNDAMENTALS",sub:"Learn these first. Every other roadmap needs them.",c:"#2D7DD2",ids:["tools","term","prog","math","linalg","dsa","data"],lab:{prog:"Python",tools:"Shell and Git",term:"Bash and Claude Code",math:"Discrete math",linalg:"Linear algebra",dsa:"Algorithms",data:"Databases and SQL"}},
+ {t:"SWE",sub:"Languages, web, systems, and the work of a software engineer.",c:"#E5702A",ids:["java","rust","htmlcss","js","tsl","react","backend","mobile","games","net","sec","cloud","qa","design","swe","dist","prep"],lab:{htmlcss:"HTML and CSS",js:"JavaScript",tsl:"TypeScript",backend:"Web backend",mobile:"Android and iOS",games:"Game development",net:"Networking",sec:"Cybersecurity",cloud:"Cloud and DevOps",qa:"Testing and QA",design:"Design and Agile",swe:"Software design",dist:"Distributed systems",prep:"Internship prep"}},
+ {t:"HARDWARE",sub:"How a computer works, from logic gates to the operating system.",c:"#B23A8F",ids:["hw","elec","os","laterC"],lab:{hw:"Computer architecture",elec:"Electronics and Arduino",os:"Operating systems",laterC:"Computers, deeper"}},
+ {t:"MACHINE LEARNING",sub:"Math for data, neural networks, and deep learning.",c:"#2B7A78",ids:["prob","ai","laterB"],lab:{prob:"Probability and statistics",ai:"AI and machine learning",laterB:"Deep learning, deeper"}},
+ {t:"QUANTUM",sub:"Your main focus. Phase 6 comes first.",c:"#5B4BDB",ids:["quantum","toc","laterA"],lab:{quantum:"Quantum computing",toc:"Theory of computation",laterA:"Quantum, deeper"}}
+];
 /* Sections */
 const main=document.getElementById("main"),toc=document.getElementById("toc");
-data.forEach(c=>{
-  if(c.group){
-    main.insertAdjacentHTML("beforeend",`<h2 class="part-title" data-group>${c.group}${c.sub?`<small>${c.sub}</small>`:""}</h2>`);
-    toc.insertAdjacentHTML("beforeend",`<li class="grp">${c.group}</li>`);return;
+const catById={};data.forEach(c=>{if(!c.group&&c.id)catById[c.id]=c});
+const ORDER=[];
+ROADS.forEach(r=>{ORDER.push({hdr:r});r.ids.forEach(id=>{if(catById[id])ORDER.push(catById[id])})});
+data.forEach(c=>{if(c.exam){ORDER.push({hdr:{t:"EXAM BLOCK",sub:"No plan work. Study for your university exams.",c:"#8E8E93"}});ORDER.push(c)}});
+ORDER.forEach(c=>{
+  if(c.hdr){const r=c.hdr;
+    main.insertAdjacentHTML("beforeend",`<h2 class="part-title" data-group style="--rc:${r.c}">${r.t}<small>${r.sub}</small></h2>`);
+    toc.insertAdjacentHTML("beforeend",`<li class="grp" style="--rc:${r.c}">${r.t}</li>`);return;
   }
   toc.insertAdjacentHTML("beforeend",`<li><a href="#${c.id}"><span class="dot" style="background:${c.color||"transparent"};${c.exam?"border:1px dashed var(--soft)":""}"></span><span>${/^\d+$/.test(c.n||"")?c.n+". ":""}${c.t}</span><span class="pct" id="p-${c.id}"></span></a></li>`);
   const dates=c.start?`${fmt(c.start)} to ${fmt(c.end)}, ${c.hours}`:c.hours;
@@ -1045,13 +1222,7 @@ function renderFiles(){
 
 
 /* Roadmaps home page */
-const ROADS=[
- {t:"FUNDAMENTALS",sub:"Learn these first. Every other roadmap needs them.",c:"#2D7DD2",ids:["tools","term","prog","math","linalg","dsa","data"],lab:{prog:"Python",tools:"Shell and Git",term:"Bash and Claude Code",math:"Discrete math",linalg:"Linear algebra",dsa:"Algorithms",data:"Databases and SQL"}},
- {t:"SWE",sub:"Languages, web, systems, and the work of a software engineer.",c:"#E5702A",ids:["java","rust","htmlcss","js","tsl","react","backend","mobile","games","net","sec","cloud","qa","design","swe","dist","prep"],lab:{htmlcss:"HTML and CSS",js:"JavaScript",tsl:"TypeScript",backend:"Web backend",mobile:"Android and iOS",games:"Game development",net:"Networking",sec:"Cybersecurity",cloud:"Cloud and DevOps",qa:"Testing and QA",design:"Design and Agile",swe:"Software design",dist:"Distributed systems",prep:"Internship prep"}},
- {t:"HARDWARE",sub:"How a computer works, from logic gates to the operating system.",c:"#B23A8F",ids:["hw","elec","os","laterC"],lab:{hw:"Computer architecture",elec:"Electronics and Arduino",os:"Operating systems",laterC:"Computers, deeper"}},
- {t:"MACHINE LEARNING",sub:"Math for data, neural networks, and deep learning.",c:"#2B7A78",ids:["prob","ai","laterB"],lab:{prob:"Probability and statistics",ai:"AI and machine learning",laterB:"Deep learning, deeper"}},
- {t:"QUANTUM",sub:"Your main focus. Start in phase 6 and finish in Part 5.",c:"#5B4BDB",ids:["quantum","toc","laterA"],lab:{quantum:"Quantum computing",toc:"Theory of computation",laterA:"Quantum, deeper"}}
-];
+
 const IND=[0,1,2,3,2,1];
 const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.6 4.6L19 7.5"/></svg>';
 function renderRoad(){
@@ -1168,6 +1339,14 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     sub("reports",(id,x)=>{if(id===dkey(sel)&&document.activeElement===repEl)return;reps[id]=x.text||"";shadow.reps[id]=reps[id]},()=>sync.rep());
   })();
 })();
+</script>
+<script>
+(function(){const rd=document.getElementById("roads");if(rd){rd.classList.add("intro");setTimeout(()=>rd.classList.remove("intro"),1500)}})();
+(function(){const b=document.getElementById("themebtn"),r=document.documentElement;
+const cur=()=>r.dataset.theme||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+const lab=()=>{b.textContent=cur()==="dark"?"Light mode":"Dark mode"};
+try{const t=localStorage.getItem("lockin-theme");if(t==="dark"||t==="light")r.dataset.theme=t}catch(e){}
+lab();b.addEventListener("click",()=>{const n=cur()==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("lockin-theme",n)}catch(e){}lab()});})();
 </script>
 </body>
 </html>
