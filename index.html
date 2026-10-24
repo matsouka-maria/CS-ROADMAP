@@ -1843,9 +1843,10 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     try{
       const s=await TO(fb.fs.getDoc(ndoc(h)));if(!s.exists()){frSay("No user has that username.");return}
       const uid=s.data().uid,me_=user.uid;if(uid===me_){frSay("That is you.");return}
-      if((await TO(fb.fs.getDoc(fb.fs.doc(fb.db,"friendships",pair(me_,uid))))).exists()){frSay("You are already friends.");return}
-      if((await TO(fb.fs.getDoc(fb.fs.doc(fb.db,"friendreqs",uid+"_"+me_)))).exists()){frSay("They already sent you a request. Accept it below.");return}
-      if((await TO(fb.fs.getDoc(fb.fs.doc(fb.db,"friendreqs",me_+"_"+uid)))).exists()){frSay("You already sent a request.");return}
+      const [q1,q2,q3]=await Promise.all([qs("friendships","members",["array-contains",me_]),qs("friendreqs","to",["==",me_]),qs("friendreqs","from",["==",me_])]);
+      if(q1.docs.some(d=>(d.data().members||[]).includes(uid))){frSay("You are already friends.");return}
+      if(q2.docs.some(d=>d.data().from===uid)){frSay("They already sent you a request. Accept it below.");return}
+      if(q3.docs.some(d=>d.data().to===uid)){frSay("You already sent a request.");return}
       await TO(fb.fs.setDoc(fb.fs.doc(fb.db,"friendreqs",me_+"_"+uid),{from:me_,to:uid,ts:Date.now()}));renderFriends("Request sent. They must accept.")
     }catch(e){frSay(rulesMsg(e))}}
   const rq=(a,b)=>fb.fs.doc(fb.db,"friendreqs",a+"_"+b);
