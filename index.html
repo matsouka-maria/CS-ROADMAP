@@ -487,6 +487,15 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 :root[data-theme="dark"] .tchip.ok{color:#fff}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tchip{color:color-mix(in srgb,var(--nc) 60%,#fff)}:root:not([data-theme="light"]) .tchip.ok{color:#fff}}
 .themebtn{right:0}
+
+/* Smaller everything */
+@media (min-width:700px){html{zoom:.8}}
+@media (max-width:699px){html{zoom:.92}}
+.ovp{width:min(400px,100%);padding:18px 18px 20px;border-radius:20px}
+.ovp h2{font-size:20px}
+.ovp p{font-size:14px}
+.gbtn{padding:11px;font-size:15px}
+.acctbtn{font-size:12px;padding:7px 14px}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
