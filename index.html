@@ -1336,9 +1336,9 @@ function progress(){
   document.getElementById("ring").style.setProperty("--p",all?(fin/all*100):0);document.getElementById("totalof").textContent="of "+all+" steps";
   (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill");
     const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1;
-    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"});pf.style.width="0%"}
+    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+". It lasts "+total+" days and ends on "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+".";pf.style.width="0%"}
     else if(TODAY>PLAN_END){pb.textContent="Plan done";ps.textContent="Keep going with the optional phases.";pf.style.width="100%"}
-    else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY);pb.textContent="Week "+Math.ceil(d/7);ps.textContent=ph?(ph.exam?"Exam block":"Phase "+ph.cat.n+": "+ph.cat.t):"Catch-up day";pf.style.width=Math.min(100,d/total*100)+"%"}})();
+    else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY);pb.textContent=(total-d)+" days left";ps.textContent="Week "+Math.ceil(d/7)+" of "+Math.ceil(total/7)+" · "+(ph?(ph.exam?"Exam block":"Phase "+ph.cat.n+": "+ph.cat.t):"Catch-up day")+" · ends "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});pf.style.width=Math.min(100,d/total*100)+"%"}})();
 }
 let filter="all";
 function apply(){
