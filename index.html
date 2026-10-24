@@ -540,7 +540,7 @@ header.top{padding-bottom:26px}
   <button class="themebtn" id="themebtn" type="button">Dark mode</button>
   <p id="syncst" hidden></p>
   <div class="bento">
-    <div class="tile hero"><div class="tl">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub"></div><div class="ts" id="pdone" style="font-weight:800;margin-top:6px"></div><div class="pbar"><i id="pfill"></i></div></div>
+    <div class="tile hero"><div class="tl" id="plabel">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub" hidden></div><div class="ts" id="pdone" hidden></div><div class="pbar"><i id="pfill"></i></div></div>
     <div class="tile"><div class="tl">LeetCode streak</div><div class="big"><b id="streakn">0</b><small>days</small></div></div>
     <div class="tile"><div class="tl">Report streak</div><div class="big"><b id="repn">0</b><small>days</small></div></div>
     <div class="tile ringtile"><div class="ring" id="ring"><span><b id="totalmini">0</b></span></div><div><div class="tl">Steps done</div><div class="ts" id="totalof"></div></div></div>
@@ -1232,7 +1232,7 @@ const PLAN0=PSTART,PLAN_END=phases.reduce((m,p)=>p.e>m?p.e:m,PLAN0);
   $("ps-save").addEventListener("click",()=>{
     const c=read(),bad=check(c);if(bad){eMsg.textContent=bad;return}
     try{localStorage.setItem(PLANK,JSON.stringify({start:c.start,hours:c.hours,days:c.days,months:c.months}))}catch(e){eMsg.textContent="Your browser cannot save this.";return}
-    eMsg.textContent="Saved. Building your plan...";setTimeout(()=>location.reload(),300)});
+    eMsg.textContent="Saved. Building your plan...";try{sessionStorage.setItem("lockin-view","cal")}catch(e){}setTimeout(()=>location.reload(),300)});
   sum();
 })();
 const optionalFrom=(()=>{const p=phases.find(p=>p.cat.id==="os");return p?p.s:null})();
@@ -1424,11 +1424,12 @@ function progress(){
   document.getElementById("total").innerHTML=`<b>${fin} of ${all}</b> steps done`;
   document.getElementById("totalmini").textContent=fin;
   document.getElementById("ring").style.setProperty("--p",all?(fin/all*100):0);document.getElementById("totalof").textContent="of "+all+" steps";
-  (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill"),pdn=document.getElementById("pdone");
-    const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1,mo=x=>Math.round(x/30.44*10)/10,fd=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
-    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+".";pdn.textContent="Then "+total+" days ("+mo(total)+" months) until done. You finish on "+fd(PLAN_END)+".";pf.style.width="0%"}
-    else if(TODAY>PLAN_END){pb.textContent="Plan done";ps.textContent="Keep going with the optional phases.";pdn.textContent="";pf.style.width="100%"}
-    else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY),left=total-d;pb.textContent=left+" days left";ps.textContent="Week "+Math.ceil(d/7)+" of "+Math.ceil(total/7)+" \u00b7 "+(ph?"Phase "+ph.cat.n+": "+ph.cat.t:"Catch-up day");pdn.textContent=mo(left)+" months until done. You finish on "+fd(PLAN_END)+".";pf.style.width=Math.min(100,d/total*100)+"%"}})();
+  (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill"),pdn=document.getElementById("pdone"),pl=document.getElementById("plabel");
+    const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1;
+    ps.textContent="";pdn.textContent="";
+    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pl.textContent="Starts in";pb.textContent=n+(n===1?" day":" days");pf.style.width="0%"}
+    else if(TODAY>PLAN_END){pl.textContent="Your plan";pb.textContent="Plan done";pf.style.width="100%"}
+    else{const d=dd(PLAN0,TODAY)+1,left=total-d;pl.textContent="Until done";pb.textContent=left+(left===1?" day":" days");pf.style.width=Math.min(100,d/total*100)+"%"}})();
 }
 let filter="all";
 function apply(){
@@ -1469,6 +1470,7 @@ function showView(v){
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.v)));
 
 progress();apply();renderCal();renderDay(true);refreshStreaks();
+try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeItem("lockin-view");showView(v);if(v==="cal"){const ps=document.getElementById("planset");if(ps)ps.scrollIntoView()}}}catch(e){}
 
 /* Account: Firebase login and sync. Setup: put your Firebase config in firebase-config.js */
 (function(){
