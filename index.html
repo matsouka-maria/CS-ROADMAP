@@ -1781,7 +1781,10 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
   const pdoc=uid=>fb.fs.doc(fb.db,"profiles",uid),ndoc=n=>fb.fs.doc(fb.db,"names",n);
   const rulesMsg=e=>e&&e.code==="permission-denied"?"The Firestore rules need an update. Publish the new rules in Firebase, then try again.":e&&e.code==="timeout"?"The database did not answer. Check that Firestore is created and the rules are published. Then press Friends again.":"Could not reach your account. Check your internet.";
   const TO=p=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r({code:"timeout"}),9000))]);
-  async function loadMe(){const s=await TO(fb.fs.getDoc(pdoc(user.uid)));me=s.exists()?s.data():{};return me}
+  const asked=id=>{try{return localStorage.getItem("lockin-asked-"+id)==="1"}catch(e){return false}};
+  const askSet=id=>{try{localStorage.setItem("lockin-asked-"+id,"1")}catch(e){}};
+  const meCache=id=>{try{const o=JSON.parse(localStorage.getItem("lockin-me-"+id)||"null");return o&&typeof o==="object"?o:null}catch(e){return null}};
+  async function loadMe(){const s=await TO(fb.fs.getDoc(pdoc(user.uid)));me=s.exists()?s.data():{};try{localStorage.setItem("lockin-me-"+user.uid,JSON.stringify({nick:me.nick||"",handle:me.handle||""}))}catch(e){}if(me.handle||me.nick)askSet(user.uid);return me}
   async function publish(force){
     if(!user||!fb)return;const now=Date.now();if(!force&&now-pubT<15000){if(!pubW)pubW=setTimeout(()=>{pubW=0;publish(true)},15000-(now-pubT)+200);return}pubT=now;
     try{await fb.fs.setDoc(pdoc(user.uid),{stats:window._lockinSummary?window._lockinSummary():{},upd:now},{merge:true})}catch(e){}}
@@ -1835,7 +1838,7 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
         if(!s.exists())await fb.fs.setDoc(ndoc(h),{uid:user.uid});
         if(old){try{await fb.fs.deleteDoc(ndoc(old))}catch(e){}}}
       await fb.fs.setDoc(pdoc(user.uid),{nick,handle:h||old,upd:Date.now()},{merge:true});
-      me=Object.assign(me||{},{nick,handle:h||old});label();done()
+      me=Object.assign(me||{},{nick,handle:h||old});askSet(user.uid);try{localStorage.setItem("lockin-me-"+user.uid,JSON.stringify({nick,handle:h||old}))}catch(e){}label();done()
     }catch(e){out(rulesMsg(e))}}
   async function addFriend(){
     const h=(document.getElementById("fradd").value||"").trim().toLowerCase().replace(/^@/,"");
@@ -1869,10 +1872,10 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     loadFb().then(f=>{
       f.auth.onAuthStateChanged(f.a,u=>{
         if(unsub){unsub();unsub=null}
-        user=u;first=false;me=null;label();if(u){loadMe().then(label).catch(()=>{});checkInbox()}else setBadge(0);if(!document.getElementById("v-friends").hidden)renderFriends();
+        user=u;first=false;me=u?meCache(u.uid):null;label();if(u){loadMe().then(label).catch(()=>{});checkInbox()}else setBadge(0);if(!document.getElementById("v-friends").hidden)renderFriends();
         if(!u){ref=null;setSt("Saved on this device.");if(!am.hidden)render();return}
         ref=f.fs.doc(f.db,"users",u.uid);loginT=Date.now();setSt("Connecting to your account...");
-        if(!am.hidden){msg="";render();loadMe().then(m=>{label();if(m.handle||m.nick)setTimeout(close,400);else render()}).catch(()=>setTimeout(close,400))}
+        if(!am.hidden){msg="";render();loadMe().then(m=>{label();if(m.handle||m.nick||asked(u.uid))setTimeout(close,400);else{askSet(u.uid);render()}}).catch(()=>setTimeout(close,400))}
         unsub=f.fs.onSnapshot(ref,snap=>{
           applyRemote(snap.exists()?snap.data():{});
           if(!first){first=true;touch();push()}else setSt("Saved to your account ("+u.email+"). Same on every device.");
