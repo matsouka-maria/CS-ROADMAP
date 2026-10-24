@@ -529,6 +529,26 @@ header.top{padding-bottom:26px}
 .ring span{font-size:15px}
 .ringtile{gap:12px}
 .bento{margin-top:24px}
+
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:14px 56px}
+header.top .tabs{margin:0}
+@media (max-width:699px){header.top{gap:12px 20px}}
+header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
+
+/* Compact top tiles */
+.bento{gap:8px;margin-top:16px}
+.bento .tile{padding:8px 12px;border-radius:14px;gap:2px;justify-content:center}
+.bento .tile .tl{font-size:10px;letter-spacing:.05em}
+.bento .tile .big{font-size:22px;line-height:1.05}
+.bento .tile .big small{font-size:12px}
+.bento .tile.hero{padding:8px 14px}
+.bento .tile.hero .big{font-size:24px}
+.bento .pbar{height:4px;margin-top:4px}
+.bento .ring{width:34px;height:34px}
+.bento .ring::before{inset:5px}
+.bento .ring span{font-size:12px}
+.bento .ringtile{gap:10px}
+.bento .ringtile .ts{font-size:11px}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -536,6 +556,12 @@ header.top{padding-bottom:26px}
 <div class="wrap">
 <header class="top">
   <div class="brand">LOCK IN</div>
+  <nav class="tabs" role="tablist" aria-label="Views">
+  <button role="tab" id="t-home" aria-selected="true" data-v="home">Roadmaps</button>
+  <button role="tab" id="t-cal" aria-selected="false" data-v="cal">Calendar</button>
+  <button role="tab" id="t-phases" aria-selected="false" data-v="phases">All phases</button>
+  <button role="tab" id="t-rules" aria-selected="false" data-v="rules">Rules</button>
+</nav>
   <button class="acctbtn" id="acctbtn" type="button">Log in</button>
   <button class="themebtn" id="themebtn" type="button">Dark mode</button>
   <p id="syncst" hidden></p>
@@ -546,12 +572,7 @@ header.top{padding-bottom:26px}
     <div class="tile ringtile"><div class="ring" id="ring"><span><b id="totalmini">0</b></span></div><div><div class="tl">Steps done</div><div class="ts" id="totalof"></div></div></div>
   </div>
 </header>
-<nav class="tabs" role="tablist" aria-label="Views">
-  <button role="tab" id="t-home" aria-selected="true" data-v="home">Roadmaps</button>
-  <button role="tab" id="t-cal" aria-selected="false" data-v="cal">Calendar</button>
-  <button role="tab" id="t-phases" aria-selected="false" data-v="phases">All phases</button>
-  <button role="tab" id="t-rules" aria-selected="false" data-v="rules">Rules</button>
-</nav>
+
 
 <section id="v-home" aria-labelledby="t-home">
   <div class="roads" id="roads"></div>
