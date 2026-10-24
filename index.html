@@ -511,19 +511,20 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 
 .rstack{display:grid;gap:14px;align-content:start;min-width:0}
 .rstack .road{min-width:0}
+
+header.top{padding-bottom:14px}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
 <body>
 <div class="wrap">
 <header class="top">
-  <div class="eyebrow">STEP &middot; CERN openlab &middot; AMD &middot; Summer 2027</div>
   <div class="brand">LOCK IN</div>
   <button class="acctbtn" id="acctbtn" type="button">Log in</button>
   <button class="themebtn" id="themebtn" type="button">Dark mode</button>
   <p id="syncst" hidden></p>
   <div class="bento">
-    <div class="tile hero"><div class="tl">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub"></div><div class="pbar"><i id="pfill"></i></div></div>
+    <div class="tile hero"><div class="tl">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub"></div><div class="ts" id="pdone" style="font-weight:800;margin-top:6px"></div><div class="pbar"><i id="pfill"></i></div></div>
     <div class="tile"><div class="tl">LeetCode streak</div><div class="big"><b id="streakn">0</b><small>days</small></div></div>
     <div class="tile"><div class="tl">Report streak</div><div class="big"><b id="repn">0</b><small>days</small></div></div>
     <div class="tile ringtile"><div class="ring" id="ring"><span><b id="totalmini">0</b></span></div><div><div class="tl">Steps done</div><div class="ts" id="totalof"></div></div></div>
@@ -1407,11 +1408,11 @@ function progress(){
   document.getElementById("total").innerHTML=`<b>${fin} of ${all}</b> steps done`;
   document.getElementById("totalmini").textContent=fin;
   document.getElementById("ring").style.setProperty("--p",all?(fin/all*100):0);document.getElementById("totalof").textContent="of "+all+" steps";
-  (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill");
-    const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1;
-    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+". It lasts "+total+" days and ends on "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+"."+(PCFG.set?"":" Set your own start, hours, and days in Calendar.");pf.style.width="0%"}
-    else if(TODAY>PLAN_END){pb.textContent="Plan done";ps.textContent="Keep going with the optional phases.";pf.style.width="100%"}
-    else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY);pb.textContent=(total-d)+" days left";ps.textContent="Week "+Math.ceil(d/7)+" of "+Math.ceil(total/7)+" · "+(ph?(ph.exam?"Exam block":"Phase "+ph.cat.n+": "+ph.cat.t):"Catch-up day")+" · ends "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});pf.style.width=Math.min(100,d/total*100)+"%"}})();
+  (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill"),pdn=document.getElementById("pdone");
+    const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1,mo=x=>Math.round(x/30.44*10)/10,fd=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+".";pdn.textContent="Then "+total+" days ("+mo(total)+" months) until done. You finish on "+fd(PLAN_END)+".";pf.style.width="0%"}
+    else if(TODAY>PLAN_END){pb.textContent="Plan done";ps.textContent="Keep going with the optional phases.";pdn.textContent="";pf.style.width="100%"}
+    else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY),left=total-d;pb.textContent=left+" days left";ps.textContent="Week "+Math.ceil(d/7)+" of "+Math.ceil(total/7)+" \u00b7 "+(ph?"Phase "+ph.cat.n+": "+ph.cat.t:"Catch-up day");pdn.textContent=mo(left)+" months until done. You finish on "+fd(PLAN_END)+".";pf.style.width=Math.min(100,d/total*100)+"%"}})();
 }
 let filter="all";
 function apply(){
