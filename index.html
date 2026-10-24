@@ -1690,7 +1690,11 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     const e=s=>esc(s||"");
     let h='<button type="button" class="x" id="aclose" aria-label="Close">&times;</button><div class="tk">Account</div>';
     if(cfg&&user){
-      h+=`<h2>You are logged in</h2><p><b>${e(user.email)}</b></p><p>Your steps, days, reports, and test grades save to this account.</p><div class="tbtns"><button type="button" class="tgo" id="aout">Log out</button></div>`;
+      const mm=me||{};
+      h+=`<h2>${mm.handle||mm.nick?"Your account":"Choose your name"}</h2><p><b>${e(user.email)}</b></p>
+        <label class="afld">Nickname<input id="mnick" type="text" maxlength="24" value="${e(mm.nick)}" autocomplete="off"></label>
+        <label class="afld">Username (3 to 20: a-z, 0-9, _). Friends add you with it.<input id="mhandle" type="text" maxlength="20" value="${e(mm.handle)}" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>
+        <div class="tbtns"><button type="button" class="tgo" id="msave">Save</button><button type="button" class="tx" id="aout">Log out</button></div>`;
     }else if(cfg){
       h+=`<h2>Log in with Google</h2><p>Your progress saves to your account. Same on every device.</p>
         <button type="button" class="gbtn" id="agoogle">Continue with Google</button>`;
@@ -1739,16 +1743,17 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
       else if(t.id==="aup"){if(!em()||!pw()){say("Write your email and password.");return}say("Making your account...");await f.auth.createUserWithEmailAndPassword(f.a,em(),pw())}
       else if(t.id==="areset"){if(!em()){say("Write your email first.");return}await f.auth.sendPasswordResetEmail(f.a,em());say("Check your email for a reset link.")}
       else if(t.id==="aout"){await f.auth.signOut(f.a);close()}
+      else if(t.id==="msave"){say("Saving...");await saveProfile("mnick","mhandle",say,()=>{render();say("Saved.");setTimeout(close,600);if(!document.getElementById("v-friends").hidden)renderFriends()})}
     }catch(x){const m=ERR[x.code]||("Error: "+(x.code||x.message));say(m);setSt("Login problem: "+m)}
   });
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!am.hidden)close()});
   /* ---- Friends: nickname, username, and friends' progress ---- */
-  const frBox=document.getElementById("frbox"),hRe=/^[a-z0-9_]{3,20}$/;let pubT=0;
+  const frBox=document.getElementById("frbox"),hRe=/^[a-z0-9_]{3,20}$/;let pubT=0,pubW=0;
   const pdoc=uid=>fb.fs.doc(fb.db,"profiles",uid),ndoc=n=>fb.fs.doc(fb.db,"names",n);
   const rulesMsg=e=>e&&e.code==="permission-denied"?"The Firestore rules need an update. Publish the new rules in Firebase, then try again.":"Could not reach your account. Check your internet.";
   async function loadMe(){const s=await fb.fs.getDoc(pdoc(user.uid));me=s.exists()?s.data():{};return me}
   async function publish(force){
-    if(!user||!fb)return;const now=Date.now();if(!force&&now-pubT<20000)return;pubT=now;
+    if(!user||!fb)return;const now=Date.now();if(!force&&now-pubT<15000){if(!pubW)pubW=setTimeout(()=>{pubW=0;publish(true)},15000-(now-pubT)+200);return}pubT=now;
     try{await fb.fs.setDoc(pdoc(user.uid),{stats:window._lockinSummary?window._lockinSummary():{},upd:now},{merge:true})}catch(e){}}
   const ago=t=>{if(!t)return"never";const m=Math.round((Date.now()-t)/6e4);return m<2?"just now":m<60?m+" min ago":m<1440?Math.round(m/60)+" h ago":Math.round(m/1440)+" days ago"};
   function fcard(p,uid,mine){
@@ -1765,11 +1770,7 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     for(const uid of (mine.friends||[])){try{const s=await fb.fs.getDoc(pdoc(uid));if(s.exists())list.push([uid,s.data()])}catch(e){}}
     list.sort((a,b)=>((b[1].stats||{}).steps||0)-((a[1].stats||{}).steps||0));
     frBox.innerHTML=`<h2>Friends</h2>
-      <div class="psgrid">
-        <label class="afld">Nickname<input id="frnick" type="text" maxlength="24" value="${esc(mine.nick||"")}" autocomplete="off"></label>
-        <label class="afld">Username (3 to 20: a-z, 0-9, _)<input id="frhandle" type="text" maxlength="20" value="${esc(mine.handle||"")}" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>
-      </div>
-      <div class="tbtns"><button type="button" class="tgo" id="frsave">Save my profile</button></div>
+      <p>${mine.handle||mine.nick?`You are <b>${esc(mine.nick||mine.handle)}</b>${mine.handle?" (@"+esc(mine.handle)+")":""}.`:"You have no username yet. Friends cannot add you."} <button type="button" class="tx" id="fredit">${mine.handle?"Change":"Choose"} name</button></p>
       ${fcard(mine,user.uid,true)}
       <h3 class="tsec">Add a friend</h3>
       <div class="psgrid"><label class="afld">Their username<input id="fradd" type="text" maxlength="21" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="username"></label></div>
@@ -1778,19 +1779,20 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
       <h3 class="tsec">Your friends (${list.length})</h3>
       ${list.length?list.map(x=>fcard(x[1],x[0],false)).join(""):"<p>No friends yet. Send them your username. Add theirs.</p>"}`}
   const frSay=t=>{const m=document.getElementById("frmsg");if(m)m.textContent=t};
-  async function saveProfile(){
-    const nick=(document.getElementById("frnick").value||"").trim().slice(0,24),h=(document.getElementById("frhandle").value||"").trim().toLowerCase().replace(/^@/,"");
-    if(h&&!hRe.test(h)){frSay("Username: 3 to 20 letters a-z, numbers, or _.");return}
+  async function saveProfile(nid,hid,out,done){
+    const nick=(document.getElementById(nid).value||"").trim().slice(0,24),h=(document.getElementById(hid).value||"").trim().toLowerCase().replace(/^@/,"");
+    if(h&&!hRe.test(h)){out("Username: 3 to 20 letters a-z, numbers, or _.");return}
     try{
+      if(!me)await loadMe();
       const old=(me&&me.handle)||"";
       if(h&&h!==old){
         const s=await fb.fs.getDoc(ndoc(h));
-        if(s.exists()&&s.data().uid!==user.uid){frSay("That username is taken.");return}
+        if(s.exists()&&s.data().uid!==user.uid){out("That username is taken.");return}
         if(!s.exists())await fb.fs.setDoc(ndoc(h),{uid:user.uid});
         if(old){try{await fb.fs.deleteDoc(ndoc(old))}catch(e){}}}
-      await fb.fs.setDoc(pdoc(user.uid),{nick,handle:h||(me&&me.handle)||"",upd:Date.now()},{merge:true});
-      me=Object.assign(me||{},{nick,handle:h||(me&&me.handle)||""});label();renderFriends("Saved.")
-    }catch(e){frSay(rulesMsg(e))}}
+      await fb.fs.setDoc(pdoc(user.uid),{nick,handle:h||old,upd:Date.now()},{merge:true});
+      me=Object.assign(me||{},{nick,handle:h||old});label();done()
+    }catch(e){out(rulesMsg(e))}}
   async function addFriend(){
     const h=(document.getElementById("fradd").value||"").trim().toLowerCase().replace(/^@/,"");
     if(!hRe.test(h)){frSay("Write their username.");return}
@@ -1802,8 +1804,8 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
   if(frBox)frBox.addEventListener("click",async e=>{
     const t=e.target.closest("button");if(!t||!user)return;
     if(t.id==="frlog"){abtn.click();return}
-    if(t.id==="frsave")await saveProfile();
-    else if(t.id==="fraddbtn")await addFriend();
+    if(t.id==="fredit"){abtn.click();return}
+    if(t.id==="fraddbtn")await addFriend();
     else if(t.id==="frrefresh")renderFriends("Updated.");
     else if(t.dataset.rm){try{await fb.fs.setDoc(pdoc(user.uid),{friends:fb.fs.arrayRemove(t.dataset.rm)},{merge:true});renderFriends("Removed.")}catch(x){frSay(rulesMsg(x))}}});
   if(frBox&&!user)document.addEventListener("click",e=>{if(e.target.id==="frlog")abtn.click()});
@@ -1817,7 +1819,7 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
         user=u;first=false;me=null;label();if(u)loadMe().then(label).catch(()=>{});if(!document.getElementById("v-friends").hidden)renderFriends();
         if(!u){ref=null;setSt("Saved on this device.");if(!am.hidden)render();return}
         ref=f.fs.doc(f.db,"users",u.uid);loginT=Date.now();setSt("Connecting to your account...");
-        if(!am.hidden){msg="";render();setTimeout(close,400)}
+        if(!am.hidden){msg="";render();loadMe().then(m=>{label();if(m.handle||m.nick)setTimeout(close,400);else render()}).catch(()=>setTimeout(close,400))}
         unsub=f.fs.onSnapshot(ref,snap=>{
           applyRemote(snap.exists()?snap.data():{});
           if(!first){first=true;touch();push()}else setSt("Saved to your account ("+u.email+"). Same on every device.");
