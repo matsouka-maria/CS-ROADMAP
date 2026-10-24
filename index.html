@@ -566,6 +566,8 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
 .frs{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--soft)}
 .frs b{color:var(--ink)}
 #fr h2{margin:0 0 6px;font-size:20px}
+.cibtn{margin:0 0 0 auto;align-self:center;white-space:nowrap}
+html{min-height:100%}body{min-height:100vh}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -587,7 +589,7 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
     <div class="tile hero"><div class="tl" id="plabel">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub" hidden></div><div class="ts" id="pdone" hidden></div><div class="pbar"><i id="pfill"></i></div></div>
     <div class="tile"><div class="tl">LeetCode streak</div><div class="big"><b id="streakn">0</b><small>days</small></div></div>
     <div class="tile"><div class="tl">Report streak</div><div class="big"><b id="repn">0</b><small>days</small></div></div>
-    <div class="tile" id="citile"><div class="tl">Check-in streak</div><div class="big"><b id="cin">0</b><small>days</small></div><button type="button" class="cibtn" id="cibtn">Check in</button></div>
+    <div class="tile" id="citile"><div class="tl">Check-in streak</div><div class="big"><b id="cin">0</b><small>days</small><button type="button" class="cibtn" id="cibtn">Check in</button></div></div>
     <div class="tile ringtile"><div class="ring" id="ring"><span><b id="totalmini">0</b></span></div><div><div class="tl">Steps done</div><div class="ts" id="totalof"></div></div></div>
   </div>
 </header>
@@ -1750,8 +1752,9 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
   /* ---- Friends: nickname, username, and friends' progress ---- */
   const frBox=document.getElementById("frbox"),hRe=/^[a-z0-9_]{3,20}$/;let pubT=0,pubW=0;
   const pdoc=uid=>fb.fs.doc(fb.db,"profiles",uid),ndoc=n=>fb.fs.doc(fb.db,"names",n);
-  const rulesMsg=e=>e&&e.code==="permission-denied"?"The Firestore rules need an update. Publish the new rules in Firebase, then try again.":"Could not reach your account. Check your internet.";
-  async function loadMe(){const s=await fb.fs.getDoc(pdoc(user.uid));me=s.exists()?s.data():{};return me}
+  const rulesMsg=e=>e&&e.code==="permission-denied"?"The Firestore rules need an update. Publish the new rules in Firebase, then try again.":e&&e.code==="timeout"?"The database did not answer. Check that Firestore is created and the rules are published. Then press Friends again.":"Could not reach your account. Check your internet.";
+  const TO=p=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r({code:"timeout"}),9000))]);
+  async function loadMe(){const s=await TO(fb.fs.getDoc(pdoc(user.uid)));me=s.exists()?s.data():{};return me}
   async function publish(force){
     if(!user||!fb)return;const now=Date.now();if(!force&&now-pubT<15000){if(!pubW)pubW=setTimeout(()=>{pubW=0;publish(true)},15000-(now-pubT)+200);return}pubT=now;
     try{await fb.fs.setDoc(pdoc(user.uid),{stats:window._lockinSummary?window._lockinSummary():{},upd:now},{merge:true})}catch(e){}}
@@ -1765,9 +1768,9 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     if(!frBox)return;
     if(!cfg||!user){frBox.innerHTML='<h2>Friends</h2><p>Log in with Google. Then choose a nickname and a username, add friends, and see their progress.</p><div class="tbtns"><button type="button" class="tgo" id="frlog">Log in</button></div>';return}
     if(!note)frBox.innerHTML='<h2>Friends</h2><p>Loading...</p>';
-    let mine;try{await publish(true);mine=await loadMe();label()}catch(e){frBox.innerHTML=`<h2>Friends</h2><p>${esc(rulesMsg(e))}</p>`;return}
+    let mine;try{await TO(publish(true));mine=await loadMe();label()}catch(e){frBox.innerHTML=`<h2>Friends</h2><p>${esc(rulesMsg(e))}</p>`;return}
     const list=[];
-    for(const uid of (mine.friends||[])){try{const s=await fb.fs.getDoc(pdoc(uid));if(s.exists())list.push([uid,s.data()])}catch(e){}}
+    for(const uid of (mine.friends||[])){try{const s=await TO(fb.fs.getDoc(pdoc(uid)));if(s.exists())list.push([uid,s.data()])}catch(e){}}
     list.sort((a,b)=>((b[1].stats||{}).steps||0)-((a[1].stats||{}).steps||0));
     frBox.innerHTML=`<h2>Friends</h2>
       <p>${mine.handle||mine.nick?`You are <b>${esc(mine.nick||mine.handle)}</b>${mine.handle?" (@"+esc(mine.handle)+")":""}.`:"You have no username yet. Friends cannot add you."} <button type="button" class="tx" id="fredit">${mine.handle?"Change":"Choose"} name</button></p>
