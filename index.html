@@ -533,6 +533,13 @@ header.top{padding-bottom:26px}
 header.top{display:flex;flex-wrap:wrap;align-items:center;gap:14px 56px}
 header.top .tabs{margin:0}
 @media (max-width:699px){header.top{gap:12px 20px}}
+@media (max-width:520px){
+.acctbtn{right:132px!important;max-width:calc(100vw - 190px)}
+.themebtn{right:0!important}
+header.top .tabs{width:100%;max-width:100%;display:flex;gap:0;padding:3px;overflow-x:auto;scrollbar-width:none}
+header.top .tabs::-webkit-scrollbar{display:none}
+header.top .tabs button{flex:1 0 auto;padding:8px 11px;font-size:12.5px;white-space:nowrap}
+}
 header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
 
 /* Compact top tiles */
