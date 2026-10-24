@@ -1489,6 +1489,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     }else if(cfg){
       h+=`<h2>Log in or make an account</h2><p>Your progress saves to your account. Same on every device.</p>
         <button type="button" class="gbtn" id="agoogle">Continue with Google</button>
+        <button type="button" class="gbtn" id="agithub">Continue with GitHub</button>
         <div class="aor">or use email</div>
         <label class="afld">Email<input id="aemail" type="email" autocomplete="email" inputmode="email"></label>
         <label class="afld">Password<input id="apass" type="password" autocomplete="current-password"></label>
@@ -1507,7 +1508,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     abox.innerHTML=h;
   }
   const say=t=>{msg=t;const m=document.getElementById("amsg");if(m)m.textContent=t};
-  const ERR={"auth/invalid-credential":"Wrong email or password.","auth/wrong-password":"Wrong email or password.","auth/user-not-found":"Wrong email or password.","auth/email-already-in-use":"This email already has an account. Tap Log in.","auth/weak-password":"Use at least 6 characters.","auth/invalid-email":"That email is not right.","auth/popup-closed-by-user":"The Google window closed.","auth/unauthorized-domain":"This site is not allowed in Firebase yet. Add it in Authentication > Settings > Authorized domains.","auth/network-request-failed":"No internet.","auth/too-many-requests":"Too many tries. Wait a minute."};
+  const ERR={"auth/invalid-credential":"Wrong email or password.","auth/wrong-password":"Wrong email or password.","auth/user-not-found":"Wrong email or password.","auth/email-already-in-use":"This email already has an account. Tap Log in.","auth/weak-password":"Use at least 6 characters.","auth/invalid-email":"That email is not right.","auth/popup-closed-by-user":"The login window closed.","auth/operation-not-allowed":"This login is not turned on in Firebase yet.","auth/account-exists-with-different-credential":"This email already has an account with another login. Use that one.","auth/unauthorized-domain":"This site is not allowed in Firebase yet. Add it in Authentication > Settings > Authorized domains.","auth/network-request-failed":"No internet.","auth/too-many-requests":"Too many tries. Wait a minute."};
   const open=()=>{msg="";render();am.hidden=false;document.body.style.overflow="hidden"};
   const close=()=>{am.hidden=true;document.body.style.overflow=""};
   abtn.addEventListener("click",open);
@@ -1535,6 +1536,10 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
         say("Opening Google...");
         try{await f.auth.signInWithPopup(f.a,new f.auth.GoogleAuthProvider())}
         catch(x){if(x.code==="auth/popup-blocked"){await f.auth.signInWithRedirect(f.a,new f.auth.GoogleAuthProvider())}else throw x}
+      }else if(t.id==="agithub"){
+        say("Opening GitHub...");
+        try{await f.auth.signInWithPopup(f.a,new f.auth.GithubAuthProvider())}
+        catch(x){if(x.code==="auth/popup-blocked"){await f.auth.signInWithRedirect(f.a,new f.auth.GithubAuthProvider())}else throw x}
       }else if(t.id==="ain"){if(!em()||!pw()){say("Write your email and password.");return}say("Logging in...");await f.auth.signInWithEmailAndPassword(f.a,em(),pw())}
       else if(t.id==="aup"){if(!em()||!pw()){say("Write your email and password.");return}say("Making your account...");await f.auth.createUserWithEmailAndPassword(f.a,em(),pw())}
       else if(t.id==="areset"){if(!em()){say("Write your email first.");return}await f.auth.sendPasswordResetEmail(f.a,em());say("Check your email for a reset link.")}
