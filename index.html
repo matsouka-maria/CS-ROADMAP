@@ -488,7 +488,7 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tchip{color:color-mix(in srgb,var(--nc) 60%,#fff)}:root:not([data-theme="light"]) .tchip.ok{color:#fff}}
 .themebtn{right:0}
 </style>
-<script src="firebase-config.js"></script>
+<script src="firebase-config.js?v=5"></script>
 </head>
 <body>
 <div class="wrap">
@@ -1505,7 +1505,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
         <p class="amsg">The token needs <b>Contents: Read and write</b> for that one repo only. It stays on this device.</p>`;
     }
     h+=`<p class="amsg" id="amsg" role="status">${e(msg)}</p>`;
-    h+=`<p class="amsg" style="font-size:11px;opacity:.6">Login build 4 &middot; ${cfg?"Firebase on":"Firebase off"}</p>`;
+    h+=`<p class="amsg" style="font-size:11px;opacity:.6">Login build 5 &middot; ${cfg?"Firebase on":"Firebase off"}</p>`;
     abox.innerHTML=h;
   }
   const POPFAIL=new Set(["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/web-storage-unsupported","auth/internal-error","auth/cancelled-popup-request"]);
@@ -1546,7 +1546,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
       else if(t.id==="aup"){if(!em()||!pw()){say("Write your email and password.");return}say("Making your account...");await f.auth.createUserWithEmailAndPassword(f.a,em(),pw())}
       else if(t.id==="areset"){if(!em()){say("Write your email first.");return}await f.auth.sendPasswordResetEmail(f.a,em());say("Check your email for a reset link.")}
       else if(t.id==="aout"){await f.auth.signOut(f.a);close()}
-    }catch(x){say(ERR[x.code]||("Error: "+(x.code||x.message)))}
+    }catch(x){const m=ERR[x.code]||("Error: "+(x.code||x.message));say(m);setSt("Login problem: "+m)}
   });
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!am.hidden)close()});
   label();
