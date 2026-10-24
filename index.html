@@ -1503,7 +1503,6 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
       h+=`<h2${cfg?' class="ghh"':""}>GitHub sync is on</h2><p>Repo: <b>${e(gh.repo)}</b></p><p>Your steps, days, reports, and test grades save there. Do the same on your other devices to see them.</p><div class="tbtns"><button type="button" class="tgo" id="ghnow">Sync now</button><button type="button" class="tx" id="ghoff">Turn off</button></div>`;
     }
     h+=`<p class="amsg" id="amsg" role="status">${e(msg)}</p>`;
-    h+=`<p class="amsg" style="font-size:11px;opacity:.6">Login build 6 &middot; ${cfg?"Firebase on":"Firebase off"}</p>`;
     abox.innerHTML=h;
   }
   const POPFAIL=new Set(["auth/popup-blocked","auth/operation-not-supported-in-this-environment","auth/web-storage-unsupported","auth/internal-error","auth/cancelled-popup-request"]);
