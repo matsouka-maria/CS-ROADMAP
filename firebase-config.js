@@ -1,5 +1,9 @@
-// Paste your Firebase web app config here to turn on login.
-// Replace null with the object from Firebase: Project settings > Your apps > Config.
-// Example:
-// window.FIREBASE_CONFIG = { apiKey: "...", authDomain: "...", projectId: "...", appId: "..." };
-window.FIREBASE_CONFIG = null;
+// Firebase web config (public keys, safe to publish). Security comes from Firestore rules.
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBZfAoSzwVE2JMBwaPdvpVyvyOzq5JY3OO",
+  authDomain: "lock-in-b4a57.firebaseapp.com",
+  projectId: "lock-in-b4a57",
+  storageBucket: "lock-in-b4a57.firebasestorage.app",
+  messagingSenderId: "623433149384",
+  appId: "1:623433149384:web:5046e609203dbceca1aefd"
+};
