@@ -1687,7 +1687,8 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     const b="https://www.gstatic.com/firebasejs/10.12.2/";
     const [app,auth,fs]=await Promise.all([import(b+"firebase-app.js"),import(b+"firebase-auth.js"),import(b+"firebase-firestore.js")]);
     const a=app.initializeApp(cfg);
-    fb={auth,fs,a:auth.getAuth(a),db:fs.getFirestore(a)};
+    let dbi;try{dbi=fs.initializeFirestore(a,{experimentalForceLongPolling:true,useFetchStreams:false})}catch(e){dbi=fs.getFirestore(a)}
+    fb={auth,fs,a:auth.getAuth(a),db:dbi};
     try{await auth.setPersistence(fb.a,auth.browserLocalPersistence)}catch(e){}
     return fb;
   }
