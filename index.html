@@ -568,6 +568,10 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
 #fr h2{margin:0 0 6px;font-size:20px}
 .cibtn{margin:0 0 0 auto;align-self:center;white-space:nowrap}
 html{min-height:100%}body{min-height:100vh}
+.dz{margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
+.dz summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--soft)}
+.dz h3{margin:12px 0 4px;font-size:16px}
+.dzbtn{border-color:#FF375F;color:#FF375F}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -1696,7 +1700,13 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
       h+=`<h2>${mm.handle||mm.nick?"Your account":"Choose your name"}</h2><p><b>${e(user.email)}</b></p>
         <label class="afld">Nickname<input id="mnick" type="text" maxlength="24" value="${e(mm.nick)}" autocomplete="off"></label>
         <label class="afld">Username (3 to 20: a-z, 0-9, _). Friends add you with it.<input id="mhandle" type="text" maxlength="20" value="${e(mm.handle)}" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>
-        <div class="tbtns"><button type="button" class="tgo" id="msave">Save</button><button type="button" class="tx" id="aout">Log out</button></div>`;
+        <div class="tbtns"><button type="button" class="tgo" id="msave">Save</button><button type="button" class="tx" id="aout">Log out</button></div>
+        <details class="dz"><summary>Settings</summary>
+          <h3>Delete my account</h3>
+          <p>This erases your account, your username, and your progress in the cloud. Friends no longer see you. Progress saved on this device stays. You cannot undo this.</p>
+          <label class="afld">Type DELETE to confirm<input id="delconf" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+          <div class="tbtns"><button type="button" class="tx dzbtn" id="adel">Delete my account</button></div>
+        </details>`;
     }else if(cfg){
       h+=`<h2>Log in with Google</h2><p>Your progress saves to your account. Same on every device.</p>
         <button type="button" class="gbtn" id="agoogle">Continue with Google</button>`;
@@ -1745,6 +1755,20 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
       else if(t.id==="aup"){if(!em()||!pw()){say("Write your email and password.");return}say("Making your account...");await f.auth.createUserWithEmailAndPassword(f.a,em(),pw())}
       else if(t.id==="areset"){if(!em()){say("Write your email first.");return}await f.auth.sendPasswordResetEmail(f.a,em());say("Check your email for a reset link.")}
       else if(t.id==="aout"){await f.auth.signOut(f.a);close()}
+      else if(t.id==="adel"){
+        if((document.getElementById("delconf").value||"").trim()!=="DELETE"){say("Type DELETE first.");return}
+        say("Google asks you to confirm it is you...");
+        try{await f.auth.reauthenticateWithPopup(user,new f.auth.GoogleAuthProvider())}
+        catch(x){say(x.code==="auth/user-mismatch"?"Use the same Google account you logged in with.":(ERR[x.code]||("Error: "+(x.code||x.message))));return}
+        say("Deleting...");
+        const uid=user.uid,hd=me&&me.handle;ref=null;clearTimeout(pt);if(unsub){unsub();unsub=null}
+        try{
+          if(hd){try{await fb.fs.deleteDoc(ndoc(hd))}catch(x){}}
+          await fb.fs.deleteDoc(pdoc(uid));
+          await fb.fs.deleteDoc(fb.fs.doc(fb.db,"users",uid));
+          await f.auth.deleteUser(user);
+        }catch(x){say(x.code==="auth/requires-recent-login"?"Log in again, then delete.":rulesMsg(x));return}
+        me=null;msg="Your account is deleted.";render();setSt("Saved on this device.")}
       else if(t.id==="msave"){say("Saving...");await saveProfile("mnick","mhandle",say,()=>{render();say("Saved.");setTimeout(close,600);if(!document.getElementById("v-friends").hidden)renderFriends()})}
     }catch(x){const m=ERR[x.code]||("Error: "+(x.code||x.message));say(m);setSt("Login problem: "+m)}
   });
