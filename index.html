@@ -549,6 +549,23 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
 .bento .ring span{font-size:12px}
 .bento .ringtile{gap:10px}
 .bento .ringtile .ts{font-size:11px}
+
+/* Check-in tile and friends */
+.bento{grid-template-columns:1.25fr 1fr 1fr 1fr 1.1fr}
+@media (max-width:860px){.bento{grid-template-columns:1fr 1fr}}
+.cibtn{margin-top:3px;border:0;border-radius:999px;padding:4px 10px;font:inherit;font-size:11px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(135deg,#5E5CE6,#BF5AF2);align-self:flex-start}
+.cibtn:disabled{background:var(--fill);color:var(--soft);cursor:default}
+.cio{width:100%;text-align:left;font:inherit;color:inherit;background:transparent}
+.cio:hover{border-color:#5E5CE6}
+.frc{border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;margin-top:12px;background:var(--fill)}
+.frh{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-size:16px}
+.frat{font-size:13px;color:var(--soft)}
+.frx{margin-left:auto;padding:4px 12px;font-size:12px}
+.frbar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0}
+.frbar i{display:block;height:100%;background:linear-gradient(90deg,#5E5CE6,#BF5AF2);border-radius:99px}
+.frs{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--soft)}
+.frs b{color:var(--ink)}
+#fr h2{margin:0 0 6px;font-size:20px}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -560,6 +577,7 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
   <button role="tab" id="t-home" aria-selected="true" data-v="home">Roadmaps</button>
   <button role="tab" id="t-cal" aria-selected="false" data-v="cal">Calendar</button>
   <button role="tab" id="t-phases" aria-selected="false" data-v="phases">All phases</button>
+  <button role="tab" id="t-friends" aria-selected="false" data-v="friends">Friends</button>
   <button role="tab" id="t-rules" aria-selected="false" data-v="rules">Rules</button>
 </nav>
   <button class="acctbtn" id="acctbtn" type="button">Log in</button>
@@ -569,6 +587,7 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
     <div class="tile hero"><div class="tl" id="plabel">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub" hidden></div><div class="ts" id="pdone" hidden></div><div class="pbar"><i id="pfill"></i></div></div>
     <div class="tile"><div class="tl">LeetCode streak</div><div class="big"><b id="streakn">0</b><small>days</small></div></div>
     <div class="tile"><div class="tl">Report streak</div><div class="big"><b id="repn">0</b><small>days</small></div></div>
+    <div class="tile" id="citile"><div class="tl">Check-in streak</div><div class="big"><b id="cin">0</b><small>days</small></div><button type="button" class="cibtn" id="cibtn">Check in</button></div>
     <div class="tile ringtile"><div class="ring" id="ring"><span><b id="totalmini">0</b></span></div><div><div class="tl">Steps done</div><div class="ts" id="totalof"></div></div></div>
   </div>
 </header>
@@ -576,6 +595,10 @@ header.top .bento,header.top #syncst{flex:0 0 100%;width:100%}
 
 <section id="v-home" aria-labelledby="t-home">
   <div class="roads" id="roads"></div>
+</section>
+
+<section id="v-friends" hidden aria-labelledby="t-friends">
+  <div class="card planset" id="fr"><div id="frbox"></div></div>
 </section>
 
 <section id="v-cal" hidden aria-labelledby="t-cal">
@@ -1104,6 +1127,8 @@ try{done=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
 try{days=JSON.parse(localStorage.getItem(LK))||{}}catch(e){}
 try{reps=JSON.parse(localStorage.getItem(RK))||{}}catch(e){}
 const TK="lockin-tests-v1";let tests={};
+const CIK="lockin-ci-v1";const cidone=(function(){try{const o=JSON.parse(localStorage.getItem(CIK)||"{}");return o&&typeof o==="object"?o:{}}catch(e){return{}}})();
+const plancfg=(function(){try{const o=JSON.parse(localStorage.getItem(PLANK)||"{}");return o&&typeof o==="object"?o:{}}catch(e){return{}}})();
 try{tests=JSON.parse(localStorage.getItem(TK))||{}}catch(e){}
 const saveTests=()=>{try{localStorage.setItem(TK,JSON.stringify(tests))}catch(e){}sync.tests()};
 const mmss=x=>{x=Math.round(x||0);return Math.floor(x/60)+":"+String(x%60).padStart(2,"0")};
@@ -1438,7 +1463,7 @@ document.getElementById("roads").addEventListener("click",e=>{
 });
 
 function progress(){
-  renderRoad();
+  renderRoad();if(typeof ciRender==="function")try{ciRender()}catch(e){}
   let all=0,fin=0;
   cats.forEach(c=>{if(!c.steps.length)return;const n=c.steps.length,d=c.steps.filter((_,i)=>done[c.id+"-"+i]).length;all+=n;fin+=d;
     const p=document.getElementById("p-"+c.id),b=document.getElementById("b-"+c.id);if(p)p.textContent=d+"/"+n;if(b)b.style.width=(d/n*100)+"%";});
@@ -1486,10 +1511,63 @@ document.getElementById("main").addEventListener("change",e=>{
   const li=e.target.closest("li[data-k]");if(!li)return;setDone(li.dataset.k,e.target.checked);
 });
 function showView(v){
-  ["home","cal","phases","rules"].forEach(x=>{document.getElementById("v-"+x).hidden=x!==v;document.getElementById("t-"+x).setAttribute("aria-selected",x===v)});
+  ["home","cal","phases","friends","rules"].forEach(x=>{document.getElementById("v-"+x).hidden=x!==v;document.getElementById("t-"+x).setAttribute("aria-selected",x===v)});
+  document.dispatchEvent(new CustomEvent("lockin-view",{detail:v}));
 }
 document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.v)));
 
+/* Check-in streak: counts only the days you planned. One question a day. */
+const planned=d=>d>=PSTART&&PCFG.days.includes(d.getDay());
+function ciStreak(){
+  const tk=dkey(TODAY);if(cidone[tk]===false)return 0;
+  let n=0;const d=new Date(TODAY);
+  for(let i=0;i<900;i++){
+    if(d<PSTART)break;
+    if(planned(d)){const k=dkey(d);if(cidone[k]===true)n++;else if(k!==tk)break}
+    d.setDate(d.getDate()-1)}
+  return n}
+function ciPool(){
+  const out=[];
+  cats.forEach(c=>{const Q=TESTS[c.id];if(!Q||!c.steps)return;
+    const started=(c.start&&pd(c.start)<=TODAY)||c.steps.some((_,i)=>done[c.id+"-"+i]);
+    if(started)Q.forEach(q=>out.push({q,c}))});
+  return out}
+function ciRender(){
+  const n=document.getElementById("cin"),b=document.getElementById("cibtn");if(!n||!b)return;
+  n.textContent=ciStreak();const tk=dkey(TODAY);let t="Check in",off=false;
+  if(TODAY<PSTART){t="Starts "+sdate(PSTART);off=true}
+  else if(!planned(TODAY)){t="Rest day";off=true}
+  else if(cidone[tk]===true){t="Done today";off=true}
+  else if(cidone[tk]===false){t="Missed today";off=true}
+  else if(!ciPool().length){t="No questions yet";off=true}
+  b.textContent=t;b.disabled=off}
+function ciSave(){try{localStorage.setItem(CIK,JSON.stringify(cidone))}catch(e){}sync.done();ciRender()}
+(function(){
+  const tm=document.getElementById("tm"),box=document.getElementById("tbox"),btn=document.getElementById("cibtn");
+  if(!tm||!box||!btn)return;
+  const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const close=()=>{tm.hidden=true;document.body.style.overflow=""};
+  btn.addEventListener("click",()=>{
+    const tk=dkey(TODAY);if(btn.disabled||cidone[tk]!==undefined)return;
+    const pool=ciPool();if(!pool.length)return;
+    const it=pool[Math.floor(Math.random()*pool.length)],q=it.q,opts=shuf(q.slice(1,5));
+    box.innerHTML=`<div class="thead"><div class="tk">Check-in</div><h2>One question. One try.</h2></div><p class="tmsg">From phase ${it.c.n}: ${esc(it.c.t)}. Get it right to keep your streak. Get it wrong and your streak goes to 0.</p><fieldset class="tq"><legend>${esc(q[0])}</legend>${opts.map((o,k)=>`<button type="button" class="topt cio" data-k="${k}"><span>${esc(o)}</span></button>`).join("")}</fieldset><div class="tbtns"><button type="button" class="tx" id="ciclose">Close</button></div>`;
+    tm.hidden=false;document.body.style.overflow="hidden";tm.scrollTop=0;
+    box.onclick=e=>{
+      if(e.target.closest("#ciclose")){box.onclick=null;close();return}
+      const o=e.target.closest(".cio");if(!o)return;
+      const pick=opts[+o.dataset.k],ok=pick===q[1];
+      cidone[tk]=ok;ciSave();box.onclick=null;
+      box.innerHTML=`<div class="thead"><div class="tk">Check-in</div><h2>${ok?"Right":"Wrong"}</h2></div><div class="tres ${ok?"pass":"fail"}"><div class="tbig">${ok?"Streak: "+ciStreak()+(ciStreak()===1?" day":" days"):"Streak: 0"}</div><p>${ok?"Come back on your next planned day.":"The right answer: "+esc(q[1])}</p></div>${ok?"":`<div class="tex">${esc(q[5]||"")}</div>`}<div class="tbtns"><button type="button" class="tgo" id="ciclose2">Close</button></div>`;
+      box.onclick=ev=>{if(ev.target.closest("#ciclose2")){box.onclick=null;close()}}}
+  });
+})();
+window._lockinSummary=function(){
+  let steps=0,total=0,ph=0,pt=0;
+  cats.forEach(c=>{if(!c.steps||!c.steps.length)return;const n=c.steps.length,d=c.steps.filter((_,i)=>done[c.id+"-"+i]).length;steps+=d;total+=n;pt++;if(d===n)ph++});
+  const passed=Object.keys(tests).filter(k=>tests[k]&&tests[k].passed).length;
+  return{steps,total,ph,pt,passed,tt:Object.keys(TESTS).length,lc:+((document.getElementById("streakn")||{}).textContent)||0,ci:ciStreak()}};
+ciRender();
 progress();apply();renderCal();renderDay(true);refreshStreaks();
 try{const ps=document.getElementById("planset"),cw=document.querySelector("#v-cal .calwrap");if(PCFG.set&&ps&&cw){cw.after(ps);ps.style.marginTop="16px";ps.style.marginBottom="0";const h=ps.querySelector("h2");if(h)h.textContent="Change your plan"}}catch(e){}
 try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeItem("lockin-view");showView(v)}}catch(e){}
@@ -1500,9 +1578,9 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
   const am=document.getElementById("am"),abox=document.getElementById("abox"),abtn=document.getElementById("acctbtn"),st=document.getElementById("syncst");
   const STK="lockin-stamp-v1";let stamp={};
   try{stamp=JSON.parse(localStorage.getItem(STK))||{}}catch(e){}
-  const OBJ={d:done,y:days,r:reps,t:tests};
-  const LSK={d:KEY,y:LK,r:RK,t:TK};
-  const shadow={d:{},y:{},r:{},t:{}};
+  const OBJ={d:done,y:days,r:reps,t:tests,c:cidone,p:plancfg};
+  const LSK={d:KEY,y:LK,r:RK,t:TK,c:CIK,p:PLANK};
+  const shadow={d:{},y:{},r:{},t:{},c:{},p:{}};
   Object.keys(OBJ).forEach(p=>Object.keys(OBJ[p]).forEach(k=>{shadow[p][k]=JSON.stringify(OBJ[p][k])}));
   const setSt=s=>{if(st){st.textContent=s;st.hidden=/^(Saved on this device|Saved to|Connecting)/.test(s)}};
   const saveStamp=()=>{try{localStorage.setItem(STK,JSON.stringify(stamp))}catch(e){}};
@@ -1515,9 +1593,9 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     }));
     if(ch)saveStamp();
   }
-  let fb=null,user=null,ref=null,unsub=null,first=false,loginT=0,pt=null,msg="";
-  const has=(p,v)=>p==="d"||p==="y"?v===true:p==="r"?!!(v&&v.trim()):!!(v&&v.n);
-  const better=(p,rv,lv)=>p==="d"||p==="y"?rv===true:p==="r"?(rv||"").length>(lv||"").length:((rv&&rv.best)||0)>((lv&&lv.best)||0);
+  let fb=null,user=null,ref=null,unsub=null,first=false,loginT=0,pt=null,msg="",me=null,PCHG=false;
+  const has=(p,v)=>p==="d"||p==="y"||p==="c"?v===true:p==="p"?v!=null:p==="r"?!!(v&&v.trim()):!!(v&&v.n);
+  const better=(p,rv,lv)=>p==="d"||p==="y"||p==="c"?rv===true:p==="p"?false:p==="r"?(rv||"").length>(lv||"").length:((rv&&rv.best)||0)>((lv&&lv.best)||0);
   function applyRemote(r){
     let ch=false;
     Object.keys(OBJ).forEach(p=>{
@@ -1528,11 +1606,13 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
         if(k in o&&JSON.stringify(lv)===JSON.stringify(rv)){if(rt>(stamp[key]||0))stamp[key]=rt;return}
         if(rt>lt||(rt===lt&&better(p,rv,lv))){
           if(p==="r"&&k===dkey(sel)&&document.activeElement===repEl)return;
-          o[k]=rv;stamp[key]=rt;shadow[p][k]=JSON.stringify(rv);ch=true;
+          o[k]=rv;stamp[key]=rt;shadow[p][k]=JSON.stringify(rv);ch=true;if(p==="p")PCHG=true;
         }else if(!stamp[key]&&lt>0){stamp[key]=lt}
       });
     });
-    if(ch){persist();refreshAll()}
+    if(ch){persist();
+      if(PCHG){PCHG=false;try{sessionStorage.setItem("lockin-view","cal")}catch(e){}location.reload();return ch}
+      refreshAll()}
     return ch;
   }
   function payload(){
@@ -1544,6 +1624,7 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
   }
   async function push(){
     if(!user||!ref||!first)return;
+    publish(false);
     try{await fb.fs.setDoc(ref,payload());setSt("Saved to your account ("+user.email+"). Same on every device.")}
     catch(e){setSt("Could not save to your account. Check the Firestore rules.")}
   }
@@ -1601,9 +1682,10 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     const [app,auth,fs]=await Promise.all([import(b+"firebase-app.js"),import(b+"firebase-auth.js"),import(b+"firebase-firestore.js")]);
     const a=app.initializeApp(cfg);
     fb={auth,fs,a:auth.getAuth(a),db:fs.getFirestore(a)};
+    try{await auth.setPersistence(fb.a,auth.browserLocalPersistence)}catch(e){}
     return fb;
   }
-  function label(){abtn.textContent=user?(user.email||"Account").split("@")[0]:gh?"Synced":"Log in"}
+  function label(){abtn.textContent=user?((me&&me.nick)||(user.email||"Account").split("@")[0]):gh?"Synced":"Log in"}
   function render(){
     const e=s=>esc(s||"");
     let h='<button type="button" class="x" id="aclose" aria-label="Close">&times;</button><div class="tk">Account</div>';
@@ -1660,13 +1742,79 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     }catch(x){const m=ERR[x.code]||("Error: "+(x.code||x.message));say(m);setSt("Login problem: "+m)}
   });
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!am.hidden)close()});
+  /* ---- Friends: nickname, username, and friends' progress ---- */
+  const frBox=document.getElementById("frbox"),hRe=/^[a-z0-9_]{3,20}$/;let pubT=0;
+  const pdoc=uid=>fb.fs.doc(fb.db,"profiles",uid),ndoc=n=>fb.fs.doc(fb.db,"names",n);
+  const rulesMsg=e=>e&&e.code==="permission-denied"?"The Firestore rules need an update. Publish the new rules in Firebase, then try again.":"Could not reach your account. Check your internet.";
+  async function loadMe(){const s=await fb.fs.getDoc(pdoc(user.uid));me=s.exists()?s.data():{};return me}
+  async function publish(force){
+    if(!user||!fb)return;const now=Date.now();if(!force&&now-pubT<20000)return;pubT=now;
+    try{await fb.fs.setDoc(pdoc(user.uid),{stats:window._lockinSummary?window._lockinSummary():{},upd:now},{merge:true})}catch(e){}}
+  const ago=t=>{if(!t)return"never";const m=Math.round((Date.now()-t)/6e4);return m<2?"just now":m<60?m+" min ago":m<1440?Math.round(m/60)+" h ago":Math.round(m/1440)+" days ago"};
+  function fcard(p,uid,mine){
+    const S=p.stats||{},pct=S.total?Math.round(S.steps/S.total*100):0;
+    return `<div class="frc"><div class="frh"><b>${esc(p.nick||p.handle||"Someone")}</b>${p.handle?`<span class="frat"> @${esc(p.handle)}</span>`:""}${mine?'<span class="frat"> (you)</span>':`<button type="button" class="tx frx" data-rm="${esc(uid)}">Remove</button>`}</div>
+      <div class="frbar"><i style="width:${pct}%"></i></div>
+      <div class="frs"><span><b>${S.steps||0}</b> of ${S.total||0} steps (${pct}%)</span><span>LeetCode streak <b>${S.lc||0}</b></span><span>Check-in streak <b>${S.ci||0}</b></span><span>Tests passed <b>${S.passed||0}</b> of ${S.tt||0}</span><span>Phases done <b>${S.ph||0}</b> of ${S.pt||0}</span><span>Active ${ago(p.upd)}</span></div></div>`}
+  async function renderFriends(note){
+    if(!frBox)return;
+    if(!cfg||!user){frBox.innerHTML='<h2>Friends</h2><p>Log in with Google. Then choose a nickname and a username, add friends, and see their progress.</p><div class="tbtns"><button type="button" class="tgo" id="frlog">Log in</button></div>';return}
+    if(!note)frBox.innerHTML='<h2>Friends</h2><p>Loading...</p>';
+    let mine;try{await publish(true);mine=await loadMe();label()}catch(e){frBox.innerHTML=`<h2>Friends</h2><p>${esc(rulesMsg(e))}</p>`;return}
+    const list=[];
+    for(const uid of (mine.friends||[])){try{const s=await fb.fs.getDoc(pdoc(uid));if(s.exists())list.push([uid,s.data()])}catch(e){}}
+    list.sort((a,b)=>((b[1].stats||{}).steps||0)-((a[1].stats||{}).steps||0));
+    frBox.innerHTML=`<h2>Friends</h2>
+      <div class="psgrid">
+        <label class="afld">Nickname<input id="frnick" type="text" maxlength="24" value="${esc(mine.nick||"")}" autocomplete="off"></label>
+        <label class="afld">Username (3 to 20: a-z, 0-9, _)<input id="frhandle" type="text" maxlength="20" value="${esc(mine.handle||"")}" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></label>
+      </div>
+      <div class="tbtns"><button type="button" class="tgo" id="frsave">Save my profile</button></div>
+      ${fcard(mine,user.uid,true)}
+      <h3 class="tsec">Add a friend</h3>
+      <div class="psgrid"><label class="afld">Their username<input id="fradd" type="text" maxlength="21" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="username"></label></div>
+      <div class="tbtns"><button type="button" class="tx" id="fraddbtn">Add friend</button><button type="button" class="tx" id="frrefresh">Refresh</button></div>
+      <p class="amsg" id="frmsg" role="status">${esc(note||"")}</p>
+      <h3 class="tsec">Your friends (${list.length})</h3>
+      ${list.length?list.map(x=>fcard(x[1],x[0],false)).join(""):"<p>No friends yet. Send them your username. Add theirs.</p>"}`}
+  const frSay=t=>{const m=document.getElementById("frmsg");if(m)m.textContent=t};
+  async function saveProfile(){
+    const nick=(document.getElementById("frnick").value||"").trim().slice(0,24),h=(document.getElementById("frhandle").value||"").trim().toLowerCase().replace(/^@/,"");
+    if(h&&!hRe.test(h)){frSay("Username: 3 to 20 letters a-z, numbers, or _.");return}
+    try{
+      const old=(me&&me.handle)||"";
+      if(h&&h!==old){
+        const s=await fb.fs.getDoc(ndoc(h));
+        if(s.exists()&&s.data().uid!==user.uid){frSay("That username is taken.");return}
+        if(!s.exists())await fb.fs.setDoc(ndoc(h),{uid:user.uid});
+        if(old){try{await fb.fs.deleteDoc(ndoc(old))}catch(e){}}}
+      await fb.fs.setDoc(pdoc(user.uid),{nick,handle:h||(me&&me.handle)||"",upd:Date.now()},{merge:true});
+      me=Object.assign(me||{},{nick,handle:h||(me&&me.handle)||""});label();renderFriends("Saved.")
+    }catch(e){frSay(rulesMsg(e))}}
+  async function addFriend(){
+    const h=(document.getElementById("fradd").value||"").trim().toLowerCase().replace(/^@/,"");
+    if(!hRe.test(h)){frSay("Write their username.");return}
+    try{
+      const s=await fb.fs.getDoc(ndoc(h));if(!s.exists()){frSay("No user has that username.");return}
+      const uid=s.data().uid;if(uid===user.uid){frSay("That is you.");return}
+      await fb.fs.setDoc(pdoc(user.uid),{friends:fb.fs.arrayUnion(uid)},{merge:true});renderFriends("Friend added.")
+    }catch(e){frSay(rulesMsg(e))}}
+  if(frBox)frBox.addEventListener("click",async e=>{
+    const t=e.target.closest("button");if(!t||!user)return;
+    if(t.id==="frlog"){abtn.click();return}
+    if(t.id==="frsave")await saveProfile();
+    else if(t.id==="fraddbtn")await addFriend();
+    else if(t.id==="frrefresh")renderFriends("Updated.");
+    else if(t.dataset.rm){try{await fb.fs.setDoc(pdoc(user.uid),{friends:fb.fs.arrayRemove(t.dataset.rm)},{merge:true});renderFriends("Removed.")}catch(x){frSay(rulesMsg(x))}}});
+  if(frBox&&!user)document.addEventListener("click",e=>{if(e.target.id==="frlog")abtn.click()});
+  document.addEventListener("lockin-view",e=>{if(e.detail==="friends")renderFriends()});
   label();
   if(gh){loginT=Date.now();ghStart()}
   if(cfg){
     loadFb().then(f=>{
       f.auth.onAuthStateChanged(f.a,u=>{
         if(unsub){unsub();unsub=null}
-        user=u;first=false;label();
+        user=u;first=false;me=null;label();if(u)loadMe().then(label).catch(()=>{});if(!document.getElementById("v-friends").hidden)renderFriends();
         if(!u){ref=null;setSt("Saved on this device.");if(!am.hidden)render();return}
         ref=f.fs.doc(f.db,"users",u.uid);loginT=Date.now();setSt("Connecting to your account...");
         if(!am.hidden){msg="";render();setTimeout(close,400)}
