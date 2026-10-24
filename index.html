@@ -508,6 +508,9 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 .psd{border:1.5px solid var(--line);background:transparent;color:var(--soft);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .psd[aria-pressed="true"]{background:#5E5CE6;border-color:#5E5CE6;color:#fff}
 .pssum{margin:10px 0 4px;font-size:14px}
+
+.rstack{display:grid;gap:14px;align-content:start;min-width:0}
+.rstack .road{min-width:0}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -1121,10 +1124,10 @@ const EX0=pd("1900-01-01"),EX1=pd("1900-01-01"),PSTART=(function(){const d=pd(PC
 })();
 const ROADS=[
  {t:"FUNDAMENTALS",sub:"Learn these first. Every other roadmap needs them.",c:"#2D7DD2",ids:["tools","term","prog","math","linalg","dsa","data"],lab:{prog:"Python",tools:"Shell and Git",term:"Bash and Claude Code",math:"Discrete math",linalg:"Linear algebra",dsa:"Algorithms",data:"Databases and SQL"}},
+ {t:"QUANTUM",sub:"Your main focus. Phase 6 comes first.",c:"#5B4BDB",ids:["quantum","toc","laterA"],lab:{quantum:"Quantum computing",toc:"Theory of computation",laterA:"Quantum, deeper"}},
  {t:"SWE",sub:"Languages, web, systems, and the work of a software engineer.",c:"#E5702A",ids:["java","rust","htmlcss","js","tsl","react","backend","mobile","games","net","sec","cloud","qa","design","swe","dist","prep"],lab:{htmlcss:"HTML and CSS",js:"JavaScript",tsl:"TypeScript",backend:"Web backend",mobile:"Android and iOS",games:"Game development",net:"Networking",sec:"Cybersecurity",cloud:"Cloud and DevOps",qa:"Testing and QA",design:"Design and Agile",swe:"Software design",dist:"Distributed systems",prep:"Internship prep"}},
  {t:"HARDWARE",sub:"How a computer works, from logic gates to the operating system.",c:"#B23A8F",ids:["hw","elec","os","laterC"],lab:{hw:"Computer architecture",elec:"Electronics and Arduino",os:"Operating systems",laterC:"Computers, deeper"}},
- {t:"MACHINE LEARNING",sub:"Math for data, neural networks, and deep learning.",c:"#2B7A78",ids:["prob","ai","laterB"],lab:{prob:"Probability and statistics",ai:"AI and machine learning",laterB:"Deep learning, deeper"}},
- {t:"QUANTUM",sub:"Your main focus. Phase 6 comes first.",c:"#5B4BDB",ids:["quantum","toc","laterA"],lab:{quantum:"Quantum computing",toc:"Theory of computation",laterA:"Quantum, deeper"}}
+ {t:"MACHINE LEARNING",sub:"Math for data, neural networks, and deep learning.",c:"#2B7A78",ids:["prob","ai","laterB"],lab:{prob:"Probability and statistics",ai:"AI and machine learning",laterB:"Deep learning, deeper"}}
 ];
 /* Sections */
 const main=document.getElementById("main"),toc=document.getElementById("toc");
@@ -1376,7 +1379,7 @@ function renderRoad(){
   const el=document.getElementById("roads");if(!el)return;
   const byId={};cats.forEach(c=>byId[c.id]=c);
   const nowPh=(function(){try{const x=phaseOn(TODAY);return x&&!x.exam?x.cat.id:null}catch(e){return null}})();
-  el.innerHTML=ROADS.map(r=>{
+  const arts=ROADS.map(r=>{
     let all=0,fin=0,full=0;
     const nodes=r.ids.map((id,j)=>{
       const c=byId[id];if(!c)return"";
@@ -1387,7 +1390,8 @@ function renderRoad(){
       return `<li><button type="button" class="rnode ${st}${nowPh===id?" now":""}" data-road="${id}" style="--i:${IND[j%IND.length]};--nc:${c.color||r.c};--pp:${n?Math.round(d/n*100):0}"><span class="rbadge">${badge}</span><span class="rtxt"><b>${r.lab[id]||c.t}</b><small>Phase ${c.n} · ${n} steps · ${hrs}</small></span></button>${(function(){const T=tests[id],q=(TESTS[id]||[]).length;if(!q)return"";
         const tl=T&&T.passed?`Test passed · ${T.best}/${T.total} · best ${mmss(T.bestTime)}`:T&&T.n?`Test: best ${T.best}/${T.total} · ${T.n} ${T.n===1?"try":"tries"}`:`Take the test · ${q} questions`;
         return `<button type="button" class="tchip${T&&T.passed?" ok":T&&T.n?" try":""}" data-test="${id}" style="--i:${IND[j%IND.length]};--nc:${c.color||r.c}">${tl}</button>`})()}</li>`}).join("");
-    return `<article class="road" style="--rc:${r.c}"><div class="roadhead"><div><h2>${r.t}</h2><p>${r.sub}</p></div><div class="roadpct">${full} of ${r.ids.length} phases · ${all?Math.round(fin/all*100):0}%</div></div><div class="roadbar"><i style="width:${all?fin/all*100:0}%"></i></div><ul class="rnodes">${nodes}</ul></article>`}).join("");
+    return `<article class="road" style="--rc:${r.c}"><div class="roadhead"><div><h2>${r.t}</h2><p>${r.sub}</p></div><div class="roadpct">${full} of ${r.ids.length} phases · ${all?Math.round(fin/all*100):0}%</div></div><div class="roadbar"><i style="width:${all?fin/all*100:0}%"></i></div><ul class="rnodes">${nodes}</ul></article>`});
+  el.innerHTML='<div class="rstack">'+arts[0]+arts[1]+'</div>'+arts.slice(2).join("");
 }
 document.getElementById("roads").addEventListener("click",e=>{
   const tb=e.target.closest("[data-test]");if(tb){openTest(tb.dataset.test);return}
