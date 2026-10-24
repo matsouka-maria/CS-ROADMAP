@@ -514,11 +514,11 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 <body>
 <div class="wrap">
 <header class="top">
-  <div class="eyebrow">Google STEP &middot; CERN openlab &middot; AMD &middot; Summer 2027</div>
+  <div class="eyebrow">STEP &middot; CERN openlab &middot; AMD &middot; Summer 2027</div>
   <div class="brand">LOCK IN</div>
   <button class="acctbtn" id="acctbtn" type="button">Log in</button>
   <button class="themebtn" id="themebtn" type="button">Dark mode</button>
-  <p id="syncst">Saved on this device.</p>
+  <p id="syncst" hidden></p>
   <div class="bento">
     <div class="tile hero"><div class="tl">Your plan</div><div class="big" id="pbig">&nbsp;</div><div class="ts" id="psub"></div><div class="pbar"><i id="pfill"></i></div></div>
     <div class="tile"><div class="tl">LeetCode streak</div><div class="big"><b id="streakn">0</b><small>days</small></div></div>
@@ -1459,7 +1459,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
   const LSK={d:KEY,y:LK,r:RK,t:TK};
   const shadow={d:{},y:{},r:{},t:{}};
   Object.keys(OBJ).forEach(p=>Object.keys(OBJ[p]).forEach(k=>{shadow[p][k]=JSON.stringify(OBJ[p][k])}));
-  const setSt=s=>{if(st)st.textContent=s};
+  const setSt=s=>{if(st){st.textContent=s;st.hidden=/^(Saved on this device|Saved to|Connecting)/.test(s)}};
   const saveStamp=()=>{try{localStorage.setItem(STK,JSON.stringify(stamp))}catch(e){}};
   const persist=()=>{Object.keys(OBJ).forEach(p=>{try{localStorage.setItem(LSK[p],JSON.stringify(OBJ[p]))}catch(e){}});saveStamp()};
   function touch(){
