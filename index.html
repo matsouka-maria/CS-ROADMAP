@@ -572,6 +572,7 @@ html{min-height:100%}body{min-height:100vh}
 .dz summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--soft)}
 .dz h3{margin:12px 0 4px;font-size:16px}
 .dzbtn{border-color:#FF375F;color:#FF375F}
+.frbtns{margin-left:auto;display:flex;gap:8px}.frsm{padding:6px 14px!important;font-size:13px!important}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -1765,6 +1766,7 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
         const uid=user.uid,hd=me&&me.handle;ref=null;clearTimeout(pt);if(unsub){unsub();unsub=null}
         try{
           if(hd){try{await fb.fs.deleteDoc(ndoc(hd))}catch(x){}}
+          try{for(const [n,f,o] of [["friendships","members","array-contains"],["friendreqs","to","=="],["friendreqs","from","=="]]){const q=await qs(n,f,[o,uid]);for(const d of q.docs)await fb.fs.deleteDoc(d.ref)}}catch(x){}
           await fb.fs.deleteDoc(pdoc(uid));
           await fb.fs.deleteDoc(fb.fs.doc(fb.db,"users",uid));
           await f.auth.deleteUser(user);
@@ -1789,23 +1791,37 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     return `<div class="frc"><div class="frh"><b>${esc(p.nick||p.handle||"Someone")}</b>${p.handle?`<span class="frat"> @${esc(p.handle)}</span>`:""}${mine?'<span class="frat"> (you)</span>':`<button type="button" class="tx frx" data-rm="${esc(uid)}">Remove</button>`}</div>
       <div class="frbar"><i style="width:${pct}%"></i></div>
       <div class="frs"><span><b>${S.steps||0}</b> of ${S.total||0} steps (${pct}%)</span><span>LeetCode streak <b>${S.lc||0}</b></span><span>Check-in streak <b>${S.ci||0}</b></span><span>Tests passed <b>${S.passed||0}</b> of ${S.tt||0}</span><span>Phases done <b>${S.ph||0}</b> of ${S.pt||0}</span><span>Active ${ago(p.upd)}</span></div></div>`}
+  const pair=(a,b)=>a<b?a+"_"+b:b+"_"+a;
+  const col=n=>fb.fs.collection(fb.db,n),qs=(n,f,v)=>TO(fb.fs.getDocs(fb.fs.query(col(n),fb.fs.where(f,v[0],v[1]))));
+  async function profs(uids){const out={};for(const u of uids){try{const s=await TO(fb.fs.getDoc(pdoc(u)));out[u]=s.exists()?s.data():{}}catch(e){out[u]={}}}return out}
   async function renderFriends(note){
     if(!frBox)return;
-    if(!cfg||!user){frBox.innerHTML='<h2>Friends</h2><p>Log in with Google. Then choose a nickname and a username, add friends, and see their progress.</p><div class="tbtns"><button type="button" class="tgo" id="frlog">Log in</button></div>';return}
+    if(!cfg||!user){frBox.innerHTML='<h2>Friends</h2><p>Log in with Google. Then choose a nickname and a username, send friend requests, and see their progress.</p><div class="tbtns"><button type="button" class="tgo" id="frlog">Log in</button></div>';return}
     if(!note)frBox.innerHTML='<h2>Friends</h2><p>Loading...</p>';
-    let mine;try{await TO(publish(true));mine=await loadMe();label()}catch(e){frBox.innerHTML=`<h2>Friends</h2><p>${esc(rulesMsg(e))}</p>`;return}
-    const list=[];
-    for(const uid of (mine.friends||[])){try{const s=await TO(fb.fs.getDoc(pdoc(uid)));if(s.exists())list.push([uid,s.data()])}catch(e){}}
-    list.sort((a,b)=>((b[1].stats||{}).steps||0)-((a[1].stats||{}).steps||0));
+    let mine,fr,inc,out;
+    try{await TO(publish(true));mine=await loadMe();label();
+      [fr,inc,out]=await Promise.all([qs("friendships","members",["array-contains",user.uid]),qs("friendreqs","to",["==",user.uid]),qs("friendreqs","from",["==",user.uid])])
+    }catch(e){frBox.innerHTML=`<h2>Friends</h2><p>${esc(rulesMsg(e))}</p>`;return}
+    const fIds=[],iIds=[],oIds=[];
+    fr.forEach(d=>{const m=(d.data().members||[]).find(x=>x!==user.uid);if(m)fIds.push(m)});
+    inc.forEach(d=>iIds.push(d.data().from));out.forEach(d=>oIds.push(d.data().to));
+    const P=await profs([...new Set([...fIds,...iIds,...oIds])]);
+    const nm=u=>esc((P[u]&&(P[u].nick||P[u].handle))||"Someone")+((P[u]&&P[u].handle)?` <span class="frat">@${esc(P[u].handle)}</span>`:"");
+    const list=fIds.map(u=>[u,P[u]||{}]).sort((a,b)=>((b[1].stats||{}).steps||0)-((a[1].stats||{}).steps||0));
+    setBadge(iIds.length);
     frBox.innerHTML=`<h2>Friends</h2>
-      <p>${mine.handle||mine.nick?`You are <b>${esc(mine.nick||mine.handle)}</b>${mine.handle?" (@"+esc(mine.handle)+")":""}.`:"You have no username yet. Friends cannot add you."} <button type="button" class="tx" id="fredit">${mine.handle?"Change":"Choose"} name</button></p>
+      <p>${mine.handle||mine.nick?`You are <b>${esc(mine.nick||mine.handle)}</b>${mine.handle?" (@"+esc(mine.handle)+")":""}.`:"You have no username yet. Friends cannot find you."} <button type="button" class="tx" id="fredit">${mine.handle?"Change":"Choose"} name</button></p>
       ${fcard(mine,user.uid,true)}
-      <h3 class="tsec">Add a friend</h3>
+      <h3 class="tsec">Send a friend request</h3>
       <div class="psgrid"><label class="afld">Their username<input id="fradd" type="text" maxlength="21" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="username"></label></div>
-      <div class="tbtns"><button type="button" class="tx" id="fraddbtn">Add friend</button><button type="button" class="tx" id="frrefresh">Refresh</button></div>
+      <div class="tbtns"><button type="button" class="tx" id="fraddbtn">Send request</button><button type="button" class="tx" id="frrefresh">Refresh</button></div>
       <p class="amsg" id="frmsg" role="status">${esc(note||"")}</p>
+      ${iIds.length?`<h3 class="tsec">Requests for you (${iIds.length})</h3>${iIds.map(u=>`<div class="frc"><div class="frh"><b>${nm(u)}</b> wants to be your friend.<span class="frbtns"><button type="button" class="tgo frsm" data-acc="${esc(u)}">Accept</button><button type="button" class="tx frsm" data-dec="${esc(u)}">Decline</button></span></div></div>`).join("")}`:""}
+      ${oIds.length?`<h3 class="tsec">Requests you sent (${oIds.length})</h3>${oIds.map(u=>`<div class="frc"><div class="frh"><b>${nm(u)}</b> has not answered yet.<span class="frbtns"><button type="button" class="tx frsm" data-cancel="${esc(u)}">Cancel</button></span></div></div>`).join("")}`:""}
       <h3 class="tsec">Your friends (${list.length})</h3>
-      ${list.length?list.map(x=>fcard(x[1],x[0],false)).join(""):"<p>No friends yet. Send them your username. Add theirs.</p>"}`}
+      ${list.length?list.map(x=>fcard(x[1],x[0],false)).join(""):"<p>No friends yet. Send a request. They must accept.</p>"}`}
+  function setBadge(n){const t=document.getElementById("t-friends");if(t)t.textContent=n?"Friends ("+n+")":"Friends"}
+  async function checkInbox(){try{const q=await qs("friendreqs","to",["==",user.uid]);setBadge(q.size)}catch(e){}}
   const frSay=t=>{const m=document.getElementById("frmsg");if(m)m.textContent=t};
   async function saveProfile(nid,hid,out,done){
     const nick=(document.getElementById(nid).value||"").trim().slice(0,24),h=(document.getElementById(hid).value||"").trim().toLowerCase().replace(/^@/,"");
@@ -1825,17 +1841,25 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     const h=(document.getElementById("fradd").value||"").trim().toLowerCase().replace(/^@/,"");
     if(!hRe.test(h)){frSay("Write their username.");return}
     try{
-      const s=await fb.fs.getDoc(ndoc(h));if(!s.exists()){frSay("No user has that username.");return}
-      const uid=s.data().uid;if(uid===user.uid){frSay("That is you.");return}
-      await fb.fs.setDoc(pdoc(user.uid),{friends:fb.fs.arrayUnion(uid)},{merge:true});renderFriends("Friend added.")
+      const s=await TO(fb.fs.getDoc(ndoc(h)));if(!s.exists()){frSay("No user has that username.");return}
+      const uid=s.data().uid,me_=user.uid;if(uid===me_){frSay("That is you.");return}
+      if((await TO(fb.fs.getDoc(fb.fs.doc(fb.db,"friendships",pair(me_,uid))))).exists()){frSay("You are already friends.");return}
+      if((await TO(fb.fs.getDoc(fb.fs.doc(fb.db,"friendreqs",uid+"_"+me_)))).exists()){frSay("They already sent you a request. Accept it below.");return}
+      if((await TO(fb.fs.getDoc(fb.fs.doc(fb.db,"friendreqs",me_+"_"+uid)))).exists()){frSay("You already sent a request.");return}
+      await TO(fb.fs.setDoc(fb.fs.doc(fb.db,"friendreqs",me_+"_"+uid),{from:me_,to:uid,ts:Date.now()}));renderFriends("Request sent. They must accept.")
     }catch(e){frSay(rulesMsg(e))}}
+  const rq=(a,b)=>fb.fs.doc(fb.db,"friendreqs",a+"_"+b);
   if(frBox)frBox.addEventListener("click",async e=>{
     const t=e.target.closest("button");if(!t||!user)return;
-    if(t.id==="frlog"){abtn.click();return}
-    if(t.id==="fredit"){abtn.click();return}
-    if(t.id==="fraddbtn")await addFriend();
-    else if(t.id==="frrefresh")renderFriends("Updated.");
-    else if(t.dataset.rm){try{await fb.fs.setDoc(pdoc(user.uid),{friends:fb.fs.arrayRemove(t.dataset.rm)},{merge:true});renderFriends("Removed.")}catch(x){frSay(rulesMsg(x))}}});
+    if(t.id==="frlog"||t.id==="fredit"){abtn.click();return}
+    try{
+      if(t.id==="fraddbtn")await addFriend();
+      else if(t.id==="frrefresh")renderFriends("Updated.");
+      else if(t.dataset.acc){const o=t.dataset.acc;await TO(fb.fs.setDoc(fb.fs.doc(fb.db,"friendships",pair(user.uid,o)),{members:[user.uid,o],ts:Date.now()}));await TO(fb.fs.deleteDoc(rq(o,user.uid)));renderFriends("You are now friends.")}
+      else if(t.dataset.dec){await TO(fb.fs.deleteDoc(rq(t.dataset.dec,user.uid)));renderFriends("Declined.")}
+      else if(t.dataset.cancel){await TO(fb.fs.deleteDoc(rq(user.uid,t.dataset.cancel)));renderFriends("Request canceled.")}
+      else if(t.dataset.rm){await TO(fb.fs.deleteDoc(fb.fs.doc(fb.db,"friendships",pair(user.uid,t.dataset.rm))));renderFriends("Friend removed.")}
+    }catch(x){frSay(rulesMsg(x))}});
   if(frBox&&!user)document.addEventListener("click",e=>{if(e.target.id==="frlog")abtn.click()});
   document.addEventListener("lockin-view",e=>{if(e.detail==="friends")renderFriends()});
   label();
@@ -1844,7 +1868,7 @@ try{const v=sessionStorage.getItem("lockin-view");if(v){sessionStorage.removeIte
     loadFb().then(f=>{
       f.auth.onAuthStateChanged(f.a,u=>{
         if(unsub){unsub();unsub=null}
-        user=u;first=false;me=null;label();if(u)loadMe().then(label).catch(()=>{});if(!document.getElementById("v-friends").hidden)renderFriends();
+        user=u;first=false;me=null;label();if(u){loadMe().then(label).catch(()=>{});checkInbox()}else setBadge(0);if(!document.getElementById("v-friends").hidden)renderFriends();
         if(!u){ref=null;setSt("Saved on this device.");if(!am.hidden)render();return}
         ref=f.fs.doc(f.db,"users",u.uid);loginT=Date.now();setSt("Connecting to your account...");
         if(!am.hidden){msg="";render();loadMe().then(m=>{label();if(m.handle||m.nick)setTimeout(close,400);else render()}).catch(()=>setTimeout(close,400))}
