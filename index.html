@@ -496,6 +496,18 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 .ovp p{font-size:14px}
 .gbtn{padding:11px;font-size:15px}
 .acctbtn{font-size:12px;padding:7px 14px}
+
+/* Plan settings */
+.planset{padding:16px 18px;margin-bottom:16px}
+.pshead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.pshead h2{margin:0;font-size:18px}
+.pshint{font-size:13px;color:var(--soft)}
+.psgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px 14px;margin-top:6px}
+.psgrid select,.psgrid input{font:inherit;font-size:15px;color:var(--ink);background:var(--fill);border:1.5px solid var(--line);border-radius:12px;padding:9px 11px;min-width:0}
+.psdays{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.psd{border:1.5px solid var(--line);background:transparent;color:var(--soft);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.psd[aria-pressed="true"]{background:#5E5CE6;border-color:#5E5CE6;color:#fff}
+.pssum{margin:10px 0 4px;font-size:14px}
 </style>
 <script src="firebase-config.js?v=5"></script>
 </head>
@@ -526,6 +538,18 @@ input[type=checkbox]:checked{animation:pop .22s ease}
 </section>
 
 <section id="v-cal" hidden aria-labelledby="t-cal">
+  <div class="card planset" id="planset">
+    <div class="pshead"><h2>Your plan</h2><span class="pshint">Pick your start, your hours, and your days. The app orders every phase for you.</span></div>
+    <div class="psgrid">
+      <label class="afld">Start date<input id="ps-start" type="date"></label>
+      <label class="afld">Hours a day (0.5 to 24)<input id="ps-hours" type="number" min="0.5" max="24" step="0.5" inputmode="decimal"></label>
+      <label class="afld">Finish in<select id="ps-months"><option value="3">3 months</option><option value="4">4 months</option><option value="5">5 months</option><option value="6">6 months</option><option value="8">8 months</option><option value="10">10 months</option><option value="12">12 months</option><option value="0">No target</option></select></label>
+    </div>
+    <div class="psdays" id="ps-days" role="group" aria-label="Study days"></div>
+    <p class="pssum" id="ps-sum" role="status"></p>
+    <div class="tbtns"><button type="button" class="tx" id="ps-fit">Fit my target</button><button type="button" class="tgo" id="ps-save">Make my plan</button></div>
+    <p class="amsg" id="ps-msg" role="status"></p>
+  </div>
   <div class="calwrap">
     <div>
       <div class="card cal">
@@ -953,7 +977,7 @@ const data=[
  [R,"Watrous, Understanding Quantum Information and Computation",L.watrousB,"Pages 375 to 495.",null,"19 May to 25 May","The page split is my estimate. Follow the lesson boundaries in the book."]],
  project:"Write one algorithm from each unit in Qiskit. Run one of them on real IBM hardware.",need:"Phase 6."},
 
-{group:"Part 6: Next, only if time is left",sub:"These stay in the plan. They start after Part 5 because you have 4.5 hours a day. Do operating systems, probability, and theory first. You do not need Part 6 for Google STEP, CERN, or AMD. You can skip any phase."},
+{group:"Part 6: Next, only if time is left",sub:"These stay in the plan. They start after Part 5 because your hours each day are limited. Do operating systems, probability, and theory first. You do not need Part 6 for Google STEP, CERN, or AMD. You can skip any phase."},
 {id:"os",n:"25",t:"Operating systems",color:"#455A64",start:"2027-05-26",end:"2027-06-01",hours:"40 hours",
  why:"How a computer runs many programs: processes, memory, threads, locks, and files. Every interview asks about this.",
  steps:[
@@ -1070,12 +1094,15 @@ const pd=s=>new Date(s+"T12:00");
 const okRep=t=>(t||"").trim().length>=20;
 
 /* Daily schedule: 4.5 hours a day, filled in order. The exam block has no plan work. */
-const DAILY=4.5,MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const PLANK="lockin-plan-v1";
+let PCFG={start:"2026-11-02",hours:4.5,days:[1,2,3,4,5,6,0],months:6,set:false};
+try{const o=JSON.parse(localStorage.getItem(PLANK)||"null");if(o&&/^\d{4}-\d\d-\d\d$/.test(o.start)&&o.hours>=0.5&&o.hours<=24&&Array.isArray(o.days)&&o.days.length)PCFG=Object.assign(PCFG,o,{set:true})}catch(e){}
+const DAILY=PCFG.hours,MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const sdate=d=>d.getDate()+" "+MN[d.getMonth()];
-const EXAMP=data.find(c=>c.exam),EX0=pd(EXAMP.start),EX1=pd(EXAMP.end),PSTART=pd("2026-11-02");
+const EX0=pd("1900-01-01"),EX1=pd("1900-01-01"),PSTART=(function(){const d=pd(PCFG.start);while(!PCFG.days.includes(d.getDay()))d.setDate(d.getDate()+1);return d})();
 (function(){
   let cur=new Date(PSTART),left=DAILY;
-  const nextDay=()=>{cur=new Date(cur);cur.setDate(cur.getDate()+1);left=DAILY;while(cur>=EX0&&cur<=EX1)cur.setDate(cur.getDate()+1)};
+  const nextDay=()=>{cur=new Date(cur);cur.setDate(cur.getDate()+1);left=DAILY;while(!PCFG.days.includes(cur.getDay()))cur.setDate(cur.getDate()+1)};
   const r2=x=>Math.round(x*100)/100,half=x=>Math.round(x*2)/2;
   data.filter(c=>c.id&&!c.exam).forEach(c=>{
     const B=parseFloat(c.hours)||0,known=c.steps.reduce((a,s)=>a+(s[4]||0),0),nul=c.steps.filter(s=>!s[4]).length;
@@ -1146,6 +1173,48 @@ cats.forEach(c=>{
   });
 });
 const PLAN0=PSTART,PLAN_END=phases.reduce((m,p)=>p.e>m?p.e:m,PLAN0);
+(function(){
+  const H=Math.round(data.filter(c=>c.id&&!c.exam).reduce((a,c)=>a+(c._items||[]).reduce((b,it)=>b+it.h,0),0)*2)/2;
+  const NAMES=[["Mon",1],["Tue",2],["Wed",3],["Thu",4],["Fri",5],["Sat",6],["Sun",0]];
+  const $=id=>document.getElementById(id),fmt=d=>d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+  const eS=$("ps-start"),eH=$("ps-hours"),eM=$("ps-months"),eD=$("ps-days"),eSum=$("ps-sum"),eMsg=$("ps-msg");
+  if(!eS)return;
+  let days=PCFG.days.slice();
+  eS.value=PCFG.start;eH.value=PCFG.hours;eM.value=String(PCFG.months==null?6:PCFG.months);
+  eD.innerHTML=NAMES.map(n=>`<button type="button" class="psd" data-d="${n[1]}" aria-pressed="${days.includes(n[1])}">${n[0]}</button>`).join("");
+  function sim(h,start,ds){const cur=pd(start);while(!ds.includes(cur.getDay()))cur.setDate(cur.getDate()+1);let left=H,n=0;
+    while(left>0.001){left-=Math.min(h,left);n++;if(left>0.001){do{cur.setDate(cur.getDate()+1)}while(!ds.includes(cur.getDay()))}}return{end:cur,n}}
+  const target=(start,m)=>{const t=pd(start);t.setMonth(t.getMonth()+m);return t};
+  function read(){return{start:eS.value,hours:parseFloat(eH.value),months:parseInt(eM.value,10),days:days.slice()}}
+  function check(c){
+    if(!c.start)return"Pick a start date.";
+    if(!(c.hours>0))return"Write how many hours you study each day.";
+    if(c.hours<0.5)return"Write at least 0.5 hours a day.";
+    if(c.hours>24)return"The maximum is 24 hours a day. A day has only 24 hours. Sleep and food are not optional.";
+    if(!c.days.length)return"Pick at least 1 study day.";
+    return""}
+  function sum(){
+    const c=read(),bad=check(c);eMsg.textContent="";
+    if(bad){eSum.textContent=bad;return}
+    const r=sim(c.hours,c.start,c.days),mo=Math.round((r.end-pd(c.start))/864e5/30.44*10)/10;
+    let t=`Your plan has ${H} hours. At ${c.hours} hours a day on ${c.days.length} days a week, you need ${r.n} study days. It ends on ${fmt(r.end)}. That is about ${mo} months.`;
+    if(c.months>0){const tg=target(c.start,c.months);t+=r.end<=tg?` You finish before your ${c.months}-month target.`:` You miss your ${c.months}-month target by ${Math.ceil((r.end-tg)/864e5)} days. Press Fit my target.`}
+    if(c.hours>16)t+=" Warning: more than 16 hours a day. Protect your sleep and food.";
+    eSum.textContent=t}
+  eD.addEventListener("click",e=>{const b=e.target.closest(".psd");if(!b)return;const d=+b.dataset.d;days=days.includes(d)?days.filter(x=>x!==d):days.concat(d);b.setAttribute("aria-pressed",days.includes(d));sum()});
+  [eS,eH,eM].forEach(el=>el.addEventListener("input",sum));
+  $("ps-fit").addEventListener("click",()=>{
+    const c=read();if(!(c.months>0)){eMsg.textContent="Pick a target first.";return}
+    if(!c.start||!c.days.length){sum();return}
+    const tg=target(c.start,c.months);
+    for(let h=0.5;h<=24;h+=0.5){if(sim(h,c.start,c.days).end<=tg){eH.value=h;sum();eMsg.textContent="You need "+h+" hours a day on these days.";return}}
+    eMsg.textContent="Not possible. Even 24 hours a day is not enough in "+c.months+" months on these days."});
+  $("ps-save").addEventListener("click",()=>{
+    const c=read(),bad=check(c);if(bad){eMsg.textContent=bad;return}
+    try{localStorage.setItem(PLANK,JSON.stringify({start:c.start,hours:c.hours,days:c.days,months:c.months}))}catch(e){eMsg.textContent="Your browser cannot save this.";return}
+    eMsg.textContent="Saved. Building your plan...";setTimeout(()=>location.reload(),300)});
+  sum();
+})();
 const optionalFrom=(()=>{const p=phases.find(p=>p.cat.id==="os");return p?p.s:null})();
 const dayBest={};cats.forEach(c=>{(c._items||[]).forEach(it=>Object.keys(it.alloc).forEach(k=>{const m=dayBest[k]||(dayBest[k]={});m[c.id]=(m[c.id]||0)+it.alloc[k]}))});
 const phaseOn=d=>{if(d>=EX0&&d<=EX1)return null;const m=dayBest[dkey(d)];if(!m)return null;let best=null,bh=-1;phases.forEach(p=>{const v=m[p.cat.id]||0;if(v>bh){bh=v;best=p}});return best};
@@ -1336,7 +1405,7 @@ function progress(){
   document.getElementById("ring").style.setProperty("--p",all?(fin/all*100):0);document.getElementById("totalof").textContent="of "+all+" steps";
   (function(){const pb=document.getElementById("pbig"),ps=document.getElementById("psub"),pf=document.getElementById("pfill");
     const dd=(a,b)=>Math.round((b-a)/864e5),total=dd(PLAN0,PLAN_END)+1;
-    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+". It lasts "+total+" days and ends on "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+".";pf.style.width="0%"}
+    if(TODAY<PLAN0){const n=dd(TODAY,PLAN0);pb.textContent=n+(n===1?" day":" days");ps.textContent="until the plan starts on "+PLAN0.toLocaleDateString("en-GB",{day:"numeric",month:"long"})+". It lasts "+total+" days and ends on "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})+"."+(PCFG.set?"":" Set your own start, hours, and days in Calendar.");pf.style.width="0%"}
     else if(TODAY>PLAN_END){pb.textContent="Plan done";ps.textContent="Keep going with the optional phases.";pf.style.width="100%"}
     else{const d=dd(PLAN0,TODAY)+1,ph=phaseOn(TODAY);pb.textContent=(total-d)+" days left";ps.textContent="Week "+Math.ceil(d/7)+" of "+Math.ceil(total/7)+" · "+(ph?(ph.exam?"Exam block":"Phase "+ph.cat.n+": "+ph.cat.t):"Catch-up day")+" · ends "+PLAN_END.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});pf.style.width=Math.min(100,d/total*100)+"%"}})();
 }
