@@ -1529,7 +1529,7 @@ progress();apply();renderCal();renderDay(true);refreshStreaks();
     if(t.id==="ghnow"){say("Syncing...");await ghSync();say("");return}
     if(t.id==="ghoff"){gh=null;clearInterval(ghT);try{localStorage.removeItem(GHK)}catch(x){}label();setSt("Saved on this device.");msg="";render();return}
     if(!cfg)return;
-    const f=await loadFb().catch(()=>null);if(!f){say("Could not load the login. Check your internet.");return}
+    const f=fb||await loadFb().catch(()=>null);if(!f){say("Could not load the login. Check your internet and try again.");return}
     const em=()=>(document.getElementById("aemail").value||"").trim(),pw=()=>document.getElementById("apass").value||"";
     try{
       if(t.id==="agoogle"){
