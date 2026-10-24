@@ -776,7 +776,7 @@ const data=[
  why:"Grade 10 in all 9 courses. Keep 1 LeetCode problem a day. Move these dates when you know your exam schedule.",steps:[]},
 
 {id:"dsa",n:"7",t:"Data structures and algorithms",color:"#C2413B",start:"2026-12-16",end:"2026-12-26",hours:"60 hours",
- why:"The core of every Google interview. You do this after your February exams, so it does not touch your exam time.",
+ why:"The core of every Google interview.",
  steps:[
  [W,"MIT 6.006, Spring 2020",L.mit6006,"Lecture 1: Algorithms and Computation. Lecture 2: Data Structures and Dynamic Arrays. Lecture 3: Sets and Sorting. Lecture 4: Hashing. Lecture 5: Linear Sorting.",6,"16 Dec to 18 Dec"],
  [R,"Open Data Structures (pseudocode edition)",L.ods,"Ch 1: Introduction. Ch 2: Array-Based Lists. Ch 3: Linked Lists. Ch 5: Hash Tables. Ch 11: Sorting Algorithms.",14,"16 Dec to 18 Dec"],
@@ -1104,7 +1104,7 @@ const main=document.getElementById("main"),toc=document.getElementById("toc");
 const catById={};data.forEach(c=>{if(!c.group&&c.id)catById[c.id]=c});
 const ORDER=[];
 ROADS.forEach(r=>{ORDER.push({hdr:r});r.ids.forEach(id=>{if(catById[id])ORDER.push(catById[id])})});
-data.forEach(c=>{if(c.exam){ORDER.push({hdr:{t:"EXAM BLOCK",sub:"No plan work. Study for your university exams.",c:"#8E8E93"}});ORDER.push(c)}});
+
 ORDER.forEach(c=>{
   if(c.hdr){const r=c.hdr;
     main.insertAdjacentHTML("beforeend",`<h2 class="part-title" data-group style="--rc:${r.c}">${r.t}<small>${r.sub}</small></h2>`);
@@ -1148,7 +1148,7 @@ cats.forEach(c=>{
 const PLAN0=PSTART,PLAN_END=phases.reduce((m,p)=>p.e>m?p.e:m,PLAN0);
 const optionalFrom=(()=>{const p=phases.find(p=>p.cat.id==="os");return p?p.s:null})();
 const dayBest={};cats.forEach(c=>{(c._items||[]).forEach(it=>Object.keys(it.alloc).forEach(k=>{const m=dayBest[k]||(dayBest[k]={});m[c.id]=(m[c.id]||0)+it.alloc[k]}))});
-const phaseOn=d=>{if(d>=EX0&&d<=EX1)return phases.find(p=>p.exam);const m=dayBest[dkey(d)];if(!m)return null;let best=null,bh=-1;phases.forEach(p=>{const v=m[p.cat.id]||0;if(v>bh){bh=v;best=p}});return best};
+const phaseOn=d=>{if(d>=EX0&&d<=EX1)return null;const m=dayBest[dkey(d)];if(!m)return null;let best=null,bh=-1;phases.forEach(p=>{const v=m[p.cat.id]||0;if(v>bh){bh=v;best=p}});return best};
 const onDay=(x,d)=>!!x.alloc[dkey(d)];
 const dayOnly=d=>{const x=new Date(d);x.setHours(12,0,0,0);return x};
 const TODAY=dayOnly(new Date());
